@@ -1,0 +1,355 @@
+<!doctype html>
+<!--
+  frontend-design-excellence example: Expressive / Premium launch page with motion.
+  Concept: "The page is a night sky that sharpens into focus as you scroll."
+  Signature moment: a pinned section where the focus ring turns and a blurred Saturn snaps sharp.
+  Motion personality: precise, unhurried, weighty  →  power3/expo out, 0.9–1.2s reveals, scrubbed pins.
+  Demonstrates: Lenis smooth scroll wired to GSAP ScrollTrigger, SplitText line-mask headline,
+  parallax star layers, a CSS marquee, a pinned scrubbed timeline, a horizontal gallery, count-up stats,
+  a magnetic CTA, gsap.matchMedia for desktop vs. phone vs. reduced motion, and content that is fully
+  visible without JS. The product is fictional.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meridian One — A telescope for skies that aren't dark</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lenis@1.3.4/dist/lenis.css">
+<style>
+  :root {
+    --night: oklch(0.13 0.015 265);
+    --night-2: oklch(0.17 0.02 265);
+    --line: oklch(0.3 0.02 265);
+    --star: oklch(0.96 0.01 85);
+    --mist: oklch(0.72 0.02 265);
+    --dim: oklch(0.56 0.02 265);
+    --amber: oklch(0.8 0.12 70);
+    --sans: "Inter Tight", system-ui, sans-serif;
+    --serif: "Instrument Serif", Georgia, serif;
+    --mono: "JetBrains Mono", ui-monospace, monospace;
+    --ease: cubic-bezier(.22,1,.36,1);
+  }
+  * { box-sizing: border-box; }
+  html { background: var(--night); }
+  body { margin: 0; color: var(--star); background: var(--night); font: 17px/1.55 var(--sans); -webkit-font-smoothing: antialiased; overflow-x: clip; }
+  a { color: inherit; }
+  :focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; border-radius: 4px; }
+  h1, h2, h3 { margin: 0; font-weight: 500; text-wrap: balance; }
+  p { margin: 0; text-wrap: pretty; }
+  .mono { font: 500 12px/1.4 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--mist); }
+  .wrap { max-width: 1280px; margin: 0 auto; padding-inline: 40px; }
+
+  /* Grain */
+  .grain { position: fixed; inset: -50%; z-index: 50; pointer-events: none; opacity: .06; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+
+  /* Nav */
+  .nav { position: fixed; inset: 0 0 auto; z-index: 40; display: flex; align-items: center; gap: 32px; padding: 20px 40px; mix-blend-mode: difference; }
+  .brand { font: 400 24px/1 var(--serif); text-decoration: none; }
+  .nav ul { display: flex; gap: 28px; list-style: none; margin: 0 0 0 auto; padding: 0; }
+  .nav ul a { text-decoration: none; font: 500 12px var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+  .pill { display: inline-flex; align-items: center; gap: 10px; height: 40px; padding: 0 18px; border-radius: 999px; border: 1px solid currentColor; text-decoration: none; font: 500 14px var(--sans); white-space: nowrap; }
+
+  /* Hero */
+  .hero { position: relative; min-height: 100svh; display: grid; align-content: end; padding: 140px 0 56px; overflow: hidden; }
+  .sky { position: absolute; inset: -10% 0; pointer-events: none; }
+  .sky canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .horizon { position: absolute; inset: auto 0 0; height: 45%; background: linear-gradient(to top, oklch(0.22 0.04 40 / .55), transparent); pointer-events: none; }
+  .hero .wrap { position: relative; width: 100%; }
+  .hero h1 { font: 400 clamp(56px, 9.6vw, 168px)/0.9 var(--serif); letter-spacing: -0.02em; max-width: 11ch; }
+  .hero h1 em { color: var(--amber); }
+  .hero-foot { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 40px; margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--line); }
+  .hero-foot p { max-width: 44ch; color: var(--mist); font-size: 18px; }
+  .cta { display: inline-flex; align-items: center; gap: 14px; height: 64px; padding: 0 30px; border-radius: 999px; background: var(--star); color: var(--night); text-decoration: none; font: 600 16px var(--sans); white-space: nowrap; will-change: transform; }
+  .cta svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; }
+  .cta:hover { background: var(--amber); }
+  .scroll-hint { position: absolute; right: 40px; top: 140px; writing-mode: vertical-rl; }
+
+  /* Marquee */
+  .marquee { border-block: 1px solid var(--line); overflow: hidden; padding: 22px 0; }
+  .marquee-track { display: flex; width: max-content; animation: marquee 38s linear infinite; }
+  .marquee span { font: 400 clamp(28px, 3.4vw, 48px)/1 var(--serif); padding-right: 56px; white-space: nowrap; color: var(--mist); }
+  .marquee span i { font-style: normal; color: var(--amber); padding-right: 56px; }
+  @keyframes marquee { to { transform: translateX(-50%); } }
+
+  /* Focus (pinned) */
+  .focus { position: relative; min-height: 100svh; display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 64px; padding-block: 120px; }
+  .viewer { position: relative; aspect-ratio: 1; width: min(100%, 560px); justify-self: center; }
+  .ring { position: absolute; inset: 0; }
+  .ring svg { width: 100%; height: 100%; overflow: visible; }
+  .eyepiece { position: absolute; inset: 14%; border-radius: 50%; overflow: hidden; background: radial-gradient(circle at 50% 50%, oklch(0.16 0.02 265), oklch(0.09 0.01 265)); box-shadow: inset 0 0 60px oklch(0 0 0 / .8); display: grid; place-items: center; }
+  .saturn { position: relative; width: 58%; aspect-ratio: 1; isolation: isolate; }
+  .saturn .body { position: absolute; inset: 22%; border-radius: 50%; background: radial-gradient(circle at 35% 30%, oklch(0.92 0.06 80), oklch(0.75 0.1 65) 45%, oklch(0.45 0.08 50) 100%); box-shadow: inset -12px -10px 24px oklch(0.2 0.03 50 / .7); }
+  .saturn .bands { position: absolute; inset: 22%; border-radius: 50%; background: repeating-linear-gradient(-14deg, transparent 0 9%, oklch(0.6 0.08 55 / .35) 9% 12%); mix-blend-mode: multiply; }
+  .saturn .rings { position: absolute; left: -12%; right: -12%; top: 41%; height: 18%; border-radius: 50%; border: 6px solid oklch(0.82 0.06 75 / .85); box-shadow: 0 0 0 5px oklch(0.6 0.05 70 / .45), 0 0 0 11px oklch(0.75 0.05 75 / .25); transform: rotate(-14deg); }
+  .saturn .rings.front { clip-path: inset(50% 0 0 0); }
+  .saturn .rings.back { clip-path: inset(0 0 50% 0); z-index: -1; }
+  .steps { position: relative; min-height: 320px; }
+  .step { max-width: 30ch; }
+  .step + .step { margin-top: 56px; }
+  .step .mono { color: var(--amber); }
+  .step h3 { font: 400 clamp(36px, 3.6vw, 56px)/1.02 var(--serif); margin: 14px 0 16px; }
+  .step p { color: var(--mist); }
+  .counter { margin-top: 40px; display: none; align-items: center; gap: 14px; }
+  .counter .bar { width: 120px; height: 1px; background: var(--line); position: relative; }
+  .counter .bar i { position: absolute; inset: 0; background: var(--star); transform-origin: left; transform: scaleX(1); }
+
+  /* Horizontal gallery */
+  .gallery { overflow: hidden; padding-block: 120px; }
+  .gallery-head { display: flex; justify-content: space-between; align-items: end; gap: 32px; margin-bottom: 56px; }
+  .gallery-head h2 { font: 400 clamp(44px, 6vw, 96px)/0.95 var(--serif); }
+  .gallery-head p { max-width: 34ch; color: var(--mist); }
+  .track { display: flex; gap: 24px; padding-inline: 40px; width: max-content; }
+  .target { width: min(78vw, 440px); flex: none; }
+  .target .frame { aspect-ratio: 4 / 5; border: 1px solid var(--line); border-radius: 16px; background: var(--night-2); display: grid; place-items: center; overflow: hidden; position: relative; }
+  .target .frame::after { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 50% 50%, transparent 55%, oklch(0.09 0.01 265 / .9)); }
+  .target h3 { font: 500 22px var(--sans); margin: 20px 0 6px; display: flex; justify-content: space-between; }
+  .target p { color: var(--mist); font-size: 15px; }
+  .moon { width: 62%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle at 30% 35%, oklch(0.78 0.01 90 / .9) 0 7%, transparent 8%), radial-gradient(circle at 62% 58%, oklch(0.7 0.01 90 / .9) 0 11%, transparent 12%), radial-gradient(circle at 45% 75%, oklch(0.74 0.01 90) 0 5%, transparent 6%), radial-gradient(circle at 40% 40%, oklch(0.93 0.01 90), oklch(0.66 0.01 90) 70%, oklch(0.4 0.01 90)); box-shadow: -30px 0 60px -20px oklch(0.09 0.01 265) inset; }
+  .nebula { width: 100%; height: 100%; background: radial-gradient(ellipse 40% 30% at 45% 50%, oklch(0.62 0.17 15 / .7), transparent 70%), radial-gradient(ellipse 35% 45% at 58% 45%, oklch(0.55 0.13 250 / .6), transparent 70%), radial-gradient(ellipse 18% 14% at 50% 50%, oklch(0.95 0.05 80 / .9), transparent 70%); filter: blur(6px); }
+  .galaxy { width: 80%; aspect-ratio: 2.4; border-radius: 50%; transform: rotate(-28deg); background: radial-gradient(ellipse at center, oklch(0.97 0.03 80) 0 6%, oklch(0.75 0.06 70 / .7) 18%, oklch(0.5 0.06 250 / .35) 45%, transparent 70%); filter: blur(2px); }
+  .saturn.small { width: 60%; }
+
+  /* Specs */
+  .specs { border-top: 1px solid var(--line); }
+  .specs-grid { display: grid; grid-template-columns: repeat(4, 1fr); }
+  .spec { padding: 48px 24px 64px 0; }
+  .spec + .spec { border-left: 1px solid var(--line); padding-left: 24px; }
+  .spec b { display: block; font: 400 clamp(48px, 5vw, 80px)/1 var(--serif); font-variant-numeric: tabular-nums; }
+  .spec b small { font: 500 16px var(--sans); color: var(--mist); margin-left: 6px; }
+  .spec p { color: var(--mist); margin-top: 12px; font-size: 15px; max-width: 24ch; }
+
+  /* Final */
+  .final { padding: 160px 0 120px; text-align: center; }
+  .final h2 { font: 400 clamp(52px, 8vw, 132px)/0.92 var(--serif); max-width: 12ch; margin: 0 auto 40px; }
+  .final p { color: var(--mist); margin-top: 20px; }
+  footer { border-top: 1px solid var(--line); }
+  footer .wrap { display: flex; justify-content: space-between; gap: 24px; padding-block: 28px; color: var(--dim); font-size: 14px; }
+
+  @media (max-width: 860px) {
+    .wrap { padding-inline: 20px; }
+    .nav { padding: 16px 20px; }
+    .nav ul { display: none; }
+    .nav .pill { margin-left: auto; }
+    .hero-foot { grid-template-columns: minmax(0, 1fr); }
+    .scroll-hint { display: none; }
+    .focus { grid-template-columns: minmax(0, 1fr); padding-block: 80px; gap: 40px; }
+    .gallery-head { flex-direction: column; align-items: flex-start; }
+    .track { width: auto; overflow-x: auto; scroll-snap-type: x mandatory; padding-inline: 20px; scrollbar-width: none; }
+    .target { scroll-snap-align: start; }
+    .specs-grid { grid-template-columns: 1fr 1fr; }
+    .spec:nth-child(3) { border-left: 0; padding-left: 0; }
+    .spec:nth-child(n+3) { border-top: 1px solid var(--line); }
+    .final { padding: 96px 0 80px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .marquee-track { animation: none; } }
+</style>
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+
+<header class="nav">
+  <a class="brand" href="#">Meridian</a>
+  <ul><li><a href="#focus">Optics</a></li><li><a href="#targets">Targets</a></li><li><a href="#specs">Specs</a></li></ul>
+  <a class="pill" href="#reserve">Reserve</a>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="sky" aria-hidden="true"><canvas data-layer="0.3"></canvas><canvas data-layer="0.6"></canvas><canvas data-layer="1"></canvas></div>
+    <div class="horizon" aria-hidden="true"></div>
+    <span class="scroll-hint mono" aria-hidden="true">Scroll to focus</span>
+    <div class="wrap">
+      <p class="mono" data-fade>Meridian One · Ships March 2027</p>
+      <h1 class="headline">See further than the <em>city</em> lets you.</h1>
+      <div class="hero-foot">
+        <p data-fade>A 102mm apochromatic telescope that finds, tracks and sharpens its target on its own — built for balconies, rooftops and skies that are never fully dark.</p>
+        <a class="cta" href="#reserve" data-magnetic>Reserve yours — $1,290 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </div>
+    </div>
+  </section>
+
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track">
+      <span>Apochromatic 102mm <i>✦</i></span><span>Auto-tracking mount <i>✦</i></span><span>9.4 kg, one case <i>✦</i></span><span>Light-pollution filter built in <i>✦</i></span>
+      <span>Apochromatic 102mm <i>✦</i></span><span>Auto-tracking mount <i>✦</i></span><span>9.4 kg, one case <i>✦</i></span><span>Light-pollution filter built in <i>✦</i></span>
+    </div>
+  </div>
+
+  <section class="wrap focus" id="focus">
+    <div class="viewer" aria-hidden="true">
+      <div class="ring">
+        <svg viewBox="0 0 200 200">
+          <circle cx="100" cy="100" r="98" fill="none" stroke="var(--line)"/>
+          <g class="ticks" stroke="var(--mist)" stroke-width="0.6">
+            <!-- generated ticks -->
+          </g>
+          <circle cx="100" cy="100" r="86" fill="none" stroke="var(--line)"/>
+        </svg>
+      </div>
+      <div class="eyepiece"><div class="saturn" id="saturn"><div class="rings back"></div><div class="body"></div><div class="bands"></div><div class="rings front"></div></div></div>
+    </div>
+    <div>
+      <div class="steps">
+        <div class="step"><span class="mono">01 — Find</span><h3>Point it roughly. It does the rest.</h3><p>Plate-solving locates the target from a single frame of sky, even with streetlights in view.</p></div>
+        <div class="step"><span class="mono">02 — Track</span><h3>The sky turns. Your view doesn't.</h3><p>A belt-driven mount follows Earth's rotation, so the planet stays centred for hours.</p></div>
+        <div class="step"><span class="mono">03 — Focus</span><h3>Sharp all the way to the rings.</h3><p>Motorised focus reads the star's profile and settles in under four seconds.</p></div>
+      </div>
+      <div class="counter mono" aria-hidden="true"><span class="cur">03</span><span class="bar"><i></i></span><span>03</span></div>
+    </div>
+  </section>
+
+  <section class="gallery" id="targets">
+    <div class="wrap gallery-head">
+      <h2>Tonight's targets</h2>
+      <p>Visible from most cities with Meridian's built-in filter. Each one is a short walk to the balcony.</p>
+    </div>
+    <div class="track">
+      <article class="target"><div class="frame"><div class="moon"></div></div><h3>The Moon <span class="mono">Mag −12.7</span></h3><p>Crater walls throw long shadows along the terminator.</p></article>
+      <article class="target"><div class="frame"><div class="saturn small"><div class="rings back"></div><div class="body"></div><div class="bands"></div><div class="rings front"></div></div></div><h3>Saturn <span class="mono">Mag 0.6</span></h3><p>The Cassini Division shows as a thin dark line in the rings.</p></article>
+      <article class="target"><div class="frame"><div class="nebula"></div></div><h3>Orion Nebula <span class="mono">M42</span></h3><p>A stellar nursery 1,344 light-years away, bright enough for suburbs.</p></article>
+      <article class="target"><div class="frame"><div class="galaxy"></div></div><h3>Andromeda <span class="mono">M31</span></h3><p>Two and a half million years old, the light reaching you tonight.</p></article>
+    </div>
+  </section>
+
+  <section class="specs" id="specs">
+    <div class="wrap specs-grid">
+      <div class="spec"><b data-count="102">102<small>mm</small></b><p>Apochromatic triplet, ED glass, no colour fringing.</p></div>
+      <div class="spec"><b data-count="714">714<small>mm</small></b><p>Focal length, f/7 — sharp planets, wide nebulae.</p></div>
+      <div class="spec"><b data-count="9.4" data-decimals="1">9.4<small>kg</small></b><p>Tube, mount and battery, carried in one case.</p></div>
+      <div class="spec"><b data-count="6">6<small>hrs</small></b><p>Tracking on one charge; USB-C, any power bank.</p></div>
+    </div>
+  </section>
+
+  <section class="wrap final" id="reserve">
+    <p class="mono" style="margin-bottom:24px">First batch · 400 units</p>
+    <h2 class="headline">Your sky is better than you think.</h2>
+    <a class="cta" href="#" data-magnetic>Reserve for $100 deposit <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    <p>Fully refundable until it ships.</p>
+  </section>
+</main>
+
+<footer><div class="wrap"><span>Meridian One is a fictional product made for a design example.</span><span>© 2026</span></div></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.3.4/dist/lenis.min.js"></script>
+<script>
+// ---------- Static setup (runs for everyone) ----------
+// Focus-ring ticks
+(() => {
+  const g = document.querySelector('.ticks');
+  for (let i = 0; i < 120; i++) {
+    const a = (i / 120) * Math.PI * 2, long = i % 10 === 0, r1 = long ? 88 : 91, r2 = 96;
+    const l = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    l.setAttribute('x1', 100 + r1 * Math.cos(a)); l.setAttribute('y1', 100 + r1 * Math.sin(a));
+    l.setAttribute('x2', 100 + r2 * Math.cos(a)); l.setAttribute('y2', 100 + r2 * Math.sin(a));
+    if (long) l.setAttribute('stroke', 'var(--star)');
+    g.appendChild(l);
+  }
+})();
+
+// Star layers (drawn once, deterministic)
+(() => {
+  let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  document.querySelectorAll('.sky canvas').forEach((c, li) => {
+    const dpr = Math.min(devicePixelRatio || 1, 2), w = innerWidth, h = innerHeight * 1.2;
+    c.width = w * dpr; c.height = h * dpr; const ctx = c.getContext('2d'); ctx.scale(dpr, dpr);
+    const n = [260, 120, 40][li];
+    for (let i = 0; i < n; i++) {
+      const r = [0.5, 0.9, 1.5][li] * (0.6 + rnd() * 0.8);
+      ctx.globalAlpha = 0.35 + rnd() * 0.65;
+      ctx.fillStyle = rnd() > 0.85 ? '#ffe2b8' : '#f4f1ea';
+      ctx.beginPath(); ctx.arc(rnd() * w, rnd() * h * 0.8, r, 0, Math.PI * 2); ctx.fill();
+    }
+  });
+})();
+
+// ---------- Motion (only if GSAP loaded and motion is welcome) ----------
+if (window.gsap) {
+  gsap.registerPlugin(ScrollTrigger, SplitText);
+  const mm = gsap.matchMedia();
+
+  mm.add({ motion: '(prefers-reduced-motion: no-preference)', desktop: '(min-width: 861px)', fine: '(hover: hover) and (pointer: fine)' }, (ctx) => {
+    const { motion, desktop, fine } = ctx.conditions;
+    if (!motion) return;
+
+    // Smooth scroll on one ticker
+    const lenis = new Lenis({ lerp: 0.09 });
+    lenis.on('scroll', ScrollTrigger.update);
+    const raf = t => lenis.raf(t * 1000);
+    gsap.ticker.add(raf); gsap.ticker.lagSmoothing(0);
+    document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', e => {
+      const id = a.getAttribute('href'); if (id.length > 1) { e.preventDefault(); lenis.scrollTo(id, { offset: -20 }); }
+    }));
+
+    // Kinetic headlines: line-mask reveal (after fonts load so lines split correctly)
+    document.fonts.ready.then(() => {
+      document.querySelectorAll('.headline').forEach((h, i) => {
+        const split = SplitText.create(h, { type: 'lines', mask: 'lines', aria: 'auto' });
+        gsap.from(split.lines, { yPercent: 110, duration: 1.2, ease: 'expo.out', stagger: 0.09, delay: i ? 0 : 0.25,
+          scrollTrigger: i ? { trigger: h, start: 'top 80%', once: true } : undefined });
+      });
+      ScrollTrigger.refresh();
+    });
+    gsap.from('[data-fade]', { autoAlpha: 0, y: 16, duration: 1, ease: 'power3.out', stagger: 0.12, delay: 0.7 });
+    gsap.from('.hero .cta', { autoAlpha: 0, scale: 0.9, duration: 1, ease: 'power3.out', delay: 0.9 });
+
+    // Parallax star layers
+    document.querySelectorAll('.sky canvas').forEach(c => gsap.to(c, {
+      yPercent: parseFloat(c.dataset.layer) * 18, ease: 'none',
+      scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } }));
+    gsap.to('.hero .wrap', { yPercent: -12, autoAlpha: 0.2, ease: 'none', scrollTrigger: { trigger: '.hero', start: '40% top', end: 'bottom top', scrub: true } });
+
+    if (desktop) {
+      // Signature moment: pinned focus sequence
+      const steps = gsap.utils.toArray('.step');
+      gsap.set('.steps', { minHeight: 320 });
+      gsap.set(steps, { position: 'absolute', top: 0, left: 0, marginTop: 0 });
+      gsap.set(steps.slice(1), { autoAlpha: 0, y: 40 });
+      gsap.set('.counter', { display: 'flex' });
+      const cur = document.querySelector('.counter .cur');
+      const tl = gsap.timeline({ defaults: { ease: 'none' }, scrollTrigger: {
+        trigger: '.focus', start: 'top top', end: '+=220%', pin: true, scrub: 0.8,
+        onUpdate: s => { cur.textContent = '0' + Math.min(3, 1 + Math.floor(s.progress * 2.999)); } } });
+      tl.fromTo('#saturn', { filter: 'blur(16px)', scale: 0.82, xPercent: -18, yPercent: 12 }, { filter: 'blur(9px)', scale: 0.9, xPercent: 0, yPercent: 0, duration: 1 }, 0)
+        .to('.ring', { rotation: 120, duration: 1 }, 0)
+        .to(steps[0], { autoAlpha: 0, y: -40, duration: 0.2 }, 0.62)
+        .to(steps[1], { autoAlpha: 1, y: 0, duration: 0.25 }, 0.9)
+        .to('#saturn', { filter: 'blur(0px)', scale: 1, duration: 1 }, 1)
+        .to('.ring', { rotation: 260, duration: 1 }, 1)
+        .to(steps[1], { autoAlpha: 0, y: -40, duration: 0.2 }, 1.62)
+        .to(steps[2], { autoAlpha: 1, y: 0, duration: 0.25 }, 1.9)
+        .fromTo('.counter .bar i', { scaleX: 0.33 }, { scaleX: 1, duration: 2.15 }, 0);
+
+      // Horizontal gallery
+      const track = document.querySelector('.track');
+      gsap.to(track, { x: () => -(track.scrollWidth - innerWidth), ease: 'none',
+        scrollTrigger: { trigger: '.gallery', start: 'top top', end: () => '+=' + (track.scrollWidth - innerWidth), pin: true, scrub: 0.6, invalidateOnRefresh: true } });
+    } else {
+      gsap.from('#saturn', { filter: 'blur(14px)', scale: 0.85, ease: 'none', scrollTrigger: { trigger: '.viewer', start: 'top 85%', end: 'center center', scrub: true } });
+    }
+
+    // Count-up stats
+    document.querySelectorAll('[data-count]').forEach(el => {
+      const end = parseFloat(el.dataset.count), dec = +(el.dataset.decimals || 0), unit = el.querySelector('small').outerHTML, o = { v: 0 };
+      gsap.to(o, { v: end, duration: 1.6, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 85%', once: true },
+        onUpdate: () => { el.innerHTML = o.v.toFixed(dec) + unit; } });
+    });
+
+    // Magnetic CTAs
+    if (fine) document.querySelectorAll('[data-magnetic]').forEach(btn => {
+      const x = gsap.quickTo(btn, 'x', { duration: 0.5, ease: 'power3' }), y = gsap.quickTo(btn, 'y', { duration: 0.5, ease: 'power3' });
+      btn.addEventListener('pointermove', e => { const r = btn.getBoundingClientRect(); x((e.clientX - r.left - r.width / 2) * 0.25); y((e.clientY - r.top - r.height / 2) * 0.35); });
+      btn.addEventListener('pointerleave', () => { x(0); y(0); });
+    });
+
+    return () => { gsap.ticker.remove(raf); lenis.destroy(); };
+  });
+}
+</script>
+</body>
+</html>

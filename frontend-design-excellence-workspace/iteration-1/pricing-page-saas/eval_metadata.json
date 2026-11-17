@@ -1,0 +1,13 @@
+{
+  "eval_name": "pricing-page-saas",
+  "prompt": "I'm launching TaskFlow, a project management tool for small agencies (5\u201330 people). Can you build me a pricing page? Three plans: Starter (free, up to 3 projects), Studio ($12/user/mo) and Agency ($24/user/mo, adds client portals and time tracking). Annual billing gets 2 months free. Include an FAQ. Just a single pricing.html file, no build step.",
+  "assertions": [
+    "pricing.html shows three plans with prices $0, $12 and $24 per user per month",
+    "pricing.html has a working monthly/annual toggle that changes the displayed Studio and Agency prices to reflect 2 months free",
+    "pricing.html includes an FAQ section with at least 4 questions",
+    "pricing.html uses no emoji characters in its visible text or icons",
+    "pricing.html has no purple/indigo-to-blue/pink gradient background behind the hero",
+    "pricing.html defines visible :focus-visible styles for interactive elements",
+    "pricing.html has no horizontal page scroll at a 390px-wide viewport"
+  ]
+}

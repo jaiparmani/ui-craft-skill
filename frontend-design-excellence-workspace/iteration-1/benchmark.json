@@ -1,0 +1,404 @@
+{
+  "metadata": {
+    "skill_name": "ui-craft",
+    "skill_path": "<path/to/skill>",
+    "executor_model": "<model-name>",
+    "analyzer_model": "<model-name>",
+    "timestamp": "2026-11-17T21:30:28Z",
+    "evals_run": [
+      "admin-users-table",
+      "pricing-page-saas",
+      "restyle-ugly-signup-form"
+    ],
+    "runs_per_configuration": 1
+  },
+  "runs": [
+    {
+      "eval_id": "admin-users-table",
+      "eval_name": "admin-users-table",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 9,
+        "failed": 0,
+        "total": 9,
+        "time_seconds": 455.1,
+        "tokens": 133307,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "index.html search box filters the table rows by name or email",
+          "passed": true,
+          "evidence": "Search 'brightline' returned the 3 brightline.co users"
+        },
+        {
+          "text": "index.html role filter limits rows to the chosen role",
+          "passed": true,
+          "evidence": "Clicking Editor segment left 9 rows, all Editor"
+        },
+        {
+          "text": "index.html paginates the ~25 users across more than one page with working next/previous controls",
+          "passed": true,
+          "evidence": "25 users over 3 pages; Next moved first row from Amara Okonkwo to a page-2 user"
+        },
+        {
+          "text": "index.html shows an empty state message when search matches no users",
+          "passed": true,
+          "evidence": "'No users match these filters' shown for a nonsense query"
+        },
+        {
+          "text": "index.html shows status as labelled badges (text, not color alone)",
+          "passed": true,
+          "evidence": "Status shown as text badges (Active/Invited/Suspended)"
+        },
+        {
+          "text": "index.html icon-only action buttons have accessible names (aria-label or visible text)",
+          "passed": true,
+          "evidence": "Only unlabeled button is the confirm dialog's OK, which gets text when the dialog opens; row action buttons are labeled"
+        },
+        {
+          "text": "index.html uses no emoji characters in its visible text or icons",
+          "passed": true,
+          "evidence": "No emoji in page text"
+        },
+        {
+          "text": "index.html defines visible :focus-visible styles for interactive elements",
+          "passed": true,
+          "evidence": "':focus-visible' rules present"
+        },
+        {
+          "text": "index.html has no horizontal page scroll at a 390px-wide viewport (a table scrolling inside its own container is fine)",
+          "passed": true,
+          "evidence": "scrollWidth 375 = viewport 375 at mobile (rows become stacked cards)"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": "pricing-page-saas",
+      "eval_name": "pricing-page-saas",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 7,
+        "failed": 0,
+        "total": 7,
+        "time_seconds": 283.8,
+        "tokens": 105889,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "pricing.html shows three plans with prices $0, $12 and $24 per user per month",
+          "passed": true,
+          "evidence": "Shows $0, $12 and $24 per user/month"
+        },
+        {
+          "text": "pricing.html has a working monthly/annual toggle that changes the displayed Studio and Agency prices to reflect 2 months free",
+          "passed": true,
+          "evidence": "Toggle switches Studio/Agency to $10/$20 annual (verified by report and visible prices)"
+        },
+        {
+          "text": "pricing.html includes an FAQ section with at least 4 questions",
+          "passed": true,
+          "evidence": "8 <details> FAQ items"
+        },
+        {
+          "text": "pricing.html uses no emoji characters in its visible text or icons",
+          "passed": true,
+          "evidence": "No emoji in page text"
+        },
+        {
+          "text": "pricing.html has no purple/indigo-to-blue/pink gradient background behind the hero",
+          "passed": true,
+          "evidence": "No gradients in any stylesheet"
+        },
+        {
+          "text": "pricing.html defines visible :focus-visible styles for interactive elements",
+          "passed": true,
+          "evidence": "':focus-visible' rules present"
+        },
+        {
+          "text": "pricing.html has no horizontal page scroll at a 390px-wide viewport",
+          "passed": true,
+          "evidence": "scrollWidth 375 = viewport 375 at mobile"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": "restyle-ugly-signup-form",
+      "eval_name": "restyle-ugly-signup-form",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 209.2,
+        "tokens": 93696,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "signup.html keeps all original fields: full name, email, password, dietary preference, household size, and the terms checkbox",
+          "passed": true,
+          "evidence": "Name, email, password, dietary, household (as 4 radio buttons with same options), terms all present"
+        },
+        {
+          "text": "every input and select in signup.html has a visible, programmatically associated <label>",
+          "passed": true,
+          "evidence": "All controls have associated labels (household radios inside a labelled group)"
+        },
+        {
+          "text": "signup.html no longer uses the purple gradient background, emoji, or pill-shaped (radius 25px or more) inputs",
+          "passed": true,
+          "evidence": "No gradients, no emoji, no control radius >= 25px"
+        },
+        {
+          "text": "signup.html defines visible :focus-visible or :focus styles for inputs and buttons",
+          "passed": true,
+          "evidence": "':focus-visible' and ':focus' rules present"
+        },
+        {
+          "text": "signup.html has no horizontal page scroll at a 390px-wide viewport",
+          "passed": true,
+          "evidence": "scrollWidth 375 = viewport 375 at mobile"
+        },
+        {
+          "text": "signup.html uses specific copy instead of the original hype text ('unlock your meal planning potential', 'SIGN UP NOW!!!')",
+          "passed": true,
+          "evidence": "Copy: 'Tell us a little about your kitchen and we'll build your first week of dinners.'"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": "admin-users-table",
+      "eval_name": "admin-users-table",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 9,
+        "failed": 0,
+        "total": 9,
+        "time_seconds": 103.3,
+        "tokens": 63504,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "index.html search box filters the table rows by name or email",
+          "passed": true,
+          "evidence": "Search filtered rows by name/email substring"
+        },
+        {
+          "text": "index.html role filter limits rows to the chosen role",
+          "passed": true,
+          "evidence": "Role select 'Editor' left 9 rows, all Editor"
+        },
+        {
+          "text": "index.html paginates the ~25 users across more than one page with working next/previous controls",
+          "passed": true,
+          "evidence": "Next moved first row from Alexander Novak to Evelyn Martins (page 2 of 3)"
+        },
+        {
+          "text": "index.html shows an empty state message when search matches no users",
+          "passed": true,
+          "evidence": "'No users match your filters.' shown for a nonsense query"
+        },
+        {
+          "text": "index.html shows status as labelled badges (text, not color alone)",
+          "passed": true,
+          "evidence": "Status shown as text badges with dot"
+        },
+        {
+          "text": "index.html icon-only action buttons have accessible names (aria-label or visible text)",
+          "passed": true,
+          "evidence": "No unlabeled icon-only buttons (row menu button has accessible name)"
+        },
+        {
+          "text": "index.html uses no emoji characters in its visible text or icons",
+          "passed": true,
+          "evidence": "No emoji in page text"
+        },
+        {
+          "text": "index.html defines visible :focus-visible styles for interactive elements",
+          "passed": true,
+          "evidence": "':focus-visible' rules present"
+        },
+        {
+          "text": "index.html has no horizontal page scroll at a 390px-wide viewport (a table scrolling inside its own container is fine)",
+          "passed": true,
+          "evidence": "scrollWidth 375 = viewport 375 at mobile"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": "pricing-page-saas",
+      "eval_name": "pricing-page-saas",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 7,
+        "failed": 0,
+        "total": 7,
+        "time_seconds": 96.5,
+        "tokens": 63006,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "pricing.html shows three plans with prices $0, $12 and $24 per user per month",
+          "passed": true,
+          "evidence": "Shows $0, $12 and $24 per user/month"
+        },
+        {
+          "text": "pricing.html has a working monthly/annual toggle that changes the displayed Studio and Agency prices to reflect 2 months free",
+          "passed": true,
+          "evidence": "Clicking Monthly shows $12/$24; Annual shows $10/$20 (scripted click test)"
+        },
+        {
+          "text": "pricing.html includes an FAQ section with at least 4 questions",
+          "passed": true,
+          "evidence": "8 expandable FAQ items"
+        },
+        {
+          "text": "pricing.html uses no emoji characters in its visible text or icons",
+          "passed": true,
+          "evidence": "Only non-emoji symbol found was \u00a9"
+        },
+        {
+          "text": "pricing.html has no purple/indigo-to-blue/pink gradient background behind the hero",
+          "passed": true,
+          "evidence": "No gradients in any stylesheet"
+        },
+        {
+          "text": "pricing.html defines visible :focus-visible styles for interactive elements",
+          "passed": true,
+          "evidence": "':focus-visible' rules present"
+        },
+        {
+          "text": "pricing.html has no horizontal page scroll at a 390px-wide viewport",
+          "passed": true,
+          "evidence": "scrollWidth 375 = viewport 375 at mobile"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": "restyle-ugly-signup-form",
+      "eval_name": "restyle-ugly-signup-form",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 48.2,
+        "tokens": 55913,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "signup.html keeps all original fields: full name, email, password, dietary preference, household size, and the terms checkbox",
+          "passed": true,
+          "evidence": "All six original fields present, household still a select"
+        },
+        {
+          "text": "every input and select in signup.html has a visible, programmatically associated <label>",
+          "passed": true,
+          "evidence": "All 6 controls have associated <label>s"
+        },
+        {
+          "text": "signup.html no longer uses the purple gradient background, emoji, or pill-shaped (radius 25px or more) inputs",
+          "passed": true,
+          "evidence": "No gradients, no emoji, no control radius >= 25px"
+        },
+        {
+          "text": "signup.html defines visible :focus-visible or :focus styles for inputs and buttons",
+          "passed": true,
+          "evidence": "':focus-visible' and ':focus' rules present"
+        },
+        {
+          "text": "signup.html has no horizontal page scroll at a 390px-wide viewport",
+          "passed": true,
+          "evidence": "scrollWidth 375 = viewport 375 at mobile"
+        },
+        {
+          "text": "signup.html uses specific copy instead of the original hype text ('unlock your meal planning potential', 'SIGN UP NOW!!!')",
+          "passed": true,
+          "evidence": "Copy: 'Plan your week's meals in minutes, tailored to how you eat.' and 'Create account'"
+        }
+      ],
+      "notes": []
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 316.0333,
+        "stddev": 126.0791,
+        "min": 209.2,
+        "max": 455.1
+      },
+      "tokens": {
+        "mean": 110964.0,
+        "stddev": 20287.3002,
+        "min": 93696,
+        "max": 133307
+      }
+    },
+    "without_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 82.6667,
+        "stddev": 30.042,
+        "min": 48.2,
+        "max": 103.3
+      },
+      "tokens": {
+        "mean": 60807.6667,
+        "stddev": 4246.2127,
+        "min": 55913,
+        "max": 63504
+      }
+    },
+    "delta": {
+      "pass_rate": "+0.00",
+      "time_seconds": "+233.4",
+      "tokens": "+50156"
+    }
+  },
+  "notes": [
+    "Every assertion passed in both configurations (22/22 each). The assertions are non-discriminating on this model for everyday screens: plain Claude already avoids emoji icons, purple gradients, missing labels and mobile overflow on these prompts.",
+    "The with-skill runs all rendered their pages (headless Chrome at desktop, tablet and phone widths, plus dark mode and error/empty states) and fixed problems they found: a misaligned logo, stretched buttons, a broken sticky table header, mobile filter overflow and a pagination bar showing under the empty state. No baseline run rendered its output.",
+    "Cost: the with-skill runs took about 3.8x longer (316s vs 83s on average) and used about 1.8x the tokens (111k vs 61k), mostly spent on the screenshot-and-fix loop.",
+    "Next iteration: add prompts that need expressive, award-level design and motion (scroll storytelling, kinetic type, pinned sections), where the gap between default and skilled output is larger, plus assertions on reduced-motion support and animation performance."
+  ]
+}

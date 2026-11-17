@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: pricing-page-saas
+expected_outcome: |
+  A polished single-file pricing page with three tiers, an annual toggle, and an FAQ that looks designed rather than templated.

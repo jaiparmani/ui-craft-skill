@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pricing · TaskFlow</title>
+<meta name="description" content="TaskFlow pricing for small agencies. Start free with 3 projects, or upgrade to Studio or Agency for client portals and time tracking.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* Direction: Precise Product. Cool tinted neutrals, one deep blue accent, hairlines over shadows. */
+  :root {
+    --accent-h: 258;
+    --neutral-h: 255;
+
+    --font-sans: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+    --n-0: oklch(1 0 0);
+    --n-50: oklch(0.985 0.003 var(--neutral-h));
+    --n-100: oklch(0.967 0.005 var(--neutral-h));
+    --n-200: oklch(0.925 0.008 var(--neutral-h));
+    --n-300: oklch(0.87 0.01 var(--neutral-h));
+    --n-400: oklch(0.71 0.015 var(--neutral-h));
+    --n-500: oklch(0.55 0.018 var(--neutral-h));
+    --n-600: oklch(0.45 0.018 var(--neutral-h));
+    --n-700: oklch(0.37 0.017 var(--neutral-h));
+    --n-800: oklch(0.27 0.014 var(--neutral-h));
+    --n-900: oklch(0.21 0.012 var(--neutral-h));
+    --n-950: oklch(0.15 0.01 var(--neutral-h));
+
+    --a-50: oklch(0.97 0.02 var(--accent-h));
+    --a-100: oklch(0.93 0.045 var(--accent-h));
+    --a-200: oklch(0.87 0.08 var(--accent-h));
+    --a-400: oklch(0.7 0.15 var(--accent-h));
+    --a-600: oklch(0.52 0.19 var(--accent-h));
+    --a-700: oklch(0.46 0.17 var(--accent-h));
+    --a-800: oklch(0.4 0.14 var(--accent-h));
+
+    --bg: var(--n-50);
+    --surface: var(--n-0);
+    --surface-2: var(--n-100);
+    --border: var(--n-200);
+    --border-strong: var(--n-300);
+    --text: var(--n-900);
+    --text-muted: var(--n-600);
+    --text-subtle: var(--n-500);
+    --accent: var(--a-600);
+    --accent-hover: var(--a-700);
+    --accent-fg: #fff;
+    --accent-soft: var(--a-50);
+    --accent-soft-fg: var(--a-800);
+    --ring: oklch(0.6 0.18 var(--accent-h) / 0.35);
+    --success: oklch(0.52 0.13 155);
+
+    --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 24px;
+    --space-6: 32px; --space-7: 48px; --space-8: 64px; --space-9: 96px;
+
+    --text-xs: 13px; --text-sm: 14px; --text-md: 16px; --text-lg: 20px; --text-xl: 40px; --text-2xl: clamp(36px, 1.6rem + 2.6vw, 56px);
+
+    --radius-sm: 6px; --radius: 10px;
+    --shadow-xs: 0 1px 2px oklch(0.2 0.02 var(--neutral-h) / 0.06);
+    --shadow-md: 0 1px 2px oklch(0.2 0.02 var(--neutral-h) / 0.04), 0 12px 24px -8px oklch(0.2 0.03 var(--neutral-h) / 0.12);
+
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --max: 1160px;
+    color-scheme: light dark;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: var(--n-950);
+      --surface: oklch(0.185 0.011 var(--neutral-h));
+      --surface-2: var(--n-800);
+      --border: oklch(0.29 0.014 var(--neutral-h));
+      --border-strong: var(--n-700);
+      --text: var(--n-50);
+      --text-muted: var(--n-400);
+      --text-subtle: oklch(0.62 0.016 var(--neutral-h));
+      --accent: var(--a-400);
+      --accent-hover: var(--a-200);
+      --accent-fg: var(--n-950);
+      --accent-soft: oklch(0.3 0.07 var(--accent-h) / 0.5);
+      --accent-soft-fg: var(--a-200);
+      --success: oklch(0.75 0.14 155);
+      --shadow-md: 0 0 0 1px oklch(0.6 0.15 var(--accent-h) / 0.15), 0 12px 32px -8px oklch(0 0 0 / 0.5);
+    }
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font: 400 var(--text-md)/1.55 var(--font-sans);
+    color: var(--text);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  h1, h2, h3 { line-height: 1.1; letter-spacing: -0.025em; text-wrap: balance; margin: 0; font-weight: 600; }
+  p { margin: 0; text-wrap: pretty; }
+  a { color: inherit; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+  .num { font-variant-numeric: tabular-nums; }
+  .wrap { max-width: var(--max); margin: 0 auto; padding-inline: var(--space-6); }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  svg.i { width: 16px; height: 16px; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+    height: 40px; padding: 0 var(--space-4); border-radius: var(--radius-sm);
+    font: 500 var(--text-sm)/1 var(--font-sans); text-decoration: none; white-space: nowrap;
+    border: 1px solid transparent; cursor: pointer;
+    transition: background 120ms, border-color 120ms, color 120ms, transform 120ms;
+  }
+  .btn:active { transform: translateY(0.5px); }
+  .btn-primary { background: var(--accent); color: var(--accent-fg); }
+  .btn-primary:hover { background: var(--accent-hover); }
+  .btn-secondary { background: var(--surface); color: var(--text); border-color: var(--border-strong); box-shadow: var(--shadow-xs); }
+  .btn-secondary:hover { background: var(--surface-2); }
+  .btn-ghost { color: var(--text-muted); }
+  .btn-ghost:hover { color: var(--text); background: var(--surface-2); }
+  .btn-block { width: 100%; height: 44px; }
+
+  /* Nav */
+  .nav { position: sticky; top: 0; z-index: 10; background: color-mix(in oklch, var(--bg) 85%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); }
+  .nav .wrap { display: flex; align-items: center; gap: var(--space-6); height: 64px; }
+  .brand { display: inline-flex; align-items: center; gap: var(--space-2); font-weight: 600; font-size: var(--text-md); letter-spacing: -0.02em; text-decoration: none; }
+  .brand-mark { width: 24px; height: 24px; border-radius: var(--radius-sm); background: var(--text); color: var(--bg); display: grid; place-items: center; }
+  .brand-mark svg { width: 14px; height: 14px; stroke-width: 2.5; }
+  .nav ul { display: flex; gap: var(--space-1); list-style: none; margin: 0; padding: 0; }
+  .nav ul a { display: block; padding: var(--space-2) var(--space-3); border-radius: var(--radius-sm); font-size: var(--text-sm); color: var(--text-muted); text-decoration: none; }
+  .nav ul a:hover { color: var(--text); background: var(--surface-2); }
+  .nav ul a[aria-current="page"] { color: var(--text); font-weight: 500; }
+  .nav .right { margin-left: auto; display: flex; gap: var(--space-2); }
+
+  /* Header */
+  .page-head { padding-block: var(--space-9) var(--space-7); display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--space-6); align-items: end; }
+  .overline { font: 500 var(--text-xs)/1 var(--font-mono); color: var(--accent); letter-spacing: 0.02em; }
+  .page-head h1 { font-size: var(--text-2xl); margin: var(--space-4) 0; max-width: 16ch; }
+  .page-head p { color: var(--text-muted); font-size: var(--text-lg); line-height: 1.5; max-width: 52ch; }
+
+  /* Billing toggle */
+  .billing { display: flex; flex-direction: column; align-items: flex-end; gap: var(--space-2); }
+  .seg { display: inline-flex; padding: var(--space-1); gap: var(--space-1); background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius); }
+  .seg button {
+    height: 36px; padding: 0 var(--space-4); border: 0; border-radius: var(--radius-sm); background: transparent;
+    font: 500 var(--text-sm)/1 var(--font-sans); color: var(--text-muted); cursor: pointer; white-space: nowrap;
+    display: inline-flex; align-items: center; gap: var(--space-2);
+  }
+  .seg button:hover { color: var(--text); }
+  .seg button[aria-pressed="true"] { background: var(--surface); color: var(--text); box-shadow: var(--shadow-xs); }
+  .save-tag { font: 500 12px/1 var(--font-mono); color: var(--success); }
+  .billing-note { font-size: var(--text-xs); color: var(--text-subtle); }
+
+  /* Plans */
+  .plans { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-4); align-items: stretch; }
+  .plan {
+    position: relative; display: flex; flex-direction: column;
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: var(--space-6);
+  }
+  .plan.featured { border-color: var(--accent); box-shadow: var(--shadow-md); }
+  .plan-top { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); min-height: 24px; }
+  .plan h2 { font-size: var(--text-lg); letter-spacing: -0.015em; }
+  .badge { font: 500 12px/1 var(--font-sans); padding: 6px var(--space-2); border-radius: 999px; background: var(--accent-soft); color: var(--accent-soft-fg); white-space: nowrap; }
+  .plan-desc { margin-top: var(--space-2); color: var(--text-muted); font-size: var(--text-sm); min-height: 44px; }
+  .price { margin-top: var(--space-5); display: flex; align-items: baseline; gap: var(--space-2); }
+  .price .amount { font-size: var(--text-xl); font-weight: 600; letter-spacing: -0.035em; line-height: 1; }
+  .price .unit { font-size: var(--text-sm); color: var(--text-muted); }
+  .price .was { font-size: var(--text-md); color: var(--text-subtle); text-decoration: line-through; margin-right: -2px; }
+  .price-sub { margin-top: var(--space-2); font-size: var(--text-xs); color: var(--text-subtle); min-height: 20px; }
+  .plan .btn-block { margin-top: var(--space-5); }
+  .features { list-style: none; margin: var(--space-5) 0 0; padding: var(--space-5) 0 0; border-top: 1px solid var(--border); display: grid; gap: var(--space-3); font-size: var(--text-sm); }
+  .features li { display: flex; gap: var(--space-2); align-items: flex-start; }
+  .features li svg { margin-top: 3px; color: var(--text-subtle); }
+  .features .lead { color: var(--text-muted); font-weight: 500; }
+  .features .key { font-weight: 500; }
+  .features .key svg { color: var(--accent); }
+
+  /* Seat estimator */
+  .estimator { margin-top: var(--space-4); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: var(--space-6); align-items: center; padding: var(--space-5) var(--space-6); border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface-2); }
+  .estimator label { display: block; font-weight: 500; font-size: var(--text-sm); }
+  .estimator .hint { font-size: var(--text-xs); color: var(--text-muted); margin-top: var(--space-1); }
+  .seat-row { display: flex; align-items: center; gap: var(--space-4); }
+  .seat-row input[type="range"] { flex: 1; accent-color: var(--accent); height: 24px; min-width: 0; }
+  .seat-count { width: 72px; height: 36px; padding: 0 var(--space-3); border: 1px solid var(--border-strong); border-radius: var(--radius-sm); background: var(--surface); color: var(--text); font: 500 var(--text-sm)/1 var(--font-mono); text-align: right; }
+  .seat-count:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--ring); }
+  .totals { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-4); }
+  .total { border-left: 1px solid var(--border-strong); padding-left: var(--space-4); }
+  .total dt { font-size: var(--text-xs); color: var(--text-muted); }
+  .total dd { margin: var(--space-1) 0 0; font: 500 var(--text-lg)/1.2 var(--font-sans); letter-spacing: -0.02em; }
+  .total dd small { font-size: var(--text-xs); color: var(--text-subtle); font-weight: 400; letter-spacing: 0; }
+  .total.na dd { color: var(--text-subtle); font-size: var(--text-sm); font-weight: 400; letter-spacing: 0; padding-block: 3px; }
+
+  /* Sections */
+  section.block { padding-block: var(--space-9) 0; }
+  .section-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: var(--space-6); }
+  .section-head h2 { font-size: 30px; }
+  .section-head p { margin-top: var(--space-3); color: var(--text-muted); max-width: 40ch; }
+
+  /* Compare table */
+  .table-scroll { overflow-x: auto; margin-top: var(--space-6); border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+  table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); min-width: 680px; }
+  thead th { background: var(--surface); text-align: left; font-weight: 600; padding: var(--space-4) var(--space-5); border-bottom: 1px solid var(--border); }
+  thead th:not(:first-child), tbody td { text-align: center; width: 20%; }
+  thead th .th-price { display: block; font-weight: 400; color: var(--text-muted); font-size: var(--text-xs); margin-top: 2px; }
+  tbody th { text-align: left; font-weight: 400; padding: var(--space-3) var(--space-5); color: var(--text); }
+  tbody td { padding: var(--space-3) var(--space-5); color: var(--text-muted); }
+  tbody tr + tr > * { border-top: 1px solid var(--border); }
+  tbody tr.group > * { padding-top: var(--space-6); font: 500 12px/1 var(--font-mono); color: var(--text-subtle); letter-spacing: 0.02em; text-align: left; border-top: 0; }
+  tbody tr.group + tr > * { border-top: 0; }
+  td .yes { color: var(--text); display: inline-flex; }
+  td .no { color: var(--border-strong); }
+  thead th.col-featured { color: var(--accent); box-shadow: inset 0 2px 0 var(--accent); }
+
+  /* FAQ */
+  .faq-list { margin-top: var(--space-6); border-top: 1px solid var(--border); }
+  .faq-wrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: var(--space-6); }
+  .faq-wrap .faq-list { margin-top: 0; }
+  details { border-bottom: 1px solid var(--border); }
+  summary {
+    list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: var(--space-4);
+    padding: var(--space-5) 0; font-weight: 500; font-size: var(--text-md);
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary:hover { color: var(--accent); }
+  summary svg { color: var(--text-subtle); transition: transform 200ms var(--ease-out); }
+  details[open] summary svg { transform: rotate(45deg); }
+  .answer { padding-bottom: var(--space-5); color: var(--text-muted); max-width: 65ch; font-size: var(--text-md); }
+  .answer p + p { margin-top: var(--space-3); }
+  .faq-side p { margin-top: var(--space-3); color: var(--text-muted); max-width: 34ch; }
+  .faq-side a { color: var(--accent); text-underline-offset: 3px; }
+
+  /* Closing CTA */
+  .closing { margin-top: var(--space-9); padding-block: var(--space-8); border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: var(--space-6); flex-wrap: wrap; }
+  .closing h2 { font-size: 30px; max-width: 22ch; }
+  .closing p { margin-top: var(--space-2); color: var(--text-muted); }
+  .closing .actions { display: flex; gap: var(--space-2); }
+
+  footer { border-top: 1px solid var(--border); }
+  footer .wrap { display: flex; justify-content: space-between; gap: var(--space-4); padding-block: var(--space-5); font-size: var(--text-xs); color: var(--text-subtle); flex-wrap: wrap; }
+  footer a { text-decoration: none; } footer a:hover { color: var(--text); }
+  footer nav { display: flex; gap: var(--space-5); }
+
+  /* Responsive */
+  @media (max-width: 1100px) { .nav ul { display: none; } .plan { padding: var(--space-5); } }
+  @media (max-width: 900px) {
+    .plans { grid-template-columns: 1fr; max-width: 560px; }
+    .plan-desc { min-height: 0; }
+    .estimator { grid-template-columns: 1fr; gap: var(--space-4); max-width: 560px; }
+    .nav ul { display: none; }
+  }
+  @media (max-width: 760px) {
+    .wrap { padding-inline: var(--space-4); }
+    .page-head { grid-template-columns: 1fr; padding-block: var(--space-7) var(--space-6); }
+    .page-head p { font-size: var(--text-md); }
+    .billing { align-items: flex-start; }
+    .section-head, .faq-wrap { grid-template-columns: 1fr; gap: var(--space-2); }
+    .faq-wrap { gap: var(--space-5); }
+    section.block { padding-block: var(--space-8) 0; }
+    .plan { padding: var(--space-5); }
+    .estimator { padding: var(--space-5); }
+    .totals { grid-template-columns: 1fr; gap: var(--space-3); }
+    .total { display: flex; justify-content: space-between; align-items: baseline; border-left: 0; padding-left: 0; }
+    .total dd { margin: 0; }
+    .nav .right .btn-ghost { display: none; }
+    .closing { margin-top: var(--space-8); padding-block: var(--space-7); }
+    .closing .actions { width: 100%; } .closing .actions .btn { flex: 1; height: 44px; }
+    summary { font-size: var(--text-md); }
+    table { min-width: 520px; font-size: var(--text-xs); }
+    thead th, tbody th, tbody td { padding-inline: var(--space-3); }
+    thead th:first-child, tbody th[scope="row"] { position: sticky; left: 0; z-index: 1; background: var(--surface); width: 150px; box-shadow: inset -1px 0 0 var(--border); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition-duration: 0.01ms !important; }
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <!-- Lucide icons -->
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M5 12h14M12 5v14"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></symbol>
+  <symbol id="i-flow" viewBox="0 0 24 24"><path d="M4 6h10M4 12h16M4 18h7"/></symbol>
+</svg>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#"><span class="brand-mark"><svg class="i"><use href="#i-flow"/></svg></span>TaskFlow</a>
+    <nav aria-label="Main">
+      <ul>
+        <li><a href="#">Product</a></li>
+        <li><a href="#">Client portals</a></li>
+        <li><a href="#">Templates</a></li>
+        <li><a href="#" aria-current="page">Pricing</a></li>
+      </ul>
+    </nav>
+    <div class="right">
+      <a class="btn btn-ghost" href="#">Sign in</a>
+      <a class="btn btn-secondary" href="#">Book a demo</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="page-head">
+      <div>
+        <span class="overline">Pricing</span>
+        <h1>Priced per person, built for teams of 5 to 30</h1>
+        <p>Start free with three projects. Upgrade when you need more of them, or when clients need a window into the work.</p>
+      </div>
+      <div class="billing">
+        <div class="seg" role="group" aria-label="Billing period">
+          <button type="button" data-period="monthly" aria-pressed="false">Monthly</button>
+          <button type="button" data-period="annual" aria-pressed="true">Annual <span class="save-tag">2 months free</span></button>
+        </div>
+        <span class="billing-note" id="billing-note">Prices in USD. Taxes may apply.</span>
+      </div>
+    </div>
+
+    <div class="plans">
+      <article class="plan" aria-labelledby="p-starter">
+        <div class="plan-top"><h2 id="p-starter">Starter</h2></div>
+        <p class="plan-desc">For freelancers and tiny teams trying TaskFlow on a live project.</p>
+        <div class="price"><span class="amount num">$0</span><span class="unit">forever</span></div>
+        <p class="price-sub">No card required</p>
+        <a class="btn btn-secondary btn-block" href="#">Start for free</a>
+        <ul class="features">
+          <li class="key"><svg class="i"><use href="#i-check"/></svg>Up to 3 active projects</li>
+          <li><svg class="i"><use href="#i-check"/></svg>Up to 5 team members</li>
+          <li><svg class="i"><use href="#i-check"/></svg>Board, list and calendar views</li>
+          <li><svg class="i"><use href="#i-check"/></svg>Comments, mentions and file attachments</li>
+          <li><svg class="i"><use href="#i-check"/></svg>2 GB storage</li>
+        </ul>
+      </article>
+
+      <article class="plan featured" aria-labelledby="p-studio">
+        <div class="plan-top"><h2 id="p-studio">Studio</h2><span class="badge">Most popular</span></div>
+        <p class="plan-desc">For studios running several client projects at once.</p>
+        <div class="price"><span class="was num" data-was="12" hidden>$12</span><span class="amount num" data-monthly="12" data-annual="10">$10</span><span class="unit">per user / month</span></div>
+        <p class="price-sub num" data-sub="studio">$120 per user, billed yearly</p>
+        <a class="btn btn-primary btn-block" href="#">Start 14-day free trial <svg class="i"><use href="#i-arrow"/></svg></a>
+        <ul class="features">
+          <li class="lead">Everything in Starter, plus</li>
+          <li class="key"><svg class="i"><use href="#i-check"/></svg>Unlimited projects and members</li>
+          <li><svg class="i"><use href="#i-check"/></svg>Timeline and team workload views</li>
+          <li><svg class="i"><use href="#i-check"/></svg>Free guest seats for freelancers</li>
+          <li><svg class="i"><use href="#i-check"/></svg>Project templates and recurring tasks</li>
+          <li><svg class="i"><use href="#i-check"/></svg>100 GB storage</li>
+        </ul>
+      </article>
+
+      <article class="plan" aria-labelledby="p-agency">
+        <div class="plan-top"><h2 id="p-agency">Agency</h2></div>
+        <p class="plan-desc">For agencies that bill by the hour and report back to clients.</p>
+        <div class="price"><span class="was num" data-was="24" hidden>$24</span><span class="amount num" data-monthly="24" data-annual="20">$20</span><span class="unit">per user / month</span></div>
+        <p class="price-sub num" data-sub="agency">$240 per user, billed yearly</p>
+        <a class="btn btn-secondary btn-block" href="#">Start 14-day free trial</a>
+        <ul class="features">
+          <li class="lead">Everything in Studio, plus</li>
+          <li class="key"><svg class="i"><use href="#i-check"/></svg>Branded client portals</li>
+          <li class="key"><svg class="i"><use href="#i-check"/></svg>Time tracking and timesheets</li>
+          <li><svg class="i"><use href="#i-check"/></svg>Billable rates and budget alerts</li>
+          <li><svg class="i"><use href="#i-check"/></svg>Custom roles and permissions</li>
+          <li><svg class="i"><use href="#i-check"/></svg>Priority support, same business day</li>
+        </ul>
+      </article>
+    </div>
+
+    <div class="estimator">
+      <div>
+        <label for="seats">Estimate for your team</label>
+        <p class="hint">Only full members count. Guests and client portal users are free.</p>
+      </div>
+      <div>
+        <div class="seat-row">
+          <input id="seats" type="range" min="1" max="30" value="12" aria-describedby="seat-help">
+          <input class="seat-count num" id="seats-num" type="number" min="1" max="200" value="12" aria-label="Number of team members">
+        </div>
+        <span id="seat-help" class="sr-only">Number of paid team members</span>
+        <dl class="totals" aria-live="polite">
+          <div class="total" data-total="starter"><dt>Starter</dt><dd class="num">$0</dd></div>
+          <div class="total" data-total="studio"><dt>Studio</dt><dd class="num">$120 <small>/ month</small></dd></div>
+          <div class="total" data-total="agency"><dt>Agency</dt><dd class="num">$240 <small>/ month</small></dd></div>
+        </dl>
+      </div>
+    </div>
+
+    <section class="block" aria-labelledby="compare-h">
+      <div class="section-head">
+        <h2 id="compare-h">Compare plans</h2>
+        <p>Every plan includes unlimited tasks, mobile apps for iOS and Android, and two-factor sign-in.</p>
+      </div>
+      <div class="table-scroll" tabindex="0" role="region" aria-label="Plan comparison table">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col"><span class="sr-only">Feature</span></th>
+              <th scope="col">Starter<span class="th-price">Free</span></th>
+              <th scope="col" class="col-featured">Studio<span class="th-price" data-th="studio">$10 / user / mo</span></th>
+              <th scope="col">Agency<span class="th-price" data-th="agency">$20 / user / mo</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="group"><th colspan="4" scope="colgroup">Projects</th></tr>
+            <tr><th scope="row">Active projects</th><td class="num">3</td><td>Unlimited</td><td>Unlimited</td></tr>
+            <tr><th scope="row">Team members</th><td class="num">Up to 5</td><td>Unlimited</td><td>Unlimited</td></tr>
+            <tr><th scope="row">Board, list and calendar views</th><td><span class="yes"><svg class="i" aria-label="Included"><use href="#i-check"/></svg></span></td><td><span class="yes"><svg class="i" aria-label="Included"><use href="#i-check"/></svg></span></td><td><span class="yes"><svg class="i" aria-label="Included"><use href="#i-check"/></svg></span></td></tr>
+            <tr><th scope="row">Timeline and workload views</th><td><span class="no"><svg class="i" aria-label="Not included"><use href="#i-minus"/></svg></span></td><td><span class="yes"><svg class="i" aria-label="Included"><use href="#i-check"/></svg></span></td><td><span class="yes"><svg class="i" aria-label="Included"><use href="#i-check"/></svg></span></td></tr>
+            <tr><th scope="row">Templates and recurring tasks</th><td><span class="no"><svg class="i" aria-label="Not included"><use href="#i-minus"/></svg></span></td><td><span class="yes"><svg class="i" aria-label="Included"><use href="#i-check"/></svg></span></td><td><span class="yes"><svg class="i" aria-label="Included"><use href="#i-check"/></svg></span></td></tr>
+            <tr><th scope="row">Storage</th><td class="num">2 GB</td><td class="num">100 GB</td><td class="num">1 TB</td></tr>
+
+            <tr class="group"><th colspan="4" scope="colgroup">Clients</th></tr>
+            <tr><th scope="row">Guest seats for freelancers</th><td><span class="no"><svg class="i" aria-label="Not included"><use href="#i-minus"/></svg></span></td><td>Free, unlimited</td><td>Free, unlimited</td></tr>
+            <tr><th scope="row">Client portals with your branding</th><td><span class="no"><svg class="i" aria-label="Not included"><use href="#i-minus"/></svg></span></td><td><span class="no"><svg class="i" aria-label="Not included"><use href="#i-minus"/></svg></span></td><td><span class="yes"><svg class="i" aria-label="Included"><use href="#i-check"/></svg></span></td></tr>
+            <tr><th scope="row">Client approvals and feedback</th><td><span class="no"><svg class="i" aria-label="Not included"><use href="#i-minus"/></svg></span></td><td><span class="no"><svg class="i" aria-label="Not included"><use href="#i-minus"/></svg></span></td><td><span class="yes"><svg class="i" aria-label="Included"><use href="#i-check"/></svg></span></td></tr>
+
+            <tr class="group"><th colspan="4" scope="colgroup">Time and billing</th></tr>
+            <tr><th scope="row">Time tracking and timesheets</th><td><span class="no"><svg class="i" aria-label="Not included"><use href="#i-minus"/></svg></span></td><td><span class="no"><svg class="i" aria-label="Not included"><use href="#i-minus"/></svg></span></td><td><span class="yes"><svg class="i" aria-label="Included"><use href="#i-check"/></svg></span></td></tr>
+            <tr><th scope="row">Billable rates and budget alerts</th><td><span class="no"><svg class="i" aria-label="Not included"><use href="#i-minus"/></svg></span></td><td><span class="no"><svg class="i" aria-label="Not included"><use href="#i-minus"/></svg></span></td><td><span class="yes"><svg class="i" aria-label="Included"><use href="#i-check"/></svg></span></td></tr>
+            <tr><th scope="row">Timesheet export (CSV)</th><td><span class="no"><svg class="i" aria-label="Not included"><use href="#i-minus"/></svg></span></td><td><span class="no"><svg class="i" aria-label="Not included"><use href="#i-minus"/></svg></span></td><td><span class="yes"><svg class="i" aria-label="Included"><use href="#i-check"/></svg></span></td></tr>
+
+            <tr class="group"><th colspan="4" scope="colgroup">Admin and support</th></tr>
+            <tr><th scope="row">Custom roles and permissions</th><td><span class="no"><svg class="i" aria-label="Not included"><use href="#i-minus"/></svg></span></td><td><span class="no"><svg class="i" aria-label="Not included"><use href="#i-minus"/></svg></span></td><td><span class="yes"><svg class="i" aria-label="Included"><use href="#i-check"/></svg></span></td></tr>
+            <tr><th scope="row">Support</th><td>Help center</td><td>Email, 2 business days</td><td>Priority, same day</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="faq-h">
+      <div class="faq-wrap">
+        <div class="faq-side">
+          <h2 id="faq-h" style="font-size:30px">Questions</h2>
+          <p>Can't find what you need? Email <a href="mailto:billing@taskflow.app">billing@taskflow.app</a> and a person will reply within a business day.</p>
+        </div>
+        <div class="faq-list">
+          <details open>
+            <summary>Who counts as a paid user?<svg class="i" aria-hidden="true"><use href="#i-plus"/></svg></summary>
+            <div class="answer"><p>Anyone on your team who can create and edit projects. Freelance guests on Studio and Agency, and clients who only use the client portal, are free and don't count toward your total.</p></div>
+          </details>
+          <details>
+            <summary>How does "2 months free" work on annual billing?<svg class="i" aria-hidden="true"><use href="#i-plus"/></svg></summary>
+            <div class="answer"><p>Pay for a year up front and you're charged for 10 months instead of 12. Studio comes to $120 per user per year instead of $144, and Agency to $240 instead of $288.</p></div>
+          </details>
+          <details>
+            <summary>What happens when Starter hits 3 projects?<svg class="i" aria-hidden="true"><use href="#i-plus"/></svg></summary>
+            <div class="answer"><p>Nothing gets deleted. You can archive a finished project to free up a slot, or upgrade to Studio for unlimited projects. Archived projects stay searchable and can be restored at any time.</p></div>
+          </details>
+          <details>
+            <summary>What happens if we add people mid-year?<svg class="i" aria-hidden="true"><use href="#i-plus"/></svg></summary>
+            <div class="answer"><p>New members are billed pro rata for the rest of your billing period. If someone leaves, remove them and the seat is credited to your next invoice.</p></div>
+          </details>
+          <details>
+            <summary>Can we switch plans later?<svg class="i" aria-hidden="true"><use href="#i-plus"/></svg></summary>
+            <div class="answer"><p>Yes. Upgrades take effect immediately and we credit what's left of your current plan. Downgrades apply at the end of your billing period, and Agency-only data such as timesheets stays exportable.</p></div>
+          </details>
+          <details>
+            <summary>What do clients see in a client portal?<svg class="i" aria-hidden="true"><use href="#i-plus"/></svg></summary>
+            <div class="answer"><p>Only what you share: selected projects, milestones, files, and items waiting on their approval. Portals use your logo and colors, and internal comments and time entries are never visible to clients.</p></div>
+          </details>
+          <details>
+            <summary>How does the free trial work?<svg class="i" aria-hidden="true"><use href="#i-plus"/></svg></summary>
+            <div class="answer"><p>You get 14 days of Studio or Agency with no card required. When the trial ends you choose a plan, or your workspace moves to Starter and keeps your three most recent projects active.</p></div>
+          </details>
+          <details>
+            <summary>Do you offer discounts for nonprofits?<svg class="i" aria-hidden="true"><use href="#i-plus"/></svg></summary>
+            <div class="answer"><p>Registered nonprofits and education teams get 40% off any paid plan. Email us from your organization's domain to apply.</p></div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="closing" aria-labelledby="cta-h">
+      <div>
+        <h2 id="cta-h">Run your next client project in TaskFlow</h2>
+        <p>Free for up to 3 projects. Upgrade only when it pays for itself.</p>
+      </div>
+      <div class="actions">
+        <a class="btn btn-secondary" href="#">Book a demo</a>
+        <a class="btn btn-primary" href="#">Start for free</a>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>&copy; 2026 TaskFlow</span>
+    <nav aria-label="Footer"><a href="#">Terms</a><a href="#">Privacy</a><a href="#">Security</a><a href="#">Status</a></nav>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var period = 'annual';
+    var prices = { studio: { monthly: 12, annual: 10 }, agency: { monthly: 24, annual: 20 } };
+    var buttons = document.querySelectorAll('.seg button');
+    var range = document.getElementById('seats');
+    var num = document.getElementById('seats-num');
+    var fmt = function (n) { return '$' + n.toLocaleString('en-US'); };
+
+    function render() {
+      var annual = period === 'annual';
+      buttons.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.period === period)); });
+      document.querySelectorAll('.amount[data-monthly]').forEach(function (el) {
+        el.textContent = fmt(Number(el.dataset[period]));
+      });
+      document.querySelectorAll('.was').forEach(function (el) { el.hidden = !annual; });
+      document.querySelector('[data-sub="studio"]').textContent = annual ? '$120 per user, billed yearly' : 'Billed monthly, cancel anytime';
+      document.querySelector('[data-sub="agency"]').textContent = annual ? '$240 per user, billed yearly' : 'Billed monthly, cancel anytime';
+      document.querySelector('[data-th="studio"]').textContent = fmt(prices.studio[period]) + ' / user / mo';
+      document.querySelector('[data-th="agency"]').textContent = fmt(prices.agency[period]) + ' / user / mo';
+
+      var seats = Math.max(1, Math.min(200, parseInt(num.value, 10) || 1));
+      var starter = document.querySelector('[data-total="starter"]');
+      starter.classList.toggle('na', seats > 5);
+      starter.querySelector('dd').textContent = seats > 5 ? 'Up to 5 members' : '$0';
+      ['studio', 'agency'].forEach(function (p) {
+        var dd = document.querySelector('[data-total="' + p + '"] dd');
+        var monthlyTotal = prices[p][period] * seats;
+        dd.innerHTML = annual
+          ? fmt(monthlyTotal * 12) + ' <small>/ year</small>'
+          : fmt(monthlyTotal) + ' <small>/ month</small>';
+      });
+    }
+
+    buttons.forEach(function (b) {
+      b.addEventListener('click', function () { period = b.dataset.period; render(); });
+    });
+    range.addEventListener('input', function () { num.value = range.value; render(); });
+    num.addEventListener('input', function () {
+      var v = parseInt(num.value, 10);
+      if (v >= 1) range.value = Math.min(30, v);
+      render();
+    });
+    num.addEventListener('blur', function () {
+      var v = parseInt(num.value, 10);
+      num.value = isNaN(v) ? 1 : Math.max(1, Math.min(200, v));
+      render();
+    });
+    render();
+  })();
+</script>
+</body>
+</html>

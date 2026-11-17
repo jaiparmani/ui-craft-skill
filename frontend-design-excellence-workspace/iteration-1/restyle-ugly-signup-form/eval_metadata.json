@@ -1,0 +1,12 @@
+{
+  "eval_name": "restyle-ugly-signup-form",
+  "prompt": "this signup form for my meal-planning app (Plated) looks really amateur, can you make it look professional? keep the same fields. save the result as signup.html",
+  "assertions": [
+    "signup.html keeps all original fields: full name, email, password, dietary preference, household size, and the terms checkbox",
+    "every input and select in signup.html has a visible, programmatically associated <label>",
+    "signup.html no longer uses the purple gradient background, emoji, or pill-shaped (radius 25px or more) inputs",
+    "signup.html defines visible :focus-visible or :focus styles for inputs and buttons",
+    "signup.html has no horizontal page scroll at a 390px-wide viewport",
+    "signup.html uses specific copy instead of the original hype text ('unlock your meal planning potential', 'SIGN UP NOW!!!')"
+  ]
+}

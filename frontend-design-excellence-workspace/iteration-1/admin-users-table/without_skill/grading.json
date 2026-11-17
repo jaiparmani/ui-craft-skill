@@ -1,0 +1,62 @@
+{
+  "expectations": [
+    {
+      "text": "index.html search box filters the table rows by name or email",
+      "passed": true,
+      "evidence": "Search filtered rows by name/email substring"
+    },
+    {
+      "text": "index.html role filter limits rows to the chosen role",
+      "passed": true,
+      "evidence": "Role select 'Editor' left 9 rows, all Editor"
+    },
+    {
+      "text": "index.html paginates the ~25 users across more than one page with working next/previous controls",
+      "passed": true,
+      "evidence": "Next moved first row from Alexander Novak to Evelyn Martins (page 2 of 3)"
+    },
+    {
+      "text": "index.html shows an empty state message when search matches no users",
+      "passed": true,
+      "evidence": "'No users match your filters.' shown for a nonsense query"
+    },
+    {
+      "text": "index.html shows status as labelled badges (text, not color alone)",
+      "passed": true,
+      "evidence": "Status shown as text badges with dot"
+    },
+    {
+      "text": "index.html icon-only action buttons have accessible names (aria-label or visible text)",
+      "passed": true,
+      "evidence": "No unlabeled icon-only buttons (row menu button has accessible name)"
+    },
+    {
+      "text": "index.html uses no emoji characters in its visible text or icons",
+      "passed": true,
+      "evidence": "No emoji in page text"
+    },
+    {
+      "text": "index.html defines visible :focus-visible styles for interactive elements",
+      "passed": true,
+      "evidence": "':focus-visible' rules present"
+    },
+    {
+      "text": "index.html has no horizontal page scroll at a 390px-wide viewport (a table scrolling inside its own container is fine)",
+      "passed": true,
+      "evidence": "scrollWidth 375 = viewport 375 at mobile"
+    }
+  ],
+  "summary": {
+    "passed": 9,
+    "failed": 0,
+    "total": 9,
+    "pass_rate": 1.0
+  },
+  "timing": {
+    "executor_duration_seconds": 103.3,
+    "total_duration_seconds": 103.3
+  },
+  "eval_feedback": {
+    "overall": "Every assertion passed for both configurations, so these checks do not discriminate between with-skill and baseline on this model. Visual quality and process differences need human review."
+  }
+}

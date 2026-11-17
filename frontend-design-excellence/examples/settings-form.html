@@ -1,0 +1,202 @@
+<!doctype html>
+<!--
+  frontend-design-excellence example: settings form ("Precise Product" direction, warm-neutral variant, teal accent).
+  Demonstrates: two-column section layout (description left, fields right), labels above inputs,
+  help text, an inline validation error linked via aria-describedby, input widths matched to content,
+  prefix input, toggle vs checkbox semantics, a danger zone, and a sticky save bar for unsaved changes.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Workspace settings</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --h: 185; --nh: 70;
+    --bg: oklch(0.985 0.004 var(--nh));
+    --surface: #fff;
+    --surface-2: oklch(0.965 0.006 var(--nh));
+    --border: oklch(0.915 0.008 var(--nh));
+    --border-strong: oklch(0.85 0.01 var(--nh));
+    --text: oklch(0.22 0.01 var(--nh));
+    --text-muted: oklch(0.46 0.013 var(--nh));
+    --text-subtle: oklch(0.56 0.013 var(--nh));
+    --accent: oklch(0.52 0.1 var(--h));
+    --accent-hover: oklch(0.46 0.09 var(--h));
+    --ring: oklch(0.6 0.1 var(--h) / 0.3);
+    --danger: oklch(0.55 0.2 25);
+    --danger-soft: oklch(0.97 0.02 25);
+    --shadow-xs: 0 1px 2px oklch(0.25 0.02 var(--nh) / 0.06);
+    --shadow-lg: 0 4px 8px oklch(0.25 0.02 var(--nh) / 0.04), 0 16px 40px -12px oklch(0.25 0.02 var(--nh) / 0.2);
+    --r: 8px;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.55 Figtree, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .page { max-width: 1040px; margin: 0 auto; padding: 40px 32px 140px; }
+  .crumbs { font-size: 14px; color: var(--text-subtle); margin-bottom: 8px; }
+  .crumbs a { color: inherit; text-decoration: none; } .crumbs a:hover { color: var(--text); }
+  h1 { margin: 0; font-size: 26px; font-weight: 600; letter-spacing: -0.015em; }
+  .tabs { display: flex; gap: 24px; border-bottom: 1px solid var(--border); margin: 24px 0 8px; }
+  .tabs a { white-space: nowrap; padding: 10px 0; font-size: 14px; font-weight: 500; color: var(--text-muted); text-decoration: none; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+  .tabs a:hover { color: var(--text); }
+  .tabs a[aria-current="page"] { color: var(--text); border-color: var(--text); }
+
+  .section { display: grid; grid-template-columns: 280px 1fr; gap: 48px; padding: 40px 0; border-bottom: 1px solid var(--border); }
+  .section h2 { margin: 0 0 6px; font-size: 16px; font-weight: 600; }
+  .section .desc { color: var(--text-muted); font-size: 14px; max-width: 32ch; margin: 0; }
+  .fields { display: grid; gap: 24px; max-width: 520px; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  .field label, .field .label { display: block; font-size: 14px; font-weight: 500; margin-bottom: 6px; }
+  .field .opt { color: var(--text-subtle); font-weight: 400; }
+  .help { font-size: 13px; color: var(--text-muted); margin-top: 6px; }
+  .input { width: 100%; height: 40px; padding: 0 12px; border: 1px solid var(--border-strong); border-radius: var(--r); background: var(--surface); color: var(--text); font: inherit; box-shadow: var(--shadow-xs); transition: border-color 120ms, box-shadow 120ms; }
+  .input::placeholder { color: var(--text-subtle); }
+  .input:hover { border-color: oklch(0.78 0.012 var(--nh)); }
+  .input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--ring); }
+  textarea.input { height: auto; min-height: 96px; padding: 10px 12px; resize: vertical; }
+  select.input { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%23777' stroke-width='2' stroke-linecap='round' viewBox='0 0 24 24'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 36px; }
+  .w-sm { max-width: 200px; }
+
+  .prefix { display: flex; }
+  .prefix span { display: grid; place-items: center; padding: 0 12px; border: 1px solid var(--border-strong); border-right: 0; border-radius: var(--r) 0 0 var(--r); background: var(--surface-2); color: var(--text-muted); font-size: 14px; }
+  .prefix .input { border-radius: 0 var(--r) var(--r) 0; }
+
+  .invalid .input { border-color: var(--danger); }
+  .invalid .input:focus { box-shadow: 0 0 0 3px oklch(0.6 0.2 25 / 0.2); }
+  .error { display: flex; gap: 6px; align-items: center; font-size: 13px; color: var(--danger); margin-top: 6px; }
+  svg.i { width: 16px; height: 16px; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  .logo-up { display: flex; align-items: center; gap: 16px; }
+  .logo-up .mark { width: 56px; height: 56px; border-radius: 12px; background: oklch(0.92 0.04 var(--h)); color: oklch(0.38 0.08 var(--h)); display: grid; place-items: center; font-weight: 600; font-size: 20px; }
+
+  /* Toggle rows (instant apply) */
+  .toggles { border: 1px solid var(--border); border-radius: 12px; background: var(--surface); }
+  .toggle-row { display: flex; gap: 16px; align-items: flex-start; justify-content: space-between; padding: 16px 18px; }
+  .toggle-row + .toggle-row { border-top: 1px solid var(--border); }
+  .toggle-row b { font-weight: 500; display: block; }
+  .toggle-row span { font-size: 13px; color: var(--text-muted); }
+  .switch { position: relative; width: 36px; height: 20px; flex: none; margin-top: 2px; }
+  .switch input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+  .switch i { position: absolute; inset: 0; border-radius: 999px; background: var(--border-strong); transition: background 150ms; pointer-events: none; }
+  .switch i::after { content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgb(0 0 0 / 0.2); transition: transform 150ms cubic-bezier(.22,1,.36,1); }
+  .switch input:checked + i { background: var(--accent); }
+  .switch input:checked + i::after { transform: translateX(16px); }
+  .switch input:focus-visible + i { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .btn { white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; height: 38px; padding: 0 16px; border-radius: var(--r); font: 500 14px/1 Figtree, sans-serif; cursor: pointer; border: 1px solid transparent; transition: background 120ms, border-color 120ms; }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: var(--accent-hover); }
+  .btn-secondary { background: var(--surface); border-color: var(--border-strong); color: var(--text); box-shadow: var(--shadow-xs); }
+  .btn-secondary:hover { background: var(--surface-2); }
+  .btn-ghost { background: none; color: var(--text-muted); }
+  .btn-ghost:hover { background: var(--surface-2); color: var(--text); }
+  .btn-danger-outline { background: var(--surface); color: var(--danger); border-color: oklch(0.85 0.06 25); }
+  .btn-danger-outline:hover { background: var(--danger-soft); }
+
+  .danger { border: 1px solid oklch(0.9 0.04 25); border-radius: 12px; padding: 18px; display: flex; gap: 16px; align-items: center; justify-content: space-between; }
+  .danger b { font-weight: 500; display: block; } .danger span { font-size: 13px; color: var(--text-muted); }
+
+  /* Sticky unsaved-changes bar */
+  .savebar { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); width: min(640px, calc(100% - 32px)); display: flex; align-items: center; gap: 12px; padding: 10px 10px 10px 18px; background: var(--text); color: var(--bg); border-radius: 12px; box-shadow: var(--shadow-lg); font-size: 14px; }
+  .savebar .dot { width: 8px; height: 8px; border-radius: 50%; background: oklch(0.8 0.14 80); }
+  .savebar .spacer { flex: 1; }
+  .savebar .btn-ghost { color: oklch(0.82 0.01 var(--nh)); } .savebar .btn-ghost:hover { background: oklch(0.32 0.01 var(--nh)); color: #fff; }
+  .savebar .btn-primary { background: #fff; color: var(--text); }
+  .savebar .btn-primary:hover { background: oklch(0.93 0.005 var(--nh)); }
+
+  @media (max-width: 800px) {
+    .page { padding: 24px 16px 140px; }
+    .section { grid-template-columns: 1fr; gap: 20px; padding: 28px 0; }
+    .row { grid-template-columns: 1fr; }
+    .tabs { overflow-x: auto; scrollbar-width: none; }
+    .savebar { padding-left: 14px; gap: 8px; } .savebar .dot { display: none; } .savebar .btn { padding: 0 12px; } .savebar > span { white-space: nowrap; }
+    .danger { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="crumbs"><a href="#">Acme Robotics</a> / Settings</div>
+  <h1>Workspace settings</h1>
+  <nav class="tabs" aria-label="Settings sections">
+    <a href="#" aria-current="page">General</a><a href="#">Members</a><a href="#">Billing</a><a href="#">Integrations</a><a href="#">API keys</a>
+  </nav>
+
+  <form novalidate>
+    <section class="section">
+      <div><h2>Profile</h2><p class="desc">How your workspace appears to members and in emails we send on your behalf.</p></div>
+      <div class="fields">
+        <div class="field">
+          <span class="label">Logo</span>
+          <div class="logo-up"><div class="mark" aria-hidden="true">AR</div><button type="button" class="btn btn-secondary">Upload image</button><button type="button" class="btn btn-ghost">Remove</button></div>
+          <p class="help">Square PNG or SVG, at least 256×256px.</p>
+        </div>
+        <div class="field">
+          <label for="name">Workspace name</label>
+          <input class="input" id="name" value="Acme Robotics">
+        </div>
+        <div class="field invalid">
+          <label for="url">Workspace URL</label>
+          <div class="prefix"><span>app.example.com/</span><input class="input" id="url" value="acme robotics" aria-invalid="true" aria-describedby="url-err"></div>
+          <p class="error" id="url-err"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>Use only lowercase letters, numbers and hyphens — try “acme-robotics”.</p>
+        </div>
+        <div class="field">
+          <label for="about">Description <span class="opt">(optional)</span></label>
+          <textarea class="input" id="about" aria-describedby="about-help">Warehouse automation for mid-size distributors.</textarea>
+          <p class="help" id="about-help">Shown on your public invite page. 160 characters max.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div><h2>Regional</h2><p class="desc">Used for dates, times and number formatting across reports.</p></div>
+      <div class="fields">
+        <div class="row">
+          <div class="field">
+            <label for="tz">Time zone</label>
+            <select class="input" id="tz"><option>(GMT+05:30) Kolkata</option><option>(GMT+00:00) London</option><option>(GMT−05:00) New York</option></select>
+          </div>
+          <div class="field">
+            <label for="fmt">Date format</label>
+            <select class="input" id="fmt"><option>17 Nov 2026</option><option>Nov 17, 2026</option><option>2026-11-17</option></select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="fy">Fiscal year starts</label>
+          <select class="input w-sm" id="fy"><option>April</option><option>January</option><option>July</option></select>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div><h2>Notifications</h2><p class="desc">These apply immediately to every member. People can still mute them individually.</p></div>
+      <div class="fields">
+        <div class="toggles">
+          <div class="toggle-row"><div><b>Weekly summary email</b><span>A Monday digest of activity and open tasks.</span></div><label class="switch"><input type="checkbox" role="switch" checked aria-label="Weekly summary email"><i></i></label></div>
+          <div class="toggle-row"><div><b>Mention alerts</b><span>Notify people when they’re @mentioned in a comment.</span></div><label class="switch"><input type="checkbox" role="switch" checked aria-label="Mention alerts"><i></i></label></div>
+          <div class="toggle-row"><div><b>New member joined</b><span>Tell admins when someone accepts an invite.</span></div><label class="switch"><input type="checkbox" role="switch" aria-label="New member joined"><i></i></label></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="border-bottom:0">
+      <div><h2>Danger zone</h2><p class="desc">Irreversible actions. We’ll ask you to confirm.</p></div>
+      <div class="fields">
+        <div class="danger"><div><b>Delete workspace</b><span>Permanently removes 14 projects and all member access.</span></div><button type="button" class="btn btn-danger-outline">Delete workspace…</button></div>
+      </div>
+    </section>
+  </form>
+</div>
+
+<div class="savebar" role="region" aria-label="Unsaved changes">
+  <span class="dot" aria-hidden="true"></span><span>Unsaved changes</span><span class="spacer"></span>
+  <button class="btn btn-ghost" type="button">Discard</button><button class="btn btn-primary" type="button">Save changes</button>
+</div>
+</body>
+</html>

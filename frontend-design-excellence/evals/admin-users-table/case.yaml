@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: admin-users-table
+expected_outcome: |
+  A dense, usable admin users table with working search, role filter and pagination, clear status badges, and empty and focus states.

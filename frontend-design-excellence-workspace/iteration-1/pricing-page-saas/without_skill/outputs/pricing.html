@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TaskFlow Pricing</title>
+<meta name="description" content="Simple per-seat pricing for agencies of 5 to 30 people. Start free, upgrade when you need more.">
+<style>
+  :root {
+    --bg: #f7f6f3;
+    --surface: #ffffff;
+    --surface-2: #f0eee9;
+    --text: #1c1b19;
+    --muted: #65625b;
+    --border: #e2dfd8;
+    --accent: #2f5bea;
+    --accent-ink: #ffffff;
+    --accent-soft: #e6ecfd;
+    --good: #1f8a5b;
+    --shadow: 0 1px 2px rgba(20,18,14,.04), 0 8px 24px rgba(20,18,14,.06);
+    --radius: 14px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #121210;
+      --surface: #1b1a18;
+      --surface-2: #24231f;
+      --text: #f1efe9;
+      --muted: #a29e94;
+      --border: #33312c;
+      --accent: #7896ff;
+      --accent-ink: #0d1020;
+      --accent-soft: #1e2645;
+      --good: #4cc48d;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #121210; --surface: #1b1a18; --surface-2: #24231f; --text: #f1efe9;
+    --muted: #a29e94; --border: #33312c; --accent: #7896ff; --accent-ink: #0d1020;
+    --accent-soft: #1e2645; --good: #4cc48d;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 16px/1.55 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 16px; }
+  @media (min-width: 720px) { .wrap { padding: 0 32px; } }
+
+  /* Header */
+  header.site {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 0;
+  }
+  .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: -.01em; text-decoration: none; }
+  .logo-mark {
+    width: 28px; height: 28px; border-radius: 8px; background: var(--accent);
+    display: grid; place-items: center;
+  }
+  .logo-mark svg { width: 16px; height: 16px; }
+  nav.site-nav { display: flex; gap: 20px; align-items: center; font-size: 15px; }
+  nav.site-nav a { text-decoration: none; color: var(--muted); }
+  nav.site-nav a:hover { color: var(--text); }
+  nav.site-nav .hide-sm { display: none; }
+  @media (min-width: 640px) { nav.site-nav .hide-sm { display: inline; } }
+
+  /* Hero */
+  .hero { text-align: center; padding: 48px 0 32px; }
+  .eyebrow { display: inline-block; font-size: 13px; font-weight: 600; color: var(--accent); background: var(--accent-soft); padding: 4px 10px; border-radius: 999px; }
+  h1 { font-size: clamp(32px, 5.5vw, 52px); line-height: 1.08; letter-spacing: -.025em; margin: 16px auto 14px; max-width: 18ch; }
+  .lede { color: var(--muted); font-size: 18px; max-width: 54ch; margin: 0 auto; }
+
+  /* Billing toggle */
+  .billing {
+    display: inline-flex; align-items: center; gap: 4px; margin-top: 28px;
+    background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: 999px; padding: 4px;
+  }
+  .billing button {
+    appearance: none; border: 0; background: transparent; color: var(--muted);
+    font: inherit; font-size: 15px; font-weight: 600;
+    padding: 8px 16px; border-radius: 999px; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .billing button[aria-pressed="true"] { background: var(--surface); color: var(--text); box-shadow: var(--shadow); }
+  .billing button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .save-pill { font-size: 12px; font-weight: 700; color: var(--good); }
+
+  /* Seat control */
+  .seats {
+    margin: 20px auto 0; max-width: 420px;
+    display: flex; flex-direction: column; gap: 8px; align-items: stretch;
+  }
+  .seats label { font-size: 14px; color: var(--muted); display: flex; justify-content: space-between; }
+  .seats label strong { color: var(--text); font-variant-numeric: tabular-nums; }
+  input[type="range"] { width: 100%; accent-color: var(--accent); }
+
+  /* Plans */
+  .plans {
+    display: grid; gap: 20px; grid-template-columns: 1fr;
+    padding: 32px 0 24px;
+  }
+  @media (min-width: 900px) { .plans { grid-template-columns: repeat(3, 1fr); align-items: stretch; } }
+  .plan {
+    position: relative;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 28px 24px;
+    display: flex; flex-direction: column;
+  }
+  .plan.featured { border: 2px solid var(--accent); box-shadow: var(--shadow); }
+  .badge {
+    position: absolute; top: -12px; left: 24px;
+    background: var(--accent); color: var(--accent-ink);
+    font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 999px;
+  }
+  .plan h2 { font-size: 20px; margin: 0; letter-spacing: -.01em; }
+  .plan .for { color: var(--muted); font-size: 15px; margin: 6px 0 20px; min-height: 2.9em; }
+  .price { display: flex; align-items: baseline; gap: 6px; }
+  .price .amt { font-size: 44px; font-weight: 750; letter-spacing: -.03em; font-variant-numeric: tabular-nums; line-height: 1; }
+  .price .unit { color: var(--muted); font-size: 15px; }
+  .price-note { color: var(--muted); font-size: 14px; margin: 8px 0 0; min-height: 1.5em; font-variant-numeric: tabular-nums; }
+  .price-note s { opacity: .7; }
+  .team-total { margin: 4px 0 0; font-size: 14px; font-weight: 600; min-height: 1.5em; font-variant-numeric: tabular-nums; }
+
+  .cta {
+    display: block; text-align: center; text-decoration: none;
+    margin: 22px 0 22px; padding: 12px 16px; border-radius: 10px;
+    font-weight: 650; font-size: 15px;
+    border: 1px solid var(--border); background: var(--surface); color: var(--text);
+  }
+  .cta:hover { background: var(--surface-2); }
+  .cta.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .cta.primary:hover { filter: brightness(1.06); background: var(--accent); }
+  .cta:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .features { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; font-size: 15px; }
+  .features .lead { font-weight: 600; font-size: 14px; color: var(--muted); }
+  .features li { display: flex; gap: 10px; align-items: flex-start; }
+  .features li svg { flex: 0 0 18px; width: 18px; height: 18px; margin-top: 3px; color: var(--good); }
+  .features li.new { font-weight: 600; }
+
+  .reassure { text-align: center; color: var(--muted); font-size: 14px; padding-bottom: 8px; }
+
+  /* Comparison table */
+  section.block { padding: 56px 0 8px; }
+  section.block h2.title { font-size: clamp(24px, 3.5vw, 32px); letter-spacing: -.02em; margin: 0 0 8px; text-align: center; }
+  section.block p.sub { color: var(--muted); text-align: center; margin: 0 auto 28px; max-width: 52ch; }
+  .table-scroll { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+  table { width: 100%; border-collapse: collapse; min-width: 560px; font-size: 15px; }
+  th, td { padding: 14px 16px; text-align: left; border-bottom: 1px solid var(--border); }
+  thead th { font-size: 14px; position: sticky; top: 0; background: var(--surface); }
+  thead th:not(:first-child), td:not(:first-child) { text-align: center; width: 20%; }
+  tbody tr.group td { background: var(--surface-2); font-weight: 650; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+  tbody tr:last-child td { border-bottom: 0; }
+  .yes { color: var(--good); font-weight: 700; }
+  .no { color: var(--muted); opacity: .6; }
+  .col-featured { background: color-mix(in srgb, var(--accent-soft) 45%, transparent); }
+
+  /* FAQ */
+  .faq { max-width: 760px; margin: 0 auto; }
+  .faq details {
+    border-bottom: 1px solid var(--border);
+  }
+  .faq details:first-child { border-top: 1px solid var(--border); }
+  .faq summary {
+    list-style: none; cursor: pointer;
+    padding: 20px 36px 20px 0; position: relative;
+    font-weight: 600; font-size: 17px;
+  }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after {
+    content: ""; position: absolute; right: 6px; top: 50%;
+    width: 10px; height: 10px; margin-top: -7px;
+    border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted);
+    transform: rotate(45deg); transition: transform .2s ease;
+  }
+  .faq details[open] summary::after { transform: rotate(-135deg); margin-top: -2px; }
+  .faq summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 4px; }
+  .faq .answer { color: var(--muted); padding: 0 0 20px; margin: 0; max-width: 64ch; }
+
+  /* Final CTA */
+  .closing {
+    margin: 64px 0 0; padding: 40px 24px; text-align: center;
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  }
+  .closing h2 { margin: 0 0 8px; font-size: clamp(22px, 3vw, 28px); letter-spacing: -.02em; }
+  .closing p { margin: 0 0 22px; color: var(--muted); }
+  .closing .actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .closing .cta { margin: 0; min-width: 180px; }
+
+  footer { color: var(--muted); font-size: 14px; padding: 40px 0 48px; text-align: center; }
+
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="site">
+    <a class="logo" href="#" aria-label="TaskFlow home">
+      <span class="logo-mark" aria-hidden="true">
+        <svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3 3 7-7" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      TaskFlow
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <a class="hide-sm" href="#">Product</a>
+      <a class="hide-sm" href="#compare">Compare</a>
+      <a href="#faq">FAQ</a>
+      <a href="#">Sign in</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <span class="eyebrow">Pricing</span>
+      <h1>Pricing that grows with your agency</h1>
+      <p class="lede">Start free with your first few projects. Upgrade when your team and client list grow. You pay per seat, with no setup fees or long contracts.</p>
+
+      <div class="billing" role="group" aria-label="Billing period">
+        <button type="button" data-period="monthly" aria-pressed="false">Monthly</button>
+        <button type="button" data-period="annual" aria-pressed="true">Annual <span class="save-pill">2 months free</span></button>
+      </div>
+
+      <div class="seats">
+        <label for="seat-range"><span>Team size</span><strong><span id="seat-count">10</span> people</strong></label>
+        <input id="seat-range" type="range" min="1" max="30" step="1" value="10" aria-describedby="seat-help">
+        <span id="seat-help" class="sr-only" style="position:absolute;left:-9999px">Adjust to see the total cost for your team on each plan.</span>
+      </div>
+    </section>
+
+    <section class="plans" aria-label="Plans">
+      <!-- Starter -->
+      <article class="plan" data-plan="starter">
+        <h2>Starter</h2>
+        <p class="for">For freelancers and small teams trying TaskFlow on a few projects.</p>
+        <div class="price"><span class="amt">$0</span><span class="unit">forever</span></div>
+        <p class="price-note">Free for your whole team</p>
+        <p class="team-total">&nbsp;</p>
+        <a class="cta" href="#">Start for free</a>
+        <ul class="features">
+          <li class="lead">What's included</li>
+          <li><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 10.5l3 3 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Up to 3 active projects</li>
+          <li><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 10.5l3 3 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Unlimited tasks and subtasks</li>
+          <li><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 10.5l3 3 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Board, list and calendar views</li>
+          <li><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 10.5l3 3 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>File attachments up to 100 MB each</li>
+          <li><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 10.5l3 3 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Email support</li>
+        </ul>
+      </article>
+
+      <!-- Studio -->
+      <article class="plan featured" data-plan="studio" data-monthly="12">
+        <span class="badge">Most popular</span>
+        <h2>Studio</h2>
+        <p class="for">For growing teams running many projects at once.</p>
+        <div class="price"><span class="amt" data-amt>$10</span><span class="unit">per user / month</span></div>
+        <p class="price-note" data-note>Billed annually</p>
+        <p class="team-total" data-total>&nbsp;</p>
+        <a class="cta primary" href="#">Start 14-day free trial</a>
+        <ul class="features">
+          <li class="lead">Everything in Starter, plus</li>
+          <li><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 10.5l3 3 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Unlimited projects</li>
+          <li><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 10.5l3 3 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Timeline and workload views</li>
+          <li><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 10.5l3 3 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Project templates and recurring tasks</li>
+          <li><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 10.5l3 3 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Guest access for freelancers</li>
+          <li><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 10.5l3 3 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Slack, Google Drive and Figma integrations</li>
+          <li><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 10.5l3 3 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Priority email support</li>
+        </ul>
+      </article>
+
+      <!-- Agency -->
+      <article class="plan" data-plan="agency" data-monthly="24">
+        <h2>Agency</h2>
+        <p class="for">For agencies that share work with clients and bill by the hour.</p>
+        <div class="price"><span class="amt" data-amt>$20</span><span class="unit">per user / month</span></div>
+        <p class="price-note" data-note>Billed annually</p>
+        <p class="team-total" data-total>&nbsp;</p>
+        <a class="cta" href="#">Start 14-day free trial</a>
+        <ul class="features">
+          <li class="lead">Everything in Studio, plus</li>
+          <li class="new"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 10.5l3 3 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Branded client portals</li>
+          <li class="new"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 10.5l3 3 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Time tracking and timesheets</li>
+          <li><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 10.5l3 3 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Client approvals and feedback</li>
+          <li><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 10.5l3 3 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Billable hours reports and CSV export</li>
+          <li><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 10.5l3 3 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Roles and permissions</li>
+          <li><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 10.5l3 3 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Live chat support and guided onboarding</li>
+        </ul>
+      </article>
+    </section>
+
+    <p class="reassure">Both paid plans come with a 14-day free trial. You don't need a credit card, and you can cancel any time.</p>
+
+    <!-- Comparison -->
+    <section class="block" id="compare" aria-labelledby="compare-title">
+      <h2 class="title" id="compare-title">Compare plans</h2>
+      <p class="sub">A side-by-side look at what each plan includes.</p>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Feature</th>
+              <th scope="col">Starter</th>
+              <th scope="col" class="col-featured">Studio</th>
+              <th scope="col">Agency</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="group"><td colspan="4">Projects</td></tr>
+            <tr><td>Active projects</td><td>3</td><td class="col-featured">Unlimited</td><td>Unlimited</td></tr>
+            <tr><td>Tasks, subtasks and comments</td><td class="yes">&#10003;</td><td class="yes col-featured">&#10003;</td><td class="yes">&#10003;</td></tr>
+            <tr><td>Board, list and calendar views</td><td class="yes">&#10003;</td><td class="yes col-featured">&#10003;</td><td class="yes">&#10003;</td></tr>
+            <tr><td>Timeline and workload views</td><td class="no">&mdash;</td><td class="yes col-featured">&#10003;</td><td class="yes">&#10003;</td></tr>
+            <tr><td>Templates and recurring tasks</td><td class="no">&mdash;</td><td class="yes col-featured">&#10003;</td><td class="yes">&#10003;</td></tr>
+            <tr class="group"><td colspan="4">Clients and billing</td></tr>
+            <tr><td>Guest access</td><td class="no">&mdash;</td><td class="yes col-featured">&#10003;</td><td class="yes">&#10003;</td></tr>
+            <tr><td>Branded client portals</td><td class="no">&mdash;</td><td class="no col-featured">&mdash;</td><td class="yes">&#10003;</td></tr>
+            <tr><td>Client approvals and feedback</td><td class="no">&mdash;</td><td class="no col-featured">&mdash;</td><td class="yes">&#10003;</td></tr>
+            <tr><td>Time tracking and timesheets</td><td class="no">&mdash;</td><td class="no col-featured">&mdash;</td><td class="yes">&#10003;</td></tr>
+            <tr><td>Billable hours reports</td><td class="no">&mdash;</td><td class="no col-featured">&mdash;</td><td class="yes">&#10003;</td></tr>
+            <tr class="group"><td colspan="4">Admin and support</td></tr>
+            <tr><td>Integrations</td><td>Basic</td><td class="col-featured">All</td><td>All</td></tr>
+            <tr><td>Roles and permissions</td><td class="no">&mdash;</td><td class="no col-featured">&mdash;</td><td class="yes">&#10003;</td></tr>
+            <tr><td>Storage</td><td>2 GB</td><td class="col-featured">100 GB</td><td>1 TB</td></tr>
+            <tr><td>Support</td><td>Email</td><td class="col-featured">Priority email</td><td>Live chat + onboarding</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="block" id="faq" aria-labelledby="faq-title">
+      <h2 class="title" id="faq-title">Frequently asked questions</h2>
+      <p class="sub">Can't find your answer? Email <a href="mailto:hello@example.com">our team</a> and we'll reply within one business day.</p>
+      <div class="faq">
+        <details>
+          <summary>How does per-user pricing work?</summary>
+          <p class="answer">You pay for each person on your team who has a TaskFlow account. Clients who log in to a client portal and guests you invite to a project are free and don't count as users.</p>
+        </details>
+        <details>
+          <summary>How does annual billing get me 2 months free?</summary>
+          <p class="answer">If you pay for a year up front, you're charged for 10 months instead of 12. That works out to $10 per user per month on Studio (instead of $12) and $20 on Agency (instead of $24). You can switch from monthly to annual billing at any time.</p>
+        </details>
+        <details>
+          <summary>What happens when I go past 3 projects on Starter?</summary>
+          <p class="answer">Your existing projects keep working. To create a fourth active project, you can archive an old one or upgrade to Studio. Archived projects stay searchable and don't count toward the limit.</p>
+        </details>
+        <details>
+          <summary>Can I add or remove people during my billing period?</summary>
+          <p class="answer">Yes. When you add someone, we charge a prorated amount for the rest of your billing period. When you remove someone, we add a credit to your next invoice.</p>
+        </details>
+        <details>
+          <summary>What are client portals?</summary>
+          <p class="answer">On the Agency plan, each client gets their own branded space with your logo and colors. There, they can follow project progress, approve deliverables and leave feedback, without seeing your internal tasks or conversations.</p>
+        </details>
+        <details>
+          <summary>Does the free trial need a credit card?</summary>
+          <p class="answer">No. Studio and Agency both come with a 14-day trial with every feature unlocked. When the trial ends, you choose a plan or your workspace moves to Starter. Your data is kept either way.</p>
+        </details>
+        <details>
+          <summary>Can I change plans or cancel later?</summary>
+          <p class="answer">Yes. You can upgrade, downgrade or cancel from your workspace settings at any time. If you cancel an annual plan, you keep access until the end of the paid year.</p>
+        </details>
+        <details>
+          <summary>Do you offer discounts for nonprofits or education?</summary>
+          <p class="answer">Yes. Registered nonprofits and schools get 30% off any paid plan. Contact us and we'll set it up.</p>
+        </details>
+      </div>
+    </section>
+
+    <section class="closing" aria-labelledby="closing-title">
+      <h2 id="closing-title">Ready to get your projects in order?</h2>
+      <p>You can set up your workspace in a few minutes and bring your team with you.</p>
+      <div class="actions">
+        <a class="cta primary" href="#">Start for free</a>
+        <a class="cta" href="#">Book a demo</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>&copy; 2026 TaskFlow. Prices are in USD and exclude applicable taxes.</footer>
+</div>
+
+<script>
+(function () {
+  var period = 'annual';
+  var seatInput = document.getElementById('seat-range');
+  var seatCount = document.getElementById('seat-count');
+  var buttons = document.querySelectorAll('.billing button');
+  var paid = document.querySelectorAll('.plan[data-monthly]');
+
+  function fmt(n) { return '$' + n.toLocaleString('en-US'); }
+
+  function render() {
+    var seats = parseInt(seatInput.value, 10);
+    seatCount.textContent = seats;
+    seatCount.parentNode.lastChild.textContent = seats === 1 ? ' person' : ' people';
+
+    buttons.forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.dataset.period === period));
+    });
+
+    paid.forEach(function (plan) {
+      var monthly = parseInt(plan.dataset.monthly, 10);
+      var annualPerMonth = monthly * 10 / 12;
+      var amt = plan.querySelector('[data-amt]');
+      var note = plan.querySelector('[data-note]');
+      var total = plan.querySelector('[data-total]');
+
+      if (period === 'annual') {
+        amt.textContent = fmt(annualPerMonth);
+        note.innerHTML = '<s>' + fmt(monthly) + '</s> billed annually at ' + fmt(monthly * 10) + ' per user';
+        total.textContent = fmt(monthly * 10 * seats) + '/year for ' + seats + (seats === 1 ? ' person' : ' people');
+      } else {
+        amt.textContent = fmt(monthly);
+        note.textContent = 'Billed monthly';
+        total.textContent = fmt(monthly * seats) + '/month for ' + seats + (seats === 1 ? ' person' : ' people');
+      }
+    });
+  }
+
+  buttons.forEach(function (b) {
+    b.addEventListener('click', function () { period = b.dataset.period; render(); });
+  });
+  seatInput.addEventListener('input', render);
+  render();
+})();
+</script>
+</body>
+</html>

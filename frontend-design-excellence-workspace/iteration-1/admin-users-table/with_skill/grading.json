@@ -1,0 +1,62 @@
+{
+  "expectations": [
+    {
+      "text": "index.html search box filters the table rows by name or email",
+      "passed": true,
+      "evidence": "Search 'brightline' returned the 3 brightline.co users"
+    },
+    {
+      "text": "index.html role filter limits rows to the chosen role",
+      "passed": true,
+      "evidence": "Clicking Editor segment left 9 rows, all Editor"
+    },
+    {
+      "text": "index.html paginates the ~25 users across more than one page with working next/previous controls",
+      "passed": true,
+      "evidence": "25 users over 3 pages; Next moved first row from Amara Okonkwo to a page-2 user"
+    },
+    {
+      "text": "index.html shows an empty state message when search matches no users",
+      "passed": true,
+      "evidence": "'No users match these filters' shown for a nonsense query"
+    },
+    {
+      "text": "index.html shows status as labelled badges (text, not color alone)",
+      "passed": true,
+      "evidence": "Status shown as text badges (Active/Invited/Suspended)"
+    },
+    {
+      "text": "index.html icon-only action buttons have accessible names (aria-label or visible text)",
+      "passed": true,
+      "evidence": "Only unlabeled button is the confirm dialog's OK, which gets text when the dialog opens; row action buttons are labeled"
+    },
+    {
+      "text": "index.html uses no emoji characters in its visible text or icons",
+      "passed": true,
+      "evidence": "No emoji in page text"
+    },
+    {
+      "text": "index.html defines visible :focus-visible styles for interactive elements",
+      "passed": true,
+      "evidence": "':focus-visible' rules present"
+    },
+    {
+      "text": "index.html has no horizontal page scroll at a 390px-wide viewport (a table scrolling inside its own container is fine)",
+      "passed": true,
+      "evidence": "scrollWidth 375 = viewport 375 at mobile (rows become stacked cards)"
+    }
+  ],
+  "summary": {
+    "passed": 9,
+    "failed": 0,
+    "total": 9,
+    "pass_rate": 1.0
+  },
+  "timing": {
+    "executor_duration_seconds": 455.1,
+    "total_duration_seconds": 455.1
+  },
+  "eval_feedback": {
+    "overall": "Every assertion passed for both configurations, so these checks do not discriminate between with-skill and baseline on this model. Visual quality and process differences need human review."
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "expectations": [
+    {
+      "text": "signup.html keeps all original fields: full name, email, password, dietary preference, household size, and the terms checkbox",
+      "passed": true,
+      "evidence": "Name, email, password, dietary, household (as 4 radio buttons with same options), terms all present"
+    },
+    {
+      "text": "every input and select in signup.html has a visible, programmatically associated <label>",
+      "passed": true,
+      "evidence": "All controls have associated labels (household radios inside a labelled group)"
+    },
+    {
+      "text": "signup.html no longer uses the purple gradient background, emoji, or pill-shaped (radius 25px or more) inputs",
+      "passed": true,
+      "evidence": "No gradients, no emoji, no control radius >= 25px"
+    },
+    {
+      "text": "signup.html defines visible :focus-visible or :focus styles for inputs and buttons",
+      "passed": true,
+      "evidence": "':focus-visible' and ':focus' rules present"
+    },
+    {
+      "text": "signup.html has no horizontal page scroll at a 390px-wide viewport",
+      "passed": true,
+      "evidence": "scrollWidth 375 = viewport 375 at mobile"
+    },
+    {
+      "text": "signup.html uses specific copy instead of the original hype text ('unlock your meal planning potential', 'SIGN UP NOW!!!')",
+      "passed": true,
+      "evidence": "Copy: 'Tell us a little about your kitchen and we'll build your first week of dinners.'"
+    }
+  ],
+  "summary": {
+    "passed": 6,
+    "failed": 0,
+    "total": 6,
+    "pass_rate": 1.0
+  },
+  "timing": {
+    "executor_duration_seconds": 209.2,
+    "total_duration_seconds": 209.2
+  },
+  "eval_feedback": {
+    "overall": "Every assertion passed for both configurations, so these checks do not discriminate between with-skill and baseline on this model. Visual quality and process differences need human review."
+  }
+}

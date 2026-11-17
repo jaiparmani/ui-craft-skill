@@ -1,0 +1,15 @@
+{
+  "eval_name": "admin-users-table",
+  "prompt": "need an internal admin page for our support team to manage users. table of users with name, email, role (admin/editor/viewer), status (active/invited/suspended), last active, and actions. search box, role filter, pagination. plain html+css+js in one index.html, put ~25 fake users in a js array. dont need a backend",
+  "assertions": [
+    "index.html search box filters the table rows by name or email",
+    "index.html role filter limits rows to the chosen role",
+    "index.html paginates the ~25 users across more than one page with working next/previous controls",
+    "index.html shows an empty state message when search matches no users",
+    "index.html shows status as labelled badges (text, not color alone)",
+    "index.html icon-only action buttons have accessible names (aria-label or visible text)",
+    "index.html uses no emoji characters in its visible text or icons",
+    "index.html defines visible :focus-visible styles for interactive elements",
+    "index.html has no horizontal page scroll at a 390px-wide viewport (a table scrolling inside its own container is fine)"
+  ]
+}

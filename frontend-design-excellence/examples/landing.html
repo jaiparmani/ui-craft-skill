@@ -1,0 +1,288 @@
+<!doctype html>
+<!--
+  frontend-design-excellence example: marketing landing page ("Editorial" direction).
+  Demonstrates: serif display + sans UI pairing, warm paper neutrals, a single deep accent,
+  left-aligned asymmetric hero with a real product visual (built in HTML, not a stock blob),
+  muted logo strip, alternating feature rows instead of three icon cards, a testimonial,
+  pricing with a restrained highlight, fluid type, and a usable mobile layout.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fieldnote — A research notebook that remembers where every idea came from</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: oklch(0.982 0.008 85);
+    --paper-2: oklch(0.955 0.012 85);
+    --ink: oklch(0.22 0.015 60);
+    --ink-muted: oklch(0.45 0.02 60);
+    --ink-subtle: oklch(0.58 0.02 60);
+    --rule: oklch(0.89 0.015 80);
+    --accent: oklch(0.42 0.12 25);      /* oxblood */
+    --accent-hover: oklch(0.36 0.11 25);
+    --accent-soft: oklch(0.94 0.03 25);
+    --white: oklch(0.995 0.004 85);
+    --serif: "Instrument Serif", Georgia, serif;
+    --sans: Inter, system-ui, sans-serif;
+    --max: 1160px;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font: 17px/1.6 var(--sans); -webkit-font-smoothing: antialiased; }
+  a { color: inherit; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 32px; }
+  h1, h2, h3 { font-family: var(--serif); font-weight: 400; letter-spacing: -0.01em; line-height: 1.05; margin: 0; text-wrap: balance; }
+  p { margin: 0; text-wrap: pretty; }
+  .overline { font: 600 12px/1 var(--sans); letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+
+  .btn { white-space: nowrap; display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 20px; border-radius: 6px; font: 500 15px/1 var(--sans); text-decoration: none; transition: background 140ms, border-color 140ms; }
+  .btn-primary { background: var(--ink); color: var(--paper); }
+  .btn-primary:hover { background: oklch(0.32 0.015 60); }
+  .btn-ghost { color: var(--ink); border: 1px solid var(--rule); }
+  .btn-ghost:hover { border-color: var(--ink-subtle); }
+  svg.i { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* Nav */
+  .nav { display: flex; align-items: center; gap: 40px; height: 72px; }
+  .brand { font: 400 26px/1 var(--serif); text-decoration: none; }
+  .nav ul { display: flex; gap: 28px; list-style: none; margin: 0; padding: 0; font-size: 15px; color: var(--ink-muted); }
+  .nav ul a { text-decoration: none; } .nav ul a:hover { color: var(--ink); }
+  .nav .right { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+  .nav .right .link { font-size: 15px; text-decoration: none; color: var(--ink-muted); padding: 0 12px; }
+
+  /* Hero */
+  .hero { display: grid; grid-template-columns: 5fr 7fr; gap: 64px; align-items: center; padding-block: 72px 96px; }
+  .hero h1 { font-size: clamp(48px, 3rem + 3vw, 88px); margin: 20px 0 24px; }
+  .hero h1 em { font-style: italic; color: var(--accent); }
+  .hero .lede { font-size: 19px; color: var(--ink-muted); max-width: 40ch; margin-bottom: 32px; }
+  .hero .ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+  .hero .fine { margin-top: 16px; font-size: 14px; color: var(--ink-subtle); }
+
+  /* Product visual */
+  .shot { background: var(--white); border: 1px solid var(--rule); border-radius: 12px; box-shadow: 0 2px 4px oklch(0.3 0.03 60 / 0.04), 0 32px 64px -24px oklch(0.3 0.03 60 / 0.22); overflow: hidden; font-size: 13px; }
+  .shot-bar { display: flex; gap: 6px; padding: 12px 14px; border-bottom: 1px solid var(--rule); }
+  .shot-bar i { width: 10px; height: 10px; border-radius: 50%; background: var(--rule); }
+  .shot-body { display: grid; grid-template-columns: 1.3fr 1fr; min-height: 340px; }
+  .note { padding: 24px 28px; border-right: 1px solid var(--rule); }
+  .note h4 { font: 400 26px/1.15 var(--serif); margin: 0 0 6px; }
+  .note .meta { color: var(--ink-subtle); font-size: 12px; margin-bottom: 18px; }
+  .note p { font-size: 14px; line-height: 1.65; color: var(--ink-muted); margin-bottom: 12px; }
+  .note mark { background: var(--accent-soft); color: var(--ink); padding: 1px 3px; border-radius: 3px; border-bottom: 1.5px solid var(--accent); }
+  .sources { padding: 20px; background: var(--paper); }
+  .sources h5 { margin: 0 0 12px; font: 600 11px var(--sans); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-subtle); }
+  .src { background: var(--white); border: 1px solid var(--rule); border-radius: 8px; padding: 12px; margin-bottom: 10px; }
+  .src.active { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .src b { display: block; font-weight: 500; color: var(--ink); margin-bottom: 2px; }
+  .src span { color: var(--ink-subtle); font-size: 12px; }
+  .src q { display: block; margin-top: 8px; font: italic 15px/1.4 var(--serif); color: var(--ink-muted); }
+
+  /* Logos */
+  .logos { border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); padding: 28px 0; }
+  .logos .wrap { display: flex; align-items: center; gap: 16px 40px; flex-wrap: wrap; justify-content: space-between; }
+  @media (max-width: 1180px) { .logos p { flex-basis: 100%; } .logos .wrap { justify-content: flex-start; } }
+  .logos p { font-size: 14px; color: var(--ink-subtle); }
+  .logos span { font: 400 22px var(--serif); color: var(--ink-subtle); opacity: 0.8; }
+  .logos span.sans { font: 600 16px var(--sans); letter-spacing: 0.04em; text-transform: uppercase; }
+
+  /* Features */
+  .feature { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; padding-block: 112px; }
+  .feature + .feature { border-top: 1px solid var(--rule); }
+  .feature.flip .copy { order: 2; }
+  .feature h2 { font-size: clamp(36px, 2rem + 1.5vw, 52px); margin: 16px 0 20px; }
+  .feature .copy p { color: var(--ink-muted); max-width: 46ch; }
+  .feature ul { list-style: none; padding: 0; margin: 28px 0 0; display: grid; gap: 12px; }
+  .feature li { display: flex; gap: 12px; color: var(--ink-muted); font-size: 16px; }
+  .feature li svg { color: var(--accent); margin-top: 5px; flex: none; }
+  .panel { background: var(--paper-2); border-radius: 12px; padding: 32px; }
+  .timeline { display: grid; gap: 0; }
+  .t-row { display: grid; grid-template-columns: 72px 1fr; gap: 16px; padding: 14px 0; border-bottom: 1px dashed var(--rule); font-size: 14px; }
+  .t-row:last-child { border-bottom: 0; }
+  .t-row time { color: var(--ink-subtle); font-variant-numeric: tabular-nums; }
+  .t-row b { font-weight: 500; }
+  .t-row span { color: var(--ink-subtle); display: block; font-size: 13px; }
+  .cite { background: var(--white); border-radius: 8px; padding: 20px 22px; border: 1px solid var(--rule); font-size: 14px; }
+  .cite + .cite { margin-top: 12px; }
+  .cite code { font: 500 12.5px ui-monospace, monospace; color: var(--accent); }
+
+  /* Testimonial */
+  .quote { padding: 120px 0; background: var(--ink); color: var(--paper); }
+  .quote blockquote { margin: 0; max-width: 22ch; font: 400 clamp(36px, 2rem + 2vw, 60px)/1.1 var(--serif); text-wrap: balance; }
+  .quote blockquote::before { content: "“"; display: block; color: oklch(0.7 0.1 30); line-height: 0.6; margin-bottom: 8px; }
+  .quote figcaption { margin-top: 36px; display: flex; align-items: center; gap: 14px; font-size: 15px; color: oklch(0.78 0.015 80); }
+  .quote figcaption b { color: var(--paper); font-weight: 500; display: block; }
+  .ph { width: 44px; height: 44px; border-radius: 50%; background: oklch(0.55 0.06 40); display: grid; place-items: center; font-weight: 600; color: var(--paper); }
+
+  /* Pricing */
+  .pricing { padding-block: 120px; }
+  .pricing header { max-width: 640px; margin-bottom: 56px; }
+  .pricing h2 { font-size: clamp(40px, 2rem + 2vw, 60px); margin: 16px 0; }
+  .pricing header p { color: var(--ink-muted); }
+  .tiers { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--rule); border-radius: 12px; background: var(--white); }
+  .tier { padding: 32px; display: flex; flex-direction: column; }
+  .tier + .tier { border-left: 1px solid var(--rule); }
+  .tier.rec { background: var(--paper); box-shadow: inset 0 3px 0 var(--accent); }
+  .tier h3 { font: 600 15px var(--sans); display: flex; align-items: center; gap: 10px; }
+  .tag { font: 500 12px var(--sans); color: var(--accent); background: var(--accent-soft); padding: 3px 8px; border-radius: 999px; }
+  .price { font: 400 56px/1 var(--serif); margin: 20px 0 4px; }
+  .price small { font: 400 15px var(--sans); color: var(--ink-subtle); }
+  .tier > p { color: var(--ink-muted); font-size: 15px; min-height: 48px; }
+  .tier ul { list-style: none; padding: 0; margin: 24px 0 32px; display: grid; gap: 10px; font-size: 15px; color: var(--ink-muted); }
+  .tier li { display: flex; gap: 10px; } .tier li svg { color: var(--ink); margin-top: 4px; flex: none; }
+  .tier .btn { margin-top: auto; justify-content: center; }
+
+  footer { border-top: 1px solid var(--rule); padding: 56px 0; font-size: 14px; color: var(--ink-subtle); }
+  footer .wrap { display: grid; grid-template-columns: 2fr repeat(3, 1fr); gap: 32px; }
+  footer h6 { margin: 0 0 12px; font: 600 13px var(--sans); color: var(--ink); }
+  footer ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  footer a { text-decoration: none; } footer a:hover { color: var(--ink); }
+
+  @media (max-width: 900px) {
+    .wrap { padding: 0 20px; }
+    .nav ul, .nav .right .link { display: none; }
+    .hero, .feature { grid-template-columns: 1fr; gap: 40px; padding-block: 56px; }
+    .logos .wrap { gap: 12px 28px; } .logos span { font-size: 18px; } .logos span.sans { font-size: 14px; }
+    .feature.flip .copy { order: 0; }
+    .shot-body { grid-template-columns: 1fr; }
+    .sources { display: none; }
+    .tiers { grid-template-columns: 1fr; }
+    .tier + .tier { border-left: 0; border-top: 1px solid var(--rule); }
+    .quote, .pricing { padding-block: 72px; }
+    footer .wrap { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="arrow" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></symbol>
+</svg>
+
+<header class="wrap nav">
+  <a class="brand" href="#">Fieldnote</a>
+  <ul><li><a href="#">Product</a></li><li><a href="#">For teams</a></li><li><a href="#pricing">Pricing</a></li><li><a href="#">Changelog</a></li></ul>
+  <div class="right"><a class="link" href="#">Sign in</a><a class="btn btn-primary" href="#" style="height:38px">Start free</a></div>
+</header>
+
+<main>
+  <section class="wrap hero">
+    <div>
+      <span class="overline">Research notebook</span>
+      <h1>Every idea, with its <em>source</em> attached.</h1>
+      <p class="lede">Fieldnote links each highlight back to the paper, interview or page it came from — so six months later, you still know why you believed it.</p>
+      <div class="ctas">
+        <a class="btn btn-primary" href="#">Start writing — it’s free <svg class="i"><use href="#arrow"/></svg></a>
+        <a class="btn btn-ghost" href="#">Watch a 2-min tour</a>
+      </div>
+      <p class="fine">Free for personal use. Works offline on Mac, Windows and web.</p>
+    </div>
+
+    <div class="shot" aria-label="Fieldnote app showing a note with a highlighted claim linked to its source">
+      <div class="shot-bar"><i></i><i></i><i></i></div>
+      <div class="shot-body">
+        <article class="note">
+          <h4>Why onboarding drop-off spikes on day 3</h4>
+          <div class="meta">Edited 2h ago · 4 sources</div>
+          <p>Across the twelve interviews, the pattern was consistent: <mark>users who hadn’t invited a teammate by day 3 rarely came back</mark>, regardless of how much they’d set up alone.</p>
+          <p>This contradicts our assumption that solo setup depth predicts retention. The Q3 cohort data points the same way.</p>
+        </article>
+        <aside class="sources">
+          <h5>Linked sources</h5>
+          <div class="src active"><b>Interview — Priya, ops lead</b><span>Recorded Oct 14 · 32:10</span><q>If nobody else is in there, why would I open it?</q></div>
+          <div class="src"><b>Q3 retention cohort.csv</b><span>Analytics export</span></div>
+          <div class="src"><b>Hooked, ch. 4</b><span>Book · p. 112</span></div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="logos" aria-label="Used by">
+    <div class="wrap">
+      <p>Used by researchers at</p>
+      <span>Halden Institute</span><span class="sans">Copperline</span><span>The Meridian Review</span><span class="sans">Oakhurst Labs</span><span>Field &amp; Fen</span>
+    </div>
+  </section>
+
+  <section class="wrap feature">
+    <div class="copy">
+      <span class="overline">Provenance</span>
+      <h2>Highlights that never lose their origin.</h2>
+      <p>Clip from PDFs, web pages, transcripts and spreadsheets. Each highlight carries a permanent link to the exact passage — page, timestamp or cell.</p>
+      <ul>
+        <li><svg class="i"><use href="#check"/></svg>Jump from any claim to its source in one click</li>
+        <li><svg class="i"><use href="#check"/></svg>See every note that cites a source</li>
+        <li><svg class="i"><use href="#check"/></svg>Export with citations in APA, Chicago or BibTeX</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <div class="cite"><code>[@priya-2026-10-14, 32:10]</code><p style="margin-top:8px;color:var(--ink-muted)">“If nobody else is in there, why would I open it?”</p></div>
+      <div class="cite"><code>[@eyal-hooked, p.112]</code><p style="margin-top:8px;color:var(--ink-muted)">Investment increases the likelihood of the next pass through the loop.</p></div>
+    </div>
+  </section>
+
+  <section class="wrap feature flip">
+    <div class="copy">
+      <span class="overline">History</span>
+      <h2>Watch your thinking change over time.</h2>
+      <p>Every note keeps a readable history. See when a conclusion shifted, and which new evidence moved it.</p>
+    </div>
+    <div class="panel timeline">
+      <div class="t-row"><time>Nov 16</time><div><b>Conclusion revised</b><span>Team invites, not setup depth, predict retention</span></div></div>
+      <div class="t-row"><time>Nov 02</time><div><b>Source added</b><span>Q3 retention cohort.csv</span></div></div>
+      <div class="t-row"><time>Oct 14</time><div><b>Highlight</b><span>Interview — Priya, ops lead</span></div></div>
+      <div class="t-row"><time>Sep 30</time><div><b>Note created</b><span>“Onboarding drop-off hypotheses”</span></div></div>
+    </div>
+  </section>
+
+  <section class="quote">
+    <figure class="wrap" style="margin:0 auto">
+      <blockquote>We stopped arguing about what users said and started pointing at it.</blockquote>
+      <figcaption><div class="ph">TA</div><div><b>Tomás Arriaga</b>Head of Research, Copperline</div></figcaption>
+    </figure>
+  </section>
+
+  <section class="wrap pricing" id="pricing">
+    <header>
+      <span class="overline">Pricing</span>
+      <h2>Simple plans. Your notes are always yours.</h2>
+      <p>Export everything as Markdown at any time, on every plan.</p>
+    </header>
+    <div class="tiers">
+      <div class="tier">
+        <h3>Personal</h3>
+        <div class="price">$0</div>
+        <p>For individual researchers and students.</p>
+        <ul><li><svg class="i"><use href="#check"/></svg>Unlimited notes</li><li><svg class="i"><use href="#check"/></svg>500 linked sources</li><li><svg class="i"><use href="#check"/></svg>Offline sync on 2 devices</li></ul>
+        <a class="btn btn-ghost" href="#">Start free</a>
+      </div>
+      <div class="tier rec">
+        <h3>Pro <span class="tag">Most popular</span></h3>
+        <div class="price">$10<small> / month</small></div>
+        <p>For people whose job is to know things.</p>
+        <ul><li><svg class="i"><use href="#check"/></svg>Unlimited sources</li><li><svg class="i"><use href="#check"/></svg>Audio &amp; video transcription</li><li><svg class="i"><use href="#check"/></svg>Full version history</li><li><svg class="i"><use href="#check"/></svg>Citation export</li></ul>
+        <a class="btn btn-primary" href="#">Try Pro for 14 days</a>
+      </div>
+      <div class="tier">
+        <h3>Team</h3>
+        <div class="price">$18<small> / seat / month</small></div>
+        <p>Shared research libraries for product and UX teams.</p>
+        <ul><li><svg class="i"><use href="#check"/></svg>Everything in Pro</li><li><svg class="i"><use href="#check"/></svg>Shared source library</li><li><svg class="i"><use href="#check"/></svg>SSO &amp; audit log</li></ul>
+        <a class="btn btn-ghost" href="#">Talk to us</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div><a class="brand" href="#">Fieldnote</a><p style="margin-top:12px;max-width:32ch">A research notebook that remembers where every idea came from.</p></div>
+    <div><h6>Product</h6><ul><li><a href="#">Features</a></li><li><a href="#">Pricing</a></li><li><a href="#">Changelog</a></li></ul></div>
+    <div><h6>Resources</h6><ul><li><a href="#">Guides</a></li><li><a href="#">Templates</a></li><li><a href="#">Help center</a></li></ul></div>
+    <div><h6>Company</h6><ul><li><a href="#">About</a></li><li><a href="#">Privacy</a></li><li><a href="#">Terms</a></li></ul></div>
+  </div>
+</footer>
+</body>
+</html>

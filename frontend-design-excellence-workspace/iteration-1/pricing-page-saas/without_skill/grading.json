@@ -1,0 +1,52 @@
+{
+  "expectations": [
+    {
+      "text": "pricing.html shows three plans with prices $0, $12 and $24 per user per month",
+      "passed": true,
+      "evidence": "Shows $0, $12 and $24 per user/month"
+    },
+    {
+      "text": "pricing.html has a working monthly/annual toggle that changes the displayed Studio and Agency prices to reflect 2 months free",
+      "passed": true,
+      "evidence": "Clicking Monthly shows $12/$24; Annual shows $10/$20 (scripted click test)"
+    },
+    {
+      "text": "pricing.html includes an FAQ section with at least 4 questions",
+      "passed": true,
+      "evidence": "8 expandable FAQ items"
+    },
+    {
+      "text": "pricing.html uses no emoji characters in its visible text or icons",
+      "passed": true,
+      "evidence": "Only non-emoji symbol found was \u00a9"
+    },
+    {
+      "text": "pricing.html has no purple/indigo-to-blue/pink gradient background behind the hero",
+      "passed": true,
+      "evidence": "No gradients in any stylesheet"
+    },
+    {
+      "text": "pricing.html defines visible :focus-visible styles for interactive elements",
+      "passed": true,
+      "evidence": "':focus-visible' rules present"
+    },
+    {
+      "text": "pricing.html has no horizontal page scroll at a 390px-wide viewport",
+      "passed": true,
+      "evidence": "scrollWidth 375 = viewport 375 at mobile"
+    }
+  ],
+  "summary": {
+    "passed": 7,
+    "failed": 0,
+    "total": 7,
+    "pass_rate": 1.0
+  },
+  "timing": {
+    "executor_duration_seconds": 96.5,
+    "total_duration_seconds": 96.5
+  },
+  "eval_feedback": {
+    "overall": "Every assertion passed for both configurations, so these checks do not discriminate between with-skill and baseline on this model. Visual quality and process differences need human review."
+  }
+}

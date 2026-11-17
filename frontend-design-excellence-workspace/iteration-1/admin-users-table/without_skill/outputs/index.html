@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>User Management · Support Admin</title>
+<style>
+  :root {
+    --bg: #f6f7f9;
+    --surface: #ffffff;
+    --border: #e3e6eb;
+    --text: #1c2430;
+    --muted: #667085;
+    --accent: #3b5bdb;
+    --accent-hover: #2f4bc0;
+    --danger: #c92a2a;
+    --row-hover: #f8f9fb;
+    --radius: 8px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    background: var(--bg);
+  }
+  .container { max-width: 1200px; margin: 0 auto; padding: 32px 24px; }
+  header { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; }
+  h1 { margin: 0 0 4px; font-size: 22px; font-weight: 600; }
+  .subtitle { margin: 0; color: var(--muted); }
+
+  .btn {
+    font: inherit; border: 1px solid var(--border); background: var(--surface); color: var(--text);
+    padding: 7px 12px; border-radius: 6px; cursor: pointer;
+  }
+  .btn:hover:not(:disabled) { background: var(--row-hover); }
+  .btn:disabled { opacity: .45; cursor: not-allowed; }
+  .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn-primary:hover:not(:disabled) { background: var(--accent-hover); }
+  .btn:focus-visible, input:focus-visible, select:focus-visible {
+    outline: 2px solid var(--accent); outline-offset: 1px;
+  }
+
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+  .toolbar { display: flex; gap: 10px; padding: 14px 16px; border-bottom: 1px solid var(--border); flex-wrap: wrap; align-items: center; }
+  .search { position: relative; flex: 1 1 260px; max-width: 360px; }
+  .search input { width: 100%; padding: 8px 10px 8px 32px; }
+  .search svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--muted); }
+  input, select { font: inherit; border: 1px solid var(--border); border-radius: 6px; padding: 8px 10px; background: var(--surface); color: var(--text); }
+  .toolbar .count { margin-left: auto; color: var(--muted); }
+
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  th { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .03em; background: #fafbfc; }
+  th.sortable { cursor: pointer; user-select: none; }
+  th.sortable:hover { color: var(--text); }
+  th .arrow { font-size: 10px; margin-left: 4px; }
+  tbody tr:hover { background: var(--row-hover); }
+  tbody tr:last-child td { border-bottom: none; }
+
+  .user { display: flex; align-items: center; gap: 10px; }
+  .avatar { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; font-weight: 600; font-size: 12px; color: #fff; flex-shrink: 0; }
+  .email { color: var(--muted); }
+
+  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 500; }
+  .role-admin { background: #f3e8ff; color: #6b21a8; }
+  .role-editor { background: #e0ecff; color: #1e40af; }
+  .role-viewer { background: #eef0f3; color: #475467; }
+  .status-active { background: #e6f6ec; color: #18794e; }
+  .status-invited { background: #fff4e0; color: #9a5b00; }
+  .status-suspended { background: #fde8e8; color: #b42318; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+  .muted { color: var(--muted); }
+  .actions { position: relative; text-align: right; }
+  .menu-btn { border: none; background: transparent; padding: 4px 8px; border-radius: 6px; cursor: pointer; color: var(--muted); font-size: 18px; line-height: 1; }
+  .menu-btn:hover { background: #eef0f3; color: var(--text); }
+  .menu {
+    position: absolute; right: 16px; top: 40px; z-index: 10; min-width: 180px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(16,24,40,.12); padding: 4px; text-align: left;
+  }
+  .menu button { display: block; width: 100%; text-align: left; border: none; background: none; font: inherit; padding: 8px 10px; border-radius: 6px; cursor: pointer; color: var(--text); }
+  .menu button:hover { background: var(--row-hover); }
+  .menu button.danger { color: var(--danger); }
+  .menu hr { border: none; border-top: 1px solid var(--border); margin: 4px 0; }
+
+  .empty { padding: 48px 16px; text-align: center; color: var(--muted); }
+
+  .pagination { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; border-top: 1px solid var(--border); flex-wrap: wrap; }
+  .pages { display: flex; gap: 4px; align-items: center; }
+  .pages .btn { min-width: 34px; padding: 6px 10px; }
+  .pages .btn.current { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .per-page { display: flex; align-items: center; gap: 8px; color: var(--muted); }
+  .per-page select { padding: 5px 8px; }
+
+  /* Modal */
+  .backdrop { position: fixed; inset: 0; background: rgba(16,24,40,.45); display: none; align-items: center; justify-content: center; z-index: 50; padding: 16px; }
+  .backdrop.open { display: flex; }
+  .modal { background: var(--surface); border-radius: 10px; width: 100%; max-width: 420px; padding: 20px; box-shadow: 0 20px 48px rgba(16,24,40,.25); }
+  .modal h2 { margin: 0 0 6px; font-size: 17px; }
+  .modal p { margin: 0 0 16px; color: var(--muted); line-height: 1.5; }
+  .modal label { display: block; font-weight: 500; margin: 12px 0 6px; }
+  .modal input, .modal select { width: 100%; }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px; }
+  .btn-danger { background: var(--danger); border-color: var(--danger); color: #fff; }
+  .btn-danger:hover:not(:disabled) { background: #a61e1e; }
+  .error { color: var(--danger); font-size: 12px; margin-top: 6px; min-height: 1em; }
+
+  /* Toast */
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px); background: #1c2430; color: #fff; padding: 10px 16px; border-radius: 8px; opacity: 0; transition: all .2s ease; pointer-events: none; z-index: 60; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 640px) {
+    .container { padding: 20px 12px; }
+    .toolbar .count { margin-left: 0; width: 100%; }
+    .search { max-width: none; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div>
+      <h1>Users</h1>
+      <p class="subtitle">Manage accounts, roles and access for your workspace.</p>
+    </div>
+    <button class="btn btn-primary" id="inviteBtn">+ Invite user</button>
+  </header>
+
+  <div class="card">
+    <div class="toolbar">
+      <div class="search">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input type="search" id="search" placeholder="Search by name or email" aria-label="Search users">
+      </div>
+      <select id="roleFilter" aria-label="Filter by role">
+        <option value="">All roles</option>
+        <option value="admin">Admin</option>
+        <option value="editor">Editor</option>
+        <option value="viewer">Viewer</option>
+      </select>
+      <select id="statusFilter" aria-label="Filter by status">
+        <option value="">All statuses</option>
+        <option value="active">Active</option>
+        <option value="invited">Invited</option>
+        <option value="suspended">Suspended</option>
+      </select>
+      <span class="count" id="count"></span>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th class="sortable" data-sort="name">Name<span class="arrow"></span></th>
+            <th class="sortable" data-sort="role">Role<span class="arrow"></span></th>
+            <th class="sortable" data-sort="status">Status<span class="arrow"></span></th>
+            <th class="sortable" data-sort="lastActive">Last active<span class="arrow"></span></th>
+            <th style="text-align:right">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+
+    <div class="pagination">
+      <div class="per-page">
+        Rows per page
+        <select id="perPage" aria-label="Rows per page">
+          <option>5</option>
+          <option selected>10</option>
+          <option>25</option>
+        </select>
+        <span id="range"></span>
+      </div>
+      <div class="pages" id="pages"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="backdrop" id="backdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal" id="modal"></div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+  // ---------- Fake data ----------
+  const now = Date.now();
+  const H = 3600 * 1000, D = 24 * H;
+  let users = [
+    { id: 1,  name: "Ava Thompson",     email: "ava.thompson@acme.io",     role: "admin",  status: "active",    lastActive: now - 5 * 60 * 1000 },
+    { id: 2,  name: "Liam Patel",       email: "liam.patel@acme.io",       role: "editor", status: "active",    lastActive: now - 2 * H },
+    { id: 3,  name: "Sophia Nguyen",    email: "sophia.nguyen@acme.io",    role: "viewer", status: "active",    lastActive: now - 1 * D },
+    { id: 4,  name: "Noah Kim",         email: "noah.kim@acme.io",         role: "editor", status: "invited",   lastActive: null },
+    { id: 5,  name: "Isabella Garcia",  email: "isabella.garcia@acme.io",  role: "viewer", status: "suspended", lastActive: now - 42 * D },
+    { id: 6,  name: "Ethan Brooks",     email: "ethan.brooks@acme.io",     role: "admin",  status: "active",    lastActive: now - 20 * 60 * 1000 },
+    { id: 7,  name: "Mia Rossi",        email: "mia.rossi@acme.io",        role: "editor", status: "active",    lastActive: now - 3 * D },
+    { id: 8,  name: "Lucas Müller",     email: "lucas.mueller@acme.io",    role: "viewer", status: "active",    lastActive: now - 6 * H },
+    { id: 9,  name: "Amelia Clarke",    email: "amelia.clarke@acme.io",    role: "viewer", status: "invited",   lastActive: null },
+    { id: 10, name: "Oliver Shah",      email: "oliver.shah@acme.io",      role: "editor", status: "active",    lastActive: now - 9 * D },
+    { id: 11, name: "Harper Lee",       email: "harper.lee@acme.io",       role: "viewer", status: "active",    lastActive: now - 14 * D },
+    { id: 12, name: "James O'Connor",   email: "james.oconnor@acme.io",    role: "editor", status: "suspended", lastActive: now - 60 * D },
+    { id: 13, name: "Evelyn Martins",   email: "evelyn.martins@acme.io",   role: "admin",  status: "active",    lastActive: now - 1 * H },
+    { id: 14, name: "Benjamin Wright",  email: "ben.wright@acme.io",       role: "viewer", status: "active",    lastActive: now - 2 * D },
+    { id: 15, name: "Charlotte Dubois", email: "charlotte.dubois@acme.io", role: "editor", status: "invited",   lastActive: null },
+    { id: 16, name: "Henry Adeyemi",    email: "henry.adeyemi@acme.io",    role: "viewer", status: "active",    lastActive: now - 30 * D },
+    { id: 17, name: "Aria Sato",        email: "aria.sato@acme.io",        role: "editor", status: "active",    lastActive: now - 45 * 60 * 1000 },
+    { id: 18, name: "Alexander Novak",  email: "alex.novak@acme.io",       role: "viewer", status: "active",    lastActive: now - 5 * D },
+    { id: 19, name: "Ella Fernández",   email: "ella.fernandez@acme.io",   role: "viewer", status: "suspended", lastActive: now - 90 * D },
+    { id: 20, name: "Daniel Cohen",     email: "daniel.cohen@acme.io",     role: "editor", status: "active",    lastActive: now - 12 * H },
+    { id: 21, name: "Grace Okafor",     email: "grace.okafor@acme.io",     role: "admin",  status: "active",    lastActive: now - 4 * D },
+    { id: 22, name: "Mateo Silva",      email: "mateo.silva@acme.io",      role: "viewer", status: "invited",   lastActive: null },
+    { id: 23, name: "Chloe Anderson",   email: "chloe.anderson@acme.io",   role: "editor", status: "active",    lastActive: now - 7 * D },
+    { id: 24, name: "Sebastian Berg",   email: "sebastian.berg@acme.io",   role: "viewer", status: "active",    lastActive: now - 20 * D },
+    { id: 25, name: "Zoe Mitchell",     email: "zoe.mitchell@acme.io",     role: "viewer", status: "active",    lastActive: now - 3 * H },
+  ];
+  let nextId = 26;
+
+  // ---------- State ----------
+  const state = { query: "", role: "", status: "", page: 1, perPage: 10, sortKey: "name", sortDir: 1 };
+
+  // ---------- Helpers ----------
+  const $ = (s) => document.querySelector(s);
+  const esc = (s) => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+  const initials = (name) => name.split(/\s+/).map(p => p[0]).slice(0, 2).join("").toUpperCase();
+  const avatarColors = ["#3b5bdb", "#0ca678", "#e8590c", "#ae3ec9", "#1098ad", "#f03e3e", "#5c940d", "#d6336c"];
+  const avatarColor = (id) => avatarColors[id % avatarColors.length];
+
+  function relTime(ts) {
+    if (!ts) return "Never";
+    const diff = Date.now() - ts;
+    const m = Math.floor(diff / 60000);
+    if (m < 1) return "Just now";
+    if (m < 60) return `${m} min ago`;
+    const h = Math.floor(m / 60);
+    if (h < 24) return `${h} hr${h > 1 ? "s" : ""} ago`;
+    const d = Math.floor(h / 24);
+    if (d < 30) return `${d} day${d > 1 ? "s" : ""} ago`;
+    return new Date(ts).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+  }
+
+  function filtered() {
+    const q = state.query.trim().toLowerCase();
+    const rows = users.filter(u =>
+      (!q || u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q)) &&
+      (!state.role || u.role === state.role) &&
+      (!state.status || u.status === state.status)
+    );
+    const { sortKey: k, sortDir: dir } = state;
+    rows.sort((a, b) => {
+      let av = a[k], bv = b[k];
+      if (k === "lastActive") { av = av ?? -Infinity; bv = bv ?? -Infinity; return (av - bv) * dir; }
+      if (k === "role") { const o = { admin: 0, editor: 1, viewer: 2 }; return (o[av] - o[bv]) * dir; }
+      return String(av).localeCompare(String(bv)) * dir;
+    });
+    return rows;
+  }
+
+  // ---------- Render ----------
+  function render() {
+    const rows = filtered();
+    const total = rows.length;
+    const pageCount = Math.max(1, Math.ceil(total / state.perPage));
+    if (state.page > pageCount) state.page = pageCount;
+    const start = (state.page - 1) * state.perPage;
+    const pageRows = rows.slice(start, start + state.perPage);
+
+    $("#count").textContent = `${total} of ${users.length} users`;
+    $("#range").textContent = total ? `· ${start + 1}–${start + pageRows.length} of ${total}` : "";
+
+    const tbody = $("#tbody");
+    if (!pageRows.length) {
+      tbody.innerHTML = `<tr><td colspan="5" class="empty">No users match your filters.<br><button class="btn" style="margin-top:12px" id="clearFilters">Clear filters</button></td></tr>`;
+      $("#clearFilters").onclick = clearFilters;
+    } else {
+      tbody.innerHTML = pageRows.map(u => `
+        <tr>
+          <td>
+            <div class="user">
+              <div class="avatar" style="background:${avatarColor(u.id)}">${esc(initials(u.name))}</div>
+              <div>
+                <div>${esc(u.name)}</div>
+                <div class="email">${esc(u.email)}</div>
+              </div>
+            </div>
+          </td>
+          <td><span class="badge role-${u.role}">${cap(u.role)}</span></td>
+          <td><span class="badge status-${u.status}"><span class="dot"></span>${cap(u.status)}</span></td>
+          <td class="${u.lastActive ? "" : "muted"}" title="${u.lastActive ? new Date(u.lastActive).toLocaleString() : ""}">${relTime(u.lastActive)}</td>
+          <td class="actions">
+            <button class="menu-btn" data-menu="${u.id}" aria-label="Actions for ${esc(u.name)}" aria-haspopup="true">⋯</button>
+          </td>
+        </tr>`).join("");
+    }
+
+    // sort arrows
+    document.querySelectorAll("th.sortable").forEach(th => {
+      const active = th.dataset.sort === state.sortKey;
+      th.querySelector(".arrow").textContent = active ? (state.sortDir === 1 ? "▲" : "▼") : "";
+      th.setAttribute("aria-sort", active ? (state.sortDir === 1 ? "ascending" : "descending") : "none");
+    });
+
+    renderPages(pageCount);
+  }
+
+  function renderPages(pageCount) {
+    const el = $("#pages");
+    const p = state.page;
+    const nums = [];
+    for (let i = 1; i <= pageCount; i++) {
+      if (i === 1 || i === pageCount || Math.abs(i - p) <= 1) nums.push(i);
+      else if (nums[nums.length - 1] !== "…") nums.push("…");
+    }
+    el.innerHTML =
+      `<button class="btn" data-page="${p - 1}" ${p === 1 ? "disabled" : ""} aria-label="Previous page">‹ Prev</button>` +
+      nums.map(n => n === "…" ? `<span class="muted" style="padding:0 4px">…</span>` :
+        `<button class="btn ${n === p ? "current" : ""}" data-page="${n}" ${n === p ? 'aria-current="page"' : ""}>${n}</button>`).join("") +
+      `<button class="btn" data-page="${p + 1}" ${p === pageCount ? "disabled" : ""} aria-label="Next page">Next ›</button>`;
+  }
+
+  // ---------- Action menu ----------
+  let openMenu = null;
+  function closeMenu() { if (openMenu) { openMenu.remove(); openMenu = null; } }
+
+  function showMenu(btn, user) {
+    closeMenu();
+    const menu = document.createElement("div");
+    menu.className = "menu";
+    menu.setAttribute("role", "menu");
+    const items = [];
+    items.push(`<button data-act="edit">Edit role</button>`);
+    if (user.status === "invited") items.push(`<button data-act="resend">Resend invite</button>`);
+    if (user.status !== "invited") items.push(`<button data-act="reset">Send password reset</button>`);
+    items.push("<hr>");
+    if (user.status === "suspended") items.push(`<button data-act="reactivate">Reactivate user</button>`);
+    else if (user.status === "active") items.push(`<button data-act="suspend" class="danger">Suspend user</button>`);
+    items.push(`<button data-act="delete" class="danger">Delete user</button>`);
+    menu.innerHTML = items.join("");
+    menu.addEventListener("click", e => {
+      const act = e.target.dataset.act;
+      if (!act) return;
+      closeMenu();
+      handleAction(act, user);
+    });
+    btn.parentElement.appendChild(menu);
+    openMenu = menu;
+    menu.querySelector("button").focus();
+  }
+
+  function handleAction(act, u) {
+    switch (act) {
+      case "edit":
+        openModal(`
+          <h2 id="modalTitle">Edit role</h2>
+          <p>Change the role for <strong>${esc(u.name)}</strong>.</p>
+          <label for="mRole">Role</label>
+          <select id="mRole">
+            ${["admin", "editor", "viewer"].map(r => `<option value="${r}" ${r === u.role ? "selected" : ""}>${cap(r)}</option>`).join("")}
+          </select>
+          <div class="modal-actions">
+            <button class="btn" data-close>Cancel</button>
+            <button class="btn btn-primary" id="mSave">Save</button>
+          </div>`);
+        $("#mSave").onclick = () => {
+          u.role = $("#mRole").value; closeModal(); render();
+          toast(`${u.name} is now ${cap(u.role)}`);
+        };
+        break;
+      case "resend":
+        toast(`Invite resent to ${u.email}`); break;
+      case "reset":
+        toast(`Password reset email sent to ${u.email}`); break;
+      case "reactivate":
+        u.status = "active"; render(); toast(`${u.name} reactivated`); break;
+      case "suspend":
+        confirmModal("Suspend user?", `<strong>${esc(u.name)}</strong> will lose access immediately. You can reactivate them later.`, "Suspend", () => {
+          u.status = "suspended"; render(); toast(`${u.name} suspended`);
+        });
+        break;
+      case "delete":
+        confirmModal("Delete user?", `This permanently removes <strong>${esc(u.name)}</strong> (${esc(u.email)}). This cannot be undone.`, "Delete", () => {
+          users = users.filter(x => x.id !== u.id); render(); toast(`${u.name} deleted`);
+        });
+        break;
+    }
+  }
+
+  // ---------- Modal ----------
+  let lastFocus = null;
+  function openModal(html) {
+    lastFocus = document.activeElement;
+    $("#modal").innerHTML = html;
+    $("#backdrop").classList.add("open");
+    $("#modal").querySelectorAll("[data-close]").forEach(b => b.onclick = closeModal);
+    const f = $("#modal").querySelector("input, select, .btn-primary, .btn-danger");
+    if (f) f.focus();
+  }
+  function closeModal() {
+    $("#backdrop").classList.remove("open");
+    if (lastFocus && document.body.contains(lastFocus)) lastFocus.focus();
+  }
+  function confirmModal(title, body, label, onOk) {
+    openModal(`
+      <h2 id="modalTitle">${title}</h2>
+      <p>${body}</p>
+      <div class="modal-actions">
+        <button class="btn" data-close>Cancel</button>
+        <button class="btn btn-danger" id="mOk">${label}</button>
+      </div>`);
+    $("#mOk").onclick = () => { closeModal(); onOk(); };
+  }
+
+  function openInvite() {
+    openModal(`
+      <h2 id="modalTitle">Invite user</h2>
+      <p>They'll receive an email invitation to join the workspace.</p>
+      <label for="mName">Full name</label>
+      <input id="mName" placeholder="Jane Doe" autocomplete="off">
+      <label for="mEmail">Email</label>
+      <input id="mEmail" type="email" placeholder="jane@company.com" autocomplete="off">
+      <label for="mInvRole">Role</label>
+      <select id="mInvRole">
+        <option value="viewer">Viewer</option>
+        <option value="editor">Editor</option>
+        <option value="admin">Admin</option>
+      </select>
+      <div class="error" id="mErr"></div>
+      <div class="modal-actions">
+        <button class="btn" data-close>Cancel</button>
+        <button class="btn btn-primary" id="mInvite">Send invite</button>
+      </div>`);
+    $("#mInvite").onclick = () => {
+      const name = $("#mName").value.trim();
+      const email = $("#mEmail").value.trim().toLowerCase();
+      const err = $("#mErr");
+      if (!name) return (err.textContent = "Name is required.");
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return (err.textContent = "Enter a valid email address.");
+      if (users.some(u => u.email === email)) return (err.textContent = "A user with this email already exists.");
+      users.push({ id: nextId++, name, email, role: $("#mInvRole").value, status: "invited", lastActive: null });
+      closeModal(); render(); toast(`Invite sent to ${email}`);
+    };
+  }
+
+  // ---------- Toast ----------
+  let toastTimer;
+  function toast(msg) {
+    const t = $("#toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove("show"), 2600);
+  }
+
+  function clearFilters() {
+    state.query = state.role = state.status = "";
+    $("#search").value = ""; $("#roleFilter").value = ""; $("#statusFilter").value = "";
+    state.page = 1; render();
+  }
+
+  // ---------- Events ----------
+  let searchTimer;
+  $("#search").addEventListener("input", e => {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => { state.query = e.target.value; state.page = 1; render(); }, 150);
+  });
+  $("#roleFilter").addEventListener("change", e => { state.role = e.target.value; state.page = 1; render(); });
+  $("#statusFilter").addEventListener("change", e => { state.status = e.target.value; state.page = 1; render(); });
+  $("#perPage").addEventListener("change", e => { state.perPage = +e.target.value; state.page = 1; render(); });
+  $("#pages").addEventListener("click", e => {
+    const b = e.target.closest("[data-page]");
+    if (!b || b.disabled) return;
+    state.page = +b.dataset.page; render();
+  });
+  document.querySelectorAll("th.sortable").forEach(th => th.addEventListener("click", () => {
+    const k = th.dataset.sort;
+    if (state.sortKey === k) state.sortDir *= -1; else { state.sortKey = k; state.sortDir = 1; }
+    render();
+  }));
+  $("#tbody").addEventListener("click", e => {
+    const b = e.target.closest("[data-menu]");
+    if (!b) return;
+    e.stopPropagation();
+    if (openMenu && openMenu.parentElement === b.parentElement) return closeMenu();
+    showMenu(b, users.find(u => u.id === +b.dataset.menu));
+  });
+  document.addEventListener("click", e => { if (openMenu && !openMenu.contains(e.target)) closeMenu(); });
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape") { closeMenu(); if ($("#backdrop").classList.contains("open")) closeModal(); }
+  });
+  $("#backdrop").addEventListener("click", e => { if (e.target.id === "backdrop") closeModal(); });
+  $("#inviteBtn").addEventListener("click", openInvite);
+
+  render();
+</script>
+</body>
+</html>

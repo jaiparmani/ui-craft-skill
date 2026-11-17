@@ -1,0 +1,658 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>frontend-design-excellence — a design skill for Claude Code</title>
+<meta name="description" content="A Claude Code skill for frontends at the level of top product teams and award-winning studios — from premium product UI to scroll storytelling, kinetic type and 3D.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Instrument+Serif&family=Inter:wght@400;600&family=Nunito+Sans:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: oklch(0.975 0.004 90);
+    --paper-2: oklch(0.945 0.006 90);
+    --ink: oklch(0.17 0.005 90);
+    --ink-2: oklch(0.38 0.006 90);
+    --ink-3: oklch(0.52 0.006 90);
+    --rule: oklch(0.17 0.005 90);
+    --hair: oklch(0.86 0.006 90);
+    --signal: oklch(0.64 0.21 38);
+    --signal-ink: oklch(0.5 0.19 38);
+    --sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+    --max: 1240px;
+    color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font: 17px/1.55 var(--sans); -webkit-font-smoothing: antialiased; }
+  a { color: inherit; }
+  :focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; }
+  h1, h2, h3 { margin: 0; font-weight: 600; letter-spacing: -0.03em; line-height: 1; text-wrap: balance; }
+  p { margin: 0; text-wrap: pretty; }
+  .wrap { max-width: var(--max); margin: 0 auto; padding-inline: 32px; }
+  .mono { font-family: var(--mono); font-size: 12px; letter-spacing: 0.02em; text-transform: uppercase; }
+  svg.i { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
+
+  /* Nav */
+  .nav { position: sticky; top: 0; z-index: 10; background: color-mix(in oklch, var(--paper) 88%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--rule); }
+  .nav .wrap { display: flex; align-items: center; height: 56px; gap: 32px; }
+  .logo { white-space: nowrap; font: 600 18px var(--sans); text-decoration: none; display: flex; align-items: center; gap: 10px; letter-spacing: -0.02em; }
+  .logo i { width: 14px; height: 14px; background: var(--signal); display: block; }
+  .nav ul { display: flex; gap: 24px; list-style: none; margin: 0; padding: 0; }
+  .nav ul a { text-decoration: none; color: var(--ink-2); font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .nav ul a:hover { color: var(--ink); }
+  .nav .gh { margin-left: auto; display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 14px; border: 1px solid var(--rule); text-decoration: none; font-weight: 500; font-size: 14px; white-space: nowrap; }
+  .nav .gh:hover { background: var(--ink); color: var(--paper); }
+
+  /* Hero */
+  .hero { display: grid; grid-template-columns: 7fr 5fr; border-bottom: 1px solid var(--rule); }
+  .hero-copy { padding: 88px 48px 72px 0; border-right: 1px solid var(--rule); }
+  .hero .tag { display: inline-flex; gap: 10px; align-items: center; color: var(--ink-2); }
+  .hero .tag b { background: var(--ink); color: var(--paper); padding: 3px 8px; font-weight: 500; }
+  .hero h1 { font-size: clamp(52px, 2.4rem + 4.2vw, 112px); margin: 28px 0 28px; letter-spacing: -0.045em; line-height: 0.92; }
+  .hero h1 span { color: var(--signal); }
+  .hero .lede { font-size: 20px; color: var(--ink-2); max-width: 38ch; margin-bottom: 40px; }
+  .install { display: flex; align-items: stretch; max-width: 620px; border: 1px solid var(--rule); background: var(--ink); color: var(--paper); }
+  .install code { flex: 1; min-width: 0; padding: 16px 18px; font: 14px/1.7 var(--mono); overflow-x: auto; white-space: pre; }
+  section[id] { scroll-margin-top: 56px; }
+  .install code .p { color: var(--signal); user-select: none; }
+  .copy { border: 0; border-left: 1px solid oklch(0.35 0.005 90); background: none; color: var(--paper); font: 500 13px var(--mono); text-transform: uppercase; padding: 0 18px; cursor: pointer; display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+  .copy:hover { background: var(--signal); color: var(--ink); }
+  .hero .fine { margin-top: 14px; color: var(--ink-3); font-size: 14px; }
+  .hero .fine a { color: var(--ink-2); }
+
+  /* Demo */
+  .hero > * { min-width: 0; }
+  .demo-col { padding: 40px 0 40px 40px; display: flex; flex-direction: column; gap: 20px; }
+  .switch { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--rule); }
+  .switch button { border: 0; background: none; padding: 12px; font: 500 12px var(--mono); text-transform: uppercase; letter-spacing: 0.04em; cursor: pointer; color: var(--ink-2); }
+  .switch button + button { border-left: 1px solid var(--rule); }
+  .switch button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+  .stage { flex: 1; min-height: 360px; background: var(--paper-2); border: 1px solid var(--hair); display: grid; place-items: center; padding: 28px; transition: background 300ms; }
+  .demo[data-mode="slop"] .stage { background: oklch(0.96 0.01 300); }
+  .caption { font-size: 14px; color: var(--ink-2); min-height: 66px; }
+  .caption b { color: var(--ink); font-weight: 600; }
+
+  .card { width: 100%; max-width: 340px; transition: all 320ms cubic-bezier(.22,1,.36,1); }
+  .card .emoji, .card .ico { display: none; }
+  /* craft */
+  .demo[data-mode="craft"] .card { background: #fff; border: 1px solid oklch(0.91 0.006 260); border-radius: 12px; padding: 22px 22px 20px; font-family: Inter, sans-serif; color: oklch(0.21 0.012 260); box-shadow: 0 1px 2px oklch(0.2 0.02 260 / .06); }
+  .demo[data-mode="craft"] .card .ico { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 8px; background: oklch(0.96 0.005 260); color: oklch(0.45 0.018 260); margin-bottom: 16px; }
+  .demo[data-mode="craft"] .card .ico svg { width: 16px; height: 16px; }
+  .demo[data-mode="craft"] .card .lbl { font-size: 13px; color: oklch(0.45 0.018 260); }
+  .demo[data-mode="craft"] .card .val { font-size: 30px; font-weight: 600; letter-spacing: -0.02em; margin: 4px 0 4px; font-variant-numeric: tabular-nums; }
+  .demo[data-mode="craft"] .card .delta { font-size: 13px; color: oklch(0.52 0.018 260); }
+  .demo[data-mode="craft"] .card .delta b { color: oklch(0.52 0.13 150); font-weight: 600; }
+  .demo[data-mode="craft"] .card .row { display: flex; gap: 8px; margin-top: 20px; padding-top: 16px; border-top: 1px solid oklch(0.93 0.006 260); }
+  .demo[data-mode="craft"] .card .b1 { height: 34px; padding: 0 14px; border-radius: 8px; border: 0; background: oklch(0.55 0.19 255); color: #fff; font: 600 13px Inter, sans-serif; }
+  .demo[data-mode="craft"] .card .b2 { height: 34px; padding: 0 14px; border-radius: 8px; border: 1px solid oklch(0.87 0.01 260); background: #fff; color: oklch(0.21 0.012 260); font: 600 13px Inter, sans-serif; }
+  /* slop */
+  .demo[data-mode="slop"] .card { text-align: center; background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; border-radius: 28px; padding: 30px 22px; box-shadow: 0 20px 50px rgba(118,75,162,.55); font-family: Arial, sans-serif; }
+  .demo[data-mode="slop"] .card .emoji { display: block; font-size: 44px; line-height: 1; margin-bottom: 8px; }
+  .demo[data-mode="slop"] .card .lbl { font-weight: 700; font-size: 20px; }
+  .demo[data-mode="slop"] .card .val { font-weight: 700; font-size: 38px; margin: 6px 0; }
+  .demo[data-mode="slop"] .card .delta { color: #ddd; font-weight: 700; }
+  .demo[data-mode="slop"] .card .delta span { display: none; }
+  .demo[data-mode="slop"] .card .row { display: flex; gap: 10px; justify-content: center; margin-top: 20px; }
+  .demo[data-mode="slop"] .card .b1 { border: 0; border-radius: 50px; padding: 12px 22px; background: #ff6b6b; color: #fff; font-weight: 700; font-size: 14px; }
+  .demo[data-mode="slop"] .card .b2 { border: 0; border-radius: 50px; padding: 12px 22px; background: #4ecdc4; color: #fff; font-weight: 700; font-size: 14px; }
+
+  /* Sections */
+  section.block { border-bottom: 1px solid var(--rule); }
+  .head { display: grid; grid-template-columns: 200px 1fr; gap: 32px; padding: 72px 0 40px; }
+  .head .n { font: 500 13px var(--mono); color: var(--signal-ink); padding-top: 10px; }
+  .head h2 { font-size: clamp(40px, 1.6rem + 2.6vw, 72px); }
+  .head p { margin-top: 18px; color: var(--ink-2); max-width: 58ch; font-size: 18px; }
+
+  /* Workflow */
+  .steps { display: grid; grid-template-columns: repeat(6, 1fr); border-top: 1px solid var(--rule); }
+  .step { padding: 28px 24px 40px 0; }
+  .step + .step { border-left: 1px solid var(--rule); padding-left: 24px; }
+  .step .k { font: 500 13px var(--mono); color: var(--ink-3); }
+  .step h3 { font-size: 22px; margin: 28px 0 12px; letter-spacing: -0.02em; }
+  .step p { color: var(--ink-2); font-size: 15px; }
+  .step.key { background: var(--ink); color: var(--paper); padding-left: 24px; }
+  .step.key .k { color: var(--signal); }
+  .step.key p { color: oklch(0.8 0.005 90); }
+  .step.key em { font-style: normal; display: inline-block; margin-top: 16px; font: 500 11px var(--mono); text-transform: uppercase; background: var(--signal); color: var(--ink); padding: 3px 7px; }
+
+
+  /* Modes */
+  .modes { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--rule); }
+  .mode { padding: 28px 28px 48px 0; display: flex; flex-direction: column; }
+  .mode + .mode { border-left: 1px solid var(--rule); padding-left: 28px; }
+  .mode .mono { color: var(--ink-3); }
+  .mode h3 { font-size: 36px; letter-spacing: -0.03em; margin: 28px 0 12px; }
+  .mode p { color: var(--ink-2); max-width: 32ch; }
+  .mode .like { margin-top: auto; padding-top: 28px; color: var(--ink-3); font-size: 11px; }
+  .mode.hot { background: var(--ink); color: var(--paper); padding-left: 28px; }
+  .mode.hot p { color: oklch(0.8 0.005 90); }
+  .mode.hot .mono { color: var(--signal); }
+
+  /* Motion patterns */
+  .pats { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--rule); }
+  .pat { padding: 24px 24px 40px 0; }
+  .pat:nth-child(3n+2), .pat:nth-child(3n) { border-left: 1px solid var(--rule); padding-left: 24px; }
+  .pat:nth-child(n+4) { border-top: 1px solid var(--rule); }
+  .pat > .mono { color: var(--ink-3); }
+  .pat h3 { font-size: 22px; letter-spacing: -0.02em; margin: 8px 0 8px; }
+  .pat p { color: var(--ink-2); font-size: 15px; }
+  .pat .study { display: block; margin-top: 16px; color: var(--signal-ink); font-size: 11px; }
+  .pdemo { height: 150px; background: var(--ink); margin-bottom: 20px; position: relative; overflow: hidden; display: grid; place-items: center; color: var(--paper); }
+  .d-story i { width: 70px; height: 96px; border: 1.5px solid var(--paper); border-radius: 10px; animation: story 3.2s cubic-bezier(.22,1,.36,1) infinite; }
+  @keyframes story { 0% { transform: translateY(60px) scale(.6); opacity: 0; } 35%, 80% { transform: none; opacity: 1; } 100% { transform: translateY(-20px) scale(1.05); opacity: 0; } }
+  .d-pin { grid-template-columns: 64px 90px; gap: 16px; }
+  .d-pin b { width: 64px; height: 64px; border-radius: 50%; border: 1.5px solid var(--signal); }
+  .d-pin i { grid-column: 2; grid-row: 1; height: 8px; width: 90px; background: var(--paper); opacity: 0; animation: pin 4.5s infinite; }
+  .d-pin i:nth-of-type(2) { animation-delay: 1.5s; width: 70px; } .d-pin i:nth-of-type(3) { animation-delay: 3s; width: 80px; }
+  @keyframes pin { 0% { opacity: 0; transform: translateY(14px); } 8%, 28% { opacity: 1; transform: none; } 36%, 100% { opacity: 0; transform: translateY(-14px); } }
+  .d-type { align-content: center; gap: 0; }
+  .d-type span { display: block; overflow: hidden; font: 600 34px/1.05 var(--sans); letter-spacing: -0.03em; }
+  .d-type em { display: block; font-style: normal; animation: line 3.2s cubic-bezier(.16,1,.3,1) infinite; }
+  .d-type span:nth-child(2) em { animation-delay: .12s; color: var(--signal); }
+  @keyframes line { 0% { transform: translateY(110%); } 30%, 80% { transform: none; } 100% { transform: translateY(-110%); } }
+  .mag { height: 44px; padding: 0 22px; border-radius: 999px; border: 0; background: var(--paper); color: var(--ink); font: 500 14px var(--sans); cursor: pointer; transition: background .15s; }
+  .mag:hover { background: var(--signal); }
+  .d-para i { position: absolute; border-radius: 50%; }
+  .d-para i:nth-child(1) { width: 140px; height: 140px; background: oklch(0.3 0.005 90); left: 18%; top: 30%; animation: para 6s ease-in-out infinite alternate; --d: 10px; }
+  .d-para i:nth-child(2) { width: 70px; height: 70px; background: oklch(0.55 0.005 90); left: 52%; top: 22%; animation: para 6s ease-in-out infinite alternate; --d: 28px; }
+  .d-para i:nth-child(3) { width: 26px; height: 26px; background: var(--signal); left: 70%; top: 58%; animation: para 6s ease-in-out infinite alternate; --d: 56px; }
+  @keyframes para { from { transform: translateX(calc(var(--d) * -1)); } to { transform: translateX(var(--d)); } }
+  .d-trans i { width: 40px; height: 40px; background: var(--signal); position: absolute; animation: trans 4s cubic-bezier(.65,0,.35,1) infinite; }
+  @keyframes trans { 0%, 15% { left: 16%; top: 22%; width: 40px; height: 40px; border-radius: 4px; } 45%, 65% { left: 0; top: 0; width: 100%; height: 100%; border-radius: 0; } 95%, 100% { left: 70%; top: 52%; width: 56px; height: 40px; border-radius: 4px; } }
+  .stack { margin-top: 0; border-top: 1px solid var(--rule); padding: 32px 0 64px; display: grid; gap: 0; }
+  .stack-head { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: end; padding-bottom: 20px; }
+  .stack-head h3 { font-size: 28px; letter-spacing: -0.02em; }
+  .stack-head p { color: var(--ink-2); }
+  .stack-head b { color: var(--ink); font-weight: 600; }
+  .trow { display: grid; grid-template-columns: 220px 1fr; gap: 24px; padding: 14px 0; border-top: 1px solid var(--hair); }
+  .trow b { font: 500 14px var(--mono); }
+  .trow span { color: var(--ink-2); }
+  .trow code { font: 13px var(--mono); }
+  @media (prefers-reduced-motion: reduce) { .pdemo *, .pdemo { animation: none !important; } .d-pin i:first-of-type, .d-type em { opacity: 1; transform: none; } }
+
+  /* Anti-slop */
+  .slop { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--rule); }
+  .slop .colh { padding: 14px 0; border-bottom: 1px solid var(--rule); color: var(--ink-3); }
+  .slop .colh + .colh { padding-left: 24px; border-left: 1px solid var(--rule); }
+  .slop .bad, .slop .good { padding: 16px 24px 16px 0; border-bottom: 1px solid var(--hair); font-size: 16px; }
+  .slop .good { padding-left: 24px; border-left: 1px solid var(--rule); }
+  .slop .bad { color: var(--ink-3); text-decoration: line-through; text-decoration-color: var(--signal); text-decoration-thickness: 1.5px; }
+  .slop .bad:nth-last-child(-n+2), .slop .good:last-child { border-bottom: 0; }
+
+  /* Directions */
+  .dirs { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--rule); }
+  .dir { padding: 24px; border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule); display: flex; flex-direction: column; min-height: 320px; }
+  .dir:nth-child(4n) { border-right: 0; }
+  .dir:nth-child(n+5) { border-bottom: 0; }
+  .dir .spec { height: 132px; margin: -24px -24px 20px; padding: 20px 24px; display: flex; align-items: flex-end; justify-content: space-between; }
+  .dir .aa { font-size: 64px; line-height: 0.9; }
+  .dir .sw { display: flex; gap: 4px; }
+  .dir .sw i { width: 14px; height: 14px; display: block; border: 1px solid rgb(0 0 0 / 0.08); }
+  .dir h3 { font-size: 20px; letter-spacing: -0.015em; }
+  .dir p { font-size: 14px; color: var(--ink-2); margin-top: 8px; }
+  .dir .for { margin-top: auto; padding-top: 16px; color: var(--ink-3); font-size: 11px; }
+  .dir.cta { background: var(--signal); justify-content: space-between; }
+  .dir.cta h3 { font-size: 28px; line-height: 1.05; letter-spacing: -0.03em; }
+  .dir.cta p { color: var(--ink); }
+
+  /* Tokens */
+  .tok { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--rule); }
+  .tok > div { padding: 28px 24px 48px 0; }
+  .tok > div + div { border-left: 1px solid var(--rule); padding-left: 24px; }
+  .tok h3 { font-size: 13px; font-family: var(--mono); font-weight: 500; text-transform: uppercase; color: var(--ink-3); letter-spacing: 0.02em; margin-bottom: 24px; }
+  .bars { display: grid; gap: 8px; }
+  .bars div { display: grid; grid-template-columns: 36px 1fr; align-items: center; gap: 12px; font: 12px var(--mono); color: var(--ink-3); }
+  .bars i { display: block; height: 10px; background: var(--ink); }
+  .types div { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; border-bottom: 1px solid var(--hair); padding: 6px 0; }
+  .types div:last-child { border: 0; }
+  .types span { font: 12px var(--mono); color: var(--ink-3); }
+  .ramp { display: grid; grid-template-columns: repeat(11, 1fr); height: 56px; margin-bottom: 8px; }
+  .ramp + .lbls { display: flex; justify-content: space-between; font: 11px var(--mono); color: var(--ink-3); margin-bottom: 24px; }
+  .tok .note { font-size: 14px; color: var(--ink-2); }
+
+  /* Review */
+  .review { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--rule); }
+  .review > div { padding: 32px 32px 56px 0; }
+  .review > div + div { border-left: 1px solid var(--rule); padding-left: 32px; padding-right: 0; }
+  .checks { list-style: none; margin: 0; padding: 0; counter-reset: c; }
+  .checks li { display: grid; grid-template-columns: 40px 1fr; padding: 12px 0; border-bottom: 1px solid var(--hair); counter-increment: c; font-size: 16px; }
+  .checks li::before { content: counter(c, decimal-leading-zero); font: 12px/1.9 var(--mono); color: var(--ink-3); }
+  .checks li:last-child { border: 0; }
+  .caught h3 { font-size: 28px; letter-spacing: -0.02em; margin-bottom: 12px; }
+  .caught > p { color: var(--ink-2); margin-bottom: 24px; }
+  .bug { border: 1px solid var(--rule); padding: 18px 20px; margin-bottom: 12px; background: #fff; }
+  .bug .mono { color: var(--signal-ink); }
+  .bug p { margin-top: 6px; font-size: 15px; color: var(--ink-2); }
+  .bug code { font: 13px var(--mono); background: var(--paper-2); padding: 1px 5px; color: var(--ink); }
+
+  /* Examples */
+  .ex { display: grid; grid-template-columns: repeat(2, 1fr); border-top: 1px solid var(--rule); }
+  .ex a { display: block; text-decoration: none; padding: 24px 24px 40px 0; }
+  .ex a:nth-child(even) { border-left: 1px solid var(--rule); padding-left: 24px; }
+  .ex a:nth-child(n+3) { border-top: 1px solid var(--rule); }
+  .ex .shot { aspect-ratio: 16 / 10; border: 1px solid var(--rule); overflow: hidden; background: var(--paper-2); }
+  .ex img { width: 100%; height: 100%; object-fit: cover; object-position: top left; display: block; transition: transform 400ms cubic-bezier(.22,1,.36,1); }
+  .ex a:hover img { transform: scale(1.03); }
+  .ex h3 { display: flex; justify-content: space-between; align-items: center; font-size: 22px; letter-spacing: -0.02em; margin: 20px 0 8px; }
+  .ex a:hover h3 { color: var(--signal-ink); }
+  .ex p { color: var(--ink-2); font-size: 15px; }
+  .ex .d { color: var(--ink-3); margin-top: 12px; }
+
+  /* Sources */
+  .src { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--rule); }
+  .src > div { padding: 28px 24px 56px 0; }
+  .src > div + div { border-left: 1px solid var(--rule); padding-left: 24px; }
+  .src h3 { font: 500 12px var(--mono); text-transform: uppercase; color: var(--ink-3); margin-bottom: 20px; letter-spacing: 0.02em; }
+  .src ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+  .src li b { display: block; font-weight: 500; font-size: 16px; }
+  .src li span { font-size: 13px; color: var(--ink-3); }
+  .src a { text-decoration: none; } .src a:hover b { color: var(--signal-ink); }
+
+  /* Install */
+  .inst { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--rule); }
+  .inst > div { padding: 32px 32px 72px 0; }
+  .inst > div + div { border-left: 1px solid var(--rule); padding-left: 32px; padding-right: 0; }
+  .inst ol { margin: 0; padding: 0; list-style: none; display: grid; gap: 28px; counter-reset: s; }
+  .inst li { counter-increment: s; display: grid; grid-template-columns: 40px minmax(0, 1fr); }
+  .inst li::before { content: counter(s, decimal-leading-zero); font: 500 13px/1.9 var(--mono); color: var(--signal-ink); }
+  .inst li p { color: var(--ink-2); font-size: 15px; margin-top: 4px; }
+  .inst pre { margin: 12px 0 0; background: var(--ink); color: var(--paper); padding: 14px 16px; font: 13px/1.6 var(--mono); overflow-x: auto; }
+  .inst pre.tree { font: 14px/1.9 var(--mono); color: var(--ink-2); background: none; padding: 0; margin: 0; white-space: pre; overflow-x: auto; }
+  .tree b { color: var(--ink); font-weight: 500; }
+  .tree em { font-style: normal; color: var(--ink-3); }
+
+  footer .wrap { display: flex; justify-content: space-between; align-items: center; gap: 24px; padding-block: 32px; color: var(--ink-3); font-size: 14px; }
+  footer a { text-decoration: none; color: var(--ink-2); } footer a:hover { color: var(--ink); }
+
+  @media (max-width: 1080px) {
+    .steps { grid-template-columns: repeat(3, 1fr); }
+    .steps .step { border-left: 1px solid var(--rule); padding-left: 24px; }
+    .steps .step:nth-child(3n+1) { border-left: 0; padding-left: 0; }
+    .steps .step.key { padding-left: 24px; }
+    .pats { grid-template-columns: 1fr 1fr; }
+    .pat:nth-child(n) { border-left: 0; padding-left: 0; border-top: 0; }
+    .pat:nth-child(even) { border-left: 1px solid var(--rule); padding-left: 24px; }
+    .pat:nth-child(n+3) { border-top: 1px solid var(--rule); }
+    .stack-head { grid-template-columns: 1fr; gap: 8px; }
+    .step { border-bottom: 1px solid var(--rule); }
+    .step.key { padding-left: 24px; }
+    .dirs { grid-template-columns: 1fr 1fr; }
+    .dir { border-right: 1px solid var(--rule) !important; border-bottom: 1px solid var(--rule) !important; }
+    .dir:nth-child(2n) { border-right: 0 !important; }
+    .dir:nth-last-child(-n+2) { border-bottom: 0 !important; }
+    .src { grid-template-columns: 1fr 1fr; }
+    .src > div:nth-child(3) { border-left: 0; padding-left: 0; }
+    .src > div:nth-child(n+3) { border-top: 1px solid var(--rule); }
+  }
+  @media (max-width: 820px) {
+    .wrap { padding-inline: 20px; }
+    .nav ul { display: none; }
+    .hero, .review, .inst, .tok, .ex { grid-template-columns: minmax(0, 1fr); }
+    .hero-copy { padding: 56px 0 40px; border-right: 0; border-bottom: 1px solid var(--rule); }
+    .hero > * { min-width: 0; }
+  .demo-col { padding: 32px 0 40px; }
+    .head { grid-template-columns: 1fr; gap: 12px; padding: 56px 0 32px; }
+    .head .n { padding: 0; }
+    .steps, .dirs, .src { grid-template-columns: minmax(0, 1fr); }
+    .steps .step, .steps .step:nth-child(n) { border-left: 0; padding-left: 0; }
+    .step.key { padding-left: 20px; margin-inline: -20px; padding-right: 20px; }
+    .dir { border-right: 0 !important; border-bottom: 1px solid var(--rule) !important; }
+    .dir:last-child { border-bottom: 0 !important; }
+    .src > div + div { border-left: 0; padding-left: 0; border-top: 1px solid var(--rule); }
+    .tok > div + div, .review > div + div, .inst > div + div, .ex a + a { border-left: 0; padding-left: 0; border-top: 1px solid var(--rule); }
+    .modes, .pats { grid-template-columns: minmax(0, 1fr); }
+    .mode + .mode, .pat:nth-child(n) { border-left: 0; padding-left: 0; }
+    .pat:nth-child(n+2), .mode + .mode { border-top: 1px solid var(--rule); }
+    .trow { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+    .review > div, .inst > div { padding-right: 0; }
+    .slop .bad, .slop .good { font-size: 14px; }
+    .slop .bad { padding-right: 12px; } .slop .good { padding-left: 12px; }
+    .slop .colh + .colh { padding-left: 12px; }
+    footer .wrap { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M7 17 17 7M7 7h10v10"/></symbol>
+  <symbol id="i-gh" viewBox="0 0 24 24"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></symbol>
+  <symbol id="i-wallet" viewBox="0 0 24 24"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></symbol>
+</svg>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="logo" href="#"><i aria-hidden="true"></i>design-excellence</a>
+    <nav aria-label="Sections"><ul>
+      <li><a href="#workflow">Workflow</a></li><li><a href="#modes">Modes</a></li><li><a href="#motion">Motion</a></li><li><a href="#rules">Rules</a></li><li><a href="#examples">Examples</a></li><li><a href="#sources">Sources</a></li>
+    </ul></nav>
+    <a class="gh" href="https://github.com/jaiparmani/ui-craft-skill"><svg class="i" style="width:16px;height:16px"><use href="#i-gh"/></svg>GitHub</a>
+  </div>
+</header>
+
+<main>
+  <section class="wrap hero">
+    <div class="hero-copy">
+      <span class="tag mono"><b>Skill</b>for Claude Code</span>
+      <h1>Claude Code, minus the <span>AI look.</span></h1>
+      <p class="lede">A skill that makes Claude design like the best product teams and studios — from Linear-grade product UI to scroll storytelling, kinetic type and 3D. It decides first, builds with intent, then renders the page and critiques what it actually made.</p>
+      <div class="install">
+        <code id="cmd"><span class="p">$ </span>git clone https://github.com/jaiparmani/ui-craft-skill
+<span class="p">$ </span>cp -r ui-craft-skill/frontend-design-excellence ~/.claude/skills/</code>
+        <button class="copy" type="button" data-copy="cmd" aria-label="Copy install command"><svg class="i" style="width:14px;height:14px"><use href="#i-copy"/></svg><span>Copy</span></button>
+      </div>
+      <p class="fine">Then just ask for a UI. The skill triggers on its own. <a href="#install">More install options</a></p>
+    </div>
+
+    <div class="demo-col demo" data-mode="slop">
+      <div class="switch" role="group" aria-label="Compare output">
+        <button type="button" data-mode="slop" aria-pressed="true">Default output</button>
+        <button type="button" data-mode="craft" aria-pressed="false">With the skill</button>
+      </div>
+      <div class="stage">
+        <div class="card">
+          <span class="emoji" aria-hidden="true">💰</span>
+          <span class="ico" aria-hidden="true"><svg class="i"><use href="#i-wallet"/></svg></span>
+          <div class="lbl">Revenue (Nov)</div>
+          <div class="val">$68,240</div>
+          <div class="delta"><b>+8.1%</b><span> vs October</span></div>
+          <div class="row"><button class="b1" type="button" tabindex="-1">Send report</button><button class="b2" type="button" tabindex="-1">Details</button></div>
+        </div>
+      </div>
+      <p class="caption" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <section class="block" id="workflow">
+    <div class="wrap">
+      <div class="head"><span class="n">01 / Workflow</span><div><h2>Six steps. The fifth is the one that matters.</h2><p>Models can't judge a UI from its source code. The skill makes Claude open the page, screenshot it at three widths and several scroll positions, and fix what it sees before calling it done.</p></div></div>
+      <div class="steps">
+        <div class="step"><span class="k">01</span><h3>Brief</h3><p>Mode, audience, the one primary action, a single direction — plus concept and signature moment for expressive work.</p></div>
+        <div class="step"><span class="k">02</span><h3>Tokens</h3><p>A closed set of spacing, type, color, radius, shadow — and motion durations and curves.</p></div>
+        <div class="step"><span class="k">03</span><h3>Hierarchy</h3><p>Size, weight, spacing, contrast first. Color last. Every state designed, real content only.</p></div>
+        <div class="step"><span class="k">04</span><h3>Motion plan</h3><p>Only motion that shows hierarchy, creates continuity or rewards interaction. Right tool for each job.</p></div>
+        <div class="step key"><span class="k">05</span><h3>Render &amp; critique</h3><p>Screenshot at 1440, 1024 and 390px, at several scroll positions, and with reduced motion. Fix. Repeat.</p><em>Mandatory</em></div>
+        <div class="step"><span class="k">06</span><h3>Report</h3><p>Mode, direction, concept, and what was checked visually. Briefly.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="modes">
+    <div class="wrap">
+      <div class="head"><span class="n">02 / Modes</span><div><h2>First, decide what kind of page this is.</h2><p>A settings screen and an award submission need opposite instincts. The skill picks a mode before anything else, and the usable parts of any page — nav, forms, pricing — always follow product rules.</p></div></div>
+      <div class="modes">
+        <div class="mode"><span class="mono">Mode 01</span><h3>Product UI</h3><p>Apps, dashboards, admin, settings, checkout. Clarity, speed, density, convention.</p><span class="like mono">Like · Linear app · GitHub · Stripe Dashboard</span></div>
+        <div class="mode"><span class="mono">Mode 02</span><h3>Premium marketing</h3><p>Product and launch pages. Product clarity plus a few precise, memorable moments.</p><span class="like mono">Like · Apple · Linear · Stripe · Raycast</span></div>
+        <div class="mode hot"><span class="mono">Mode 03</span><h3>Expressive</h3><p>Portfolios, studios, campaigns, award submissions. One concept, one signature moment people remember.</p><span class="like mono">Like · Locomotive · Active Theory · Resn · Bruno Simon</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="motion">
+    <div class="wrap">
+      <div class="head"><span class="n">03 / Motion</span><div><h2>Beautiful isn't the same as animated.</h2><p>Motion has to communicate hierarchy, create continuity, or reward interaction — otherwise it's cut. The skill knows six patterns, when each one earns its place, and how to build it.</p></div></div>
+      <div class="pats">
+        <div class="pat"><div class="pdemo d-story" aria-hidden="true"><i></i></div><span class="mono">01</span><h3>Scroll storytelling</h3><p>Elements enter, scale and reveal as you scroll. Launches and long-form pages.</p><span class="study mono">Study · Apple product pages</span></div>
+        <div class="pat"><div class="pdemo d-pin" aria-hidden="true"><b></b><i></i><i></i><i></i></div><span class="mono">02</span><h3>Pinned sections</h3><p>A section holds still while its content changes. Step-by-step feature stories.</p><span class="study mono">Study · GSAP ScrollTrigger demos</span></div>
+        <div class="pat"><div class="pdemo d-type" aria-hidden="true"><span><em>Reveal</em></span><span><em>by line.</em></span></div><span class="mono">03</span><h3>Kinetic typography</h3><p>Text arrives word by word or line by line, through clipping and masks.</p><span class="study mono">Study · Awwwards, Codrops</span></div>
+        <div class="pat"><div class="pdemo d-micro"><button type="button" class="mag" data-mag tabindex="-1" aria-hidden="true">Hover me</button></div><span class="mono">04</span><h3>Micro-interactions</h3><p>Magnetic buttons, cursors, hover transitions, responsive feedback.</p><span class="study mono">Study · Linear, Raycast</span></div>
+        <div class="pat"><div class="pdemo d-para" aria-hidden="true"><i></i><i></i><i></i></div><span class="mono">05</span><h3>Parallax</h3><p>Layers move at different speeds to create depth. Subtle, never nauseating.</p><span class="study mono">Study · Creative agency portfolios</span></div>
+        <div class="pat"><div class="pdemo d-trans" aria-hidden="true"><i></i></div><span class="mono">06</span><h3>Page transitions</h3><p>Shared elements and route changes that keep visual continuity between pages.</p><span class="study mono">Study · Locomotive, Active Theory</span></div>
+      </div>
+      <div class="stack">
+        <div class="stack-head"><h3>The right tool for each job</h3><p>Default toolkit: <b>CSS + GSAP + Motion</b>. Three.js only when the experience genuinely benefits from 3D.</p></div>
+        <div class="trow"><b>CSS</b><span>Hover, focus, marquees, scroll-driven reveals, <code>@starting-style</code></span></div>
+        <div class="trow"><b>GSAP</b><span>Complex timelines, pinned scrolling, scroll storytelling, SplitText</span></div>
+        <div class="trow"><b>Motion</b><span>React transitions, gestures, layout and shared-element animation</span></div>
+        <div class="trow"><b>Lenis</b><span>Smooth scrolling that keeps native scroll in control</span></div>
+        <div class="trow"><b>Three.js / R3F</b><span>3D scenes and WebGL — vanilla or declarative in React</span></div>
+        <div class="trow"><b>Lottie</b><span>Lightweight designer-made vector animations</span></div>
+        <div class="trow"><b>View Transitions</b><span>Native route and page transitions with shared elements</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="rules">
+    <div class="wrap">
+      <div class="head"><span class="n">04 / Anti-slop</span><div><h2>Seventeen tells, and what to do instead.</h2><p>Each one signals “generated” the moment a person sees it. The skill names them so Claude can catch them in its own first draft.</p></div></div>
+      <div class="slop">
+        <div class="colh mono">The tell</div><div class="colh mono">Instead</div>
+        <div class="bad">Purple-to-blue gradient hero</div><div class="good">Solid neutral background; color saved for the accent and the CTA</div>
+        <div class="bad">Everything centered</div><div class="good">A left-aligned grid with a clear reading edge</div>
+        <div class="bad">Every block in a card with a shadow</div><div class="good">Spacing and quiet dividers; cards only for repeating items</div>
+        <div class="bad">Cards nested inside cards</div><div class="good">One level of containment</div>
+        <div class="bad">Emoji as icons</div><div class="good">One consistent SVG icon set — Lucide, Heroicons, Phosphor</div>
+        <div class="bad">Three identical feature cards</div><div class="good">Alternating rows that show the product actually working</div>
+        <div class="bad">Pure black on pure white</div><div class="good">Near-black ink on a tinted off-white</div>
+        <div class="bad">Glows, glass and giant shadows</div><div class="good">1px borders and soft, low-opacity elevation</div>
+        <div class="bad">A rainbow of accent colors</div><div class="good">One accent; semantic colors only where they carry meaning</div>
+        <div class="bad">“Unlock your potential” copy</div><div class="good">Specific copy about what the user can do</div>
+        <div class="bad">Bold everywhere</div><div class="good">Weight 500–600 for labels and headings, 400 for body</div>
+        <div class="bad">Focus outline removed</div><div class="good">A visible <code style="font:14px var(--mono)">:focus-visible</code> ring in the accent</div>
+        <div class="bad">Inter by default, with no thought</div><div class="good">Type chosen for the direction, paired on purpose</div>
+        <div class="bad">Placeholder text as the label</div><div class="good">A real &lt;label&gt; above every input</div>
+        <div class="bad">Dashboards of random sparkline noise</div><div class="good">Plausible data that tells a story — a trend, an outlier</div>
+        <div class="bad">Every section fades up the same way</div><div class="good">Motion varied by role: masks for type, clips for media, staggers for lists</div>
+        <div class="bad">Scroll-jacking and a 3D blob for its own sake</div><div class="good">Native scroll in control; 3D only when it carries the concept</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="directions">
+    <div class="wrap">
+      <div class="head"><span class="n">05 / Directions</span><div><h2>Pick one direction. Commit to it.</h2><p>Mixed styles look accidental. Nine directions — seven shown here, plus Immersive Studio and Kinetic Editorial for expressive work — each a full bundle of type, color, radius, density and motion.</p></div></div>
+      <div class="dirs">
+        <div class="dir"><div class="spec" style="background:oklch(0.15 0.01 260);color:#fff"><span class="aa" style="font-family:Inter;font-weight:600;letter-spacing:-0.04em">Aa</span><span class="sw"><i style="background:oklch(0.15 0.01 260);border-color:#444"></i><i style="background:oklch(0.45 0.018 260)"></i><i style="background:oklch(0.7 0.15 275)"></i></span></div><h3>Precise Product</h3><p>Hairline borders, restrained color, dense controls, first-class dark mode.</p><span class="for mono">Dev tools · SaaS · dashboards</span></div>
+        <div class="dir"><div class="spec" style="background:oklch(0.98 0.01 85);color:oklch(0.22 0.015 60)"><span class="aa" style="font-family:'Instrument Serif'">Aa</span><span class="sw"><i style="background:oklch(0.98 0.01 85)"></i><i style="background:oklch(0.22 0.015 60)"></i><i style="background:oklch(0.42 0.12 25)"></i></span></div><h3>Editorial</h3><p>Serif display, warm paper, rules instead of cards, generous measure.</p><span class="for mono">Content · docs · portfolios</span></div>
+        <div class="dir"><div class="spec" style="background:oklch(0.95 0.03 60);color:oklch(0.3 0.04 40)"><span class="aa" style="font-family:'Nunito Sans';font-weight:700">Aa</span><span class="sw"><i style="background:oklch(0.97 0.01 60)"></i><i style="background:oklch(0.7 0.15 35)"></i><i style="background:oklch(0.7 0.13 150)"></i></span></div><h3>Warm Friendly</h3><p>Humanist type, soft radii, pill buttons, cheerful but not neon.</p><span class="for mono">Consumer · onboarding · education</span></div>
+        <div class="dir"><div class="spec" style="background:var(--paper);color:var(--ink);border-bottom:1px solid var(--rule)"><span class="aa" style="font-weight:700;letter-spacing:-0.06em">Aa</span><span class="sw"><i style="background:var(--paper)"></i><i style="background:var(--ink)"></i><i style="background:var(--signal)"></i></span></div><h3>Swiss</h3><p>Visible grid, square corners, huge type, one loud spot color. This page.</p><span class="for mono">Portfolios · creative tools · events</span></div>
+        <div class="dir"><div class="spec" style="background:oklch(0.14 0.01 270);color:oklch(0.95 0.01 270)"><span class="aa" style="font-family:Inter;font-weight:400;letter-spacing:-0.03em">Aa</span><span class="sw"><i style="background:oklch(0.2 0.01 270);border-color:#333"></i><i style="background:oklch(0.3 0.02 270);border-color:#333"></i><i style="background:oklch(0.8 0.12 220)"></i></span></div><h3>Premium Dark</h3><p>Deep layered surfaces, cinematic scale, one luminous accent.</p><span class="for mono">Launches · premium products</span></div>
+        <div class="dir"><div class="spec" style="background:oklch(0.97 0.004 260);color:oklch(0.21 0.012 260)"><span class="aa" style="font-family:'JetBrains Mono';font-size:52px">0.00</span><span class="sw"><i style="background:oklch(0.52 0.13 150)"></i><i style="background:oklch(0.6 0.14 70)"></i><i style="background:oklch(0.55 0.2 25)"></i></span></div><h3>Data-Dense Pro</h3><p>13px type, tabular numbers, 32px rows, color reserved for status.</p><span class="for mono">Internal tools · analytics</span></div>
+        <div class="dir"><div class="spec" style="background:oklch(0.97 0.006 240);color:oklch(0.25 0.06 255)"><span class="aa" style="font-family:Inter;font-weight:600">$4.2k</span><span class="sw"><i style="background:#fff"></i><i style="background:oklch(0.3 0.08 255)"></i><i style="background:oklch(0.45 0.09 165)"></i></span></div><h3>Soft Modern</h3><p>Calm neutrals, a deep trustworthy accent, big clean numerals.</p><span class="for mono">Finance · B2B</span></div>
+        <div class="dir cta"><span class="mono">Not sure?</span><div><h3>The skill picks a default for each kind of product.</h3><p style="margin-top:12px">Or follow the brand you already have — consistency beats taste.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <div class="head"><span class="n">06 / Tokens</span><div><h2>A closed set of values.</h2><p>When something “needs” 13px, pick 12 or 16. Consistency reads as quality. The skill ships ready-to-paste scales and a starter <code style="font:15px var(--mono)">tokens.css</code> with light and dark themes.</p></div></div>
+      <div class="tok">
+        <div>
+          <h3>Spacing · 4px base</h3>
+          <div class="bars">
+            <div>4<i style="width:4px"></i></div><div>8<i style="width:8px"></i></div><div>12<i style="width:12px"></i></div><div>16<i style="width:16px"></i></div><div>24<i style="width:24px"></i></div><div>32<i style="width:32px"></i></div><div>48<i style="width:48px"></i></div><div>64<i style="width:64px"></i></div><div>96<i style="width:96px"></i></div><div>128<i style="width:128px;background:var(--signal)"></i></div>
+          </div>
+        </div>
+        <div>
+          <h3>Type · app scale</h3>
+          <div class="types">
+            <div><b style="font-size:30px;font-weight:600;letter-spacing:-0.02em">Page title</b><span>30</span></div>
+            <div><b style="font-size:24px;font-weight:600;letter-spacing:-0.015em">Section</b><span>24</span></div>
+            <div><b style="font-size:20px;font-weight:600">Card title</b><span>20</span></div>
+            <div><span style="font:400 16px var(--sans);color:var(--ink)">Body text, comfortable</span><span>16</span></div>
+            <div><span style="font:400 14px var(--sans);color:var(--ink)">Body text, dense</span><span>14</span></div>
+            <div><span style="font:500 12px var(--sans);color:var(--ink-2)">Meta and labels</span><span>12</span></div>
+          </div>
+        </div>
+        <div>
+          <h3>Color · OKLCH ramps</h3>
+          <div class="ramp" aria-label="Neutral ramp from 50 to 950">
+            <i style="background:oklch(0.985 0.003 260)"></i><i style="background:oklch(0.967 0.005 260)"></i><i style="background:oklch(0.925 0.008 260)"></i><i style="background:oklch(0.87 0.01 260)"></i><i style="background:oklch(0.71 0.015 260)"></i><i style="background:oklch(0.55 0.018 260)"></i><i style="background:oklch(0.45 0.018 260)"></i><i style="background:oklch(0.37 0.017 260)"></i><i style="background:oklch(0.27 0.014 260)"></i><i style="background:oklch(0.21 0.012 260)"></i><i style="background:oklch(0.15 0.01 260)"></i>
+          </div>
+          <div class="lbls"><span>50</span><span>neutral</span><span>950</span></div>
+          <div class="ramp" aria-label="Accent ramp">
+            <i style="background:oklch(0.97 0.02 255)"></i><i style="background:oklch(0.93 0.045 255)"></i><i style="background:oklch(0.87 0.08 255)"></i><i style="background:oklch(0.78 0.12 255)"></i><i style="background:oklch(0.7 0.15 255)"></i><i style="background:oklch(0.62 0.18 255)"></i><i style="background:oklch(0.55 0.19 255)"></i><i style="background:oklch(0.48 0.17 255)"></i><i style="background:oklch(0.4 0.14 255)"></i><i style="background:oklch(0.32 0.11 255)"></i><i style="background:oklch(0.25 0.08 255)"></i>
+          </div>
+          <div class="lbls"><span>50</span><span>accent</span><span>950</span></div>
+          <p class="note">Neutrals tinted toward the accent hue. Change one number and the whole ramp follows.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <div class="head"><span class="n">07 / Review loop</span><div><h2>Assume there are three problems. Find them.</h2><p>Claude runs the critique against a screenshot, not the code — from a five-second squint test down to tap targets on a phone.</p></div></div>
+      <div class="review">
+        <div>
+          <ol class="checks">
+            <li>Is the most important thing the most prominent?</li>
+            <li>Are gaps inside groups smaller than gaps between them?</li>
+            <li>Six type sizes or fewer, three weights or fewer?</li>
+            <li>Does muted text still pass 4.5:1 contrast?</li>
+            <li>Hover, focus, disabled, empty, loading and error — all designed?</li>
+            <li>At 390px: no sideways scroll, 44px tap targets?</li>
+            <li>At 1024px: does anything wrap badly in between?</li>
+            <li>Would anyone guess this came from a template?</li>
+          </ol>
+        </div>
+        <div class="caught">
+          <h3>It caught bugs in its own examples.</h3>
+          <p>Before shipping, the skill's example pages went through the same loop. The screenshots found problems the code read-through had missed:</p>
+          <div class="bug"><span class="mono">Landing · 1024px &amp; 390px</span><p>Text touching the screen edge. Cause: <code>padding: 112px 0</code> on a section silently overrode the container's side padding. Fix: <code>padding-block</code>.</p></div>
+          <div class="bug"><span class="mono">Landing · 1024px</span><p>The logo strip wrapped with one name orphaned on its own line.</p></div>
+          <div class="bug"><span class="mono">Motion launch · mid-scroll</span><p>In the pinned sequence, the outgoing and incoming step text overlapped for a few frames. Fix: finish one fade before the next starts.</p></div>
+          <div class="bug"><span class="mono">This site · 375px</span><p>The page was 618px wide on a phone: a <code>1fr</code> grid column grew to fit a code block. Fix: <code>minmax(0, 1fr)</code>.</p></div>
+          <div class="bug"><span class="mono">Settings · 390px</span><p>A tab label and the save button broke onto two lines; the save bar's text took three.</p></div>
+          <p style="margin-top:20px;font-size:15px;color:var(--ink-2)">Each lesson went back into the checklist, so future runs look for it.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="examples">
+    <div class="wrap">
+      <div class="head"><span class="n">08 / Examples</span><div><h2>Four reference pages to calibrate against.</h2><p>Complete single-file pages across all three modes. Claude studies them before building something similar — and so can you.</p></div></div>
+      <div class="ex">
+        <a href="examples/motion-launch.html"><div class="shot"><img src="img/motion-launch.png" alt="Dark launch page for a fictional telescope with a large serif headline over a starfield" loading="lazy"></div><h3>Motion launch <svg class="i"><use href="#i-arrow"/></svg></h3><p>Line-mask headline, parallax stars, a pinned focus sequence, horizontal gallery, magnetic CTA, full reduced-motion fallback.</p><p class="d mono">Expressive · GSAP + Lenis</p></a>
+        <a href="examples/dashboard.html"><div class="shot"><img src="img/dashboard.png" alt="Invoicing dashboard with sidebar, KPI row, revenue chart and invoice table" loading="lazy"></div><h3>Dashboard <svg class="i"><use href="#i-arrow"/></svg></h3><p>App shell, KPI row, a chart with a story, a table with right-aligned numbers and soft status badges.</p><p class="d mono">Precise Product · light &amp; dark</p></a>
+        <a href="examples/landing.html"><div class="shot"><img src="img/landing.png" alt="Editorial landing page for a research notebook with serif headline and product visual" loading="lazy"></div><h3>Landing page <svg class="i"><use href="#i-arrow"/></svg></h3><p>Asymmetric hero with a real product visual, alternating feature rows, a testimonial, pricing.</p><p class="d mono">Editorial</p></a>
+        <a href="examples/settings-form.html"><div class="shot"><img src="img/settings-form.png" alt="Workspace settings form with labelled fields, inline validation error and save bar" loading="lazy"></div><h3>Settings form <svg class="i"><use href="#i-arrow"/></svg></h3><p>Labels above inputs, inline validation, toggles vs checkboxes, a danger zone, a sticky save bar.</p><p class="d mono">Precise Product · warm</p></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="sources">
+    <div class="wrap">
+      <div class="head"><span class="n">09 / Sources</span><div><h2>Studied from the best work on the web.</h2><p>Every rule traces back to a source the skill cites, with a note on what to study in each — for principles, never to clone.</p></div></div>
+      <div class="src">
+        <div><h3>Award-winning studios</h3><ul>
+          <li><a href="https://locomotive.ca/"><b>Locomotive</b><span>Storytelling, typography, transitions</span></a></li>
+          <li><a href="https://activetheory.net/"><b>Active Theory</b><span>WebGL, 3D, immersive interaction</span></a></li>
+          <li><a href="https://resn.co.nz/"><b>Resn</b><span>Experimental interactions, odd layouts</span></a></li>
+          <li><a href="https://bruno-simon.com/"><b>Bruno Simon</b><span>Playful 3D, creative navigation</span></a></li>
+        </ul></div>
+        <div><h3>Premium product</h3><ul>
+          <li><a href="https://www.apple.com/"><b>Apple</b><span>Scroll stories, product reveals, whitespace</span></a></li>
+          <li><a href="https://linear.app/"><b>Linear</b><span>Dark surfaces, detail, density</span></a></li>
+          <li><a href="https://stripe.com/"><b>Stripe</b><span>Typography, gradients, clarity</span></a></li>
+          <li><a href="https://www.raycast.com/"><b>Raycast</b><span>Presentation, micro-interactions</span></a></li>
+        </ul></div>
+        <div><h3>Galleries &amp; experiments</h3><ul>
+          <li><a href="https://godly.website/"><b>Godly</b><span>Unusual concepts and layouts</span></a></li>
+          <li><a href="https://www.awwwards.com/"><b>Awwwards</b><span>Site of the Day archive</span></a></li>
+          <li><a href="https://tympanus.net/codrops/"><b>Codrops</b><span>Animation techniques with source</span></a></li>
+          <li><a href="https://minimal.gallery/"><b>Minimal Gallery</b><span>Editorial composition, restraint</span></a></li>
+        </ul></div>
+        <div><h3>Foundations &amp; docs</h3><ul>
+          <li><a href="https://www.refactoringui.com/"><b>Refactoring UI</b><span>Hierarchy, spacing, color, depth</span></a></li>
+          <li><a href="https://lawsofux.com/"><b>Laws of UX</b><span>Hick, Fitts, Jakob, Doherty</span></a></li>
+          <li><a href="https://gsap.com/docs/v3/Plugins/ScrollTrigger/"><b>GSAP ScrollTrigger</b><span>Pinning and scroll timelines</span></a></li>
+          <li><a href="https://motion.dev/docs/react"><b>Motion for React</b><span>Gestures and layout animation</span></a></li>
+          <li><a href="https://threejs.org/"><b>Three.js · R3F · Lenis · Lottie</b><span>3D, smooth scroll, vector motion</span></a></li>
+        </ul></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="install">
+    <div class="wrap">
+      <div class="head"><span class="n">10 / Install</span><div><h2>Two commands. Then ask for a UI.</h2><p>Claude Code loads skills from <code style="font:15px var(--mono)">~/.claude/skills</code> for every project, or from <code style="font:15px var(--mono)">.claude/skills</code> inside a single repo.</p></div></div>
+      <div class="inst">
+        <div>
+          <ol>
+            <li><div><b>Get the skill</b><pre>git clone https://github.com/jaiparmani/ui-craft-skill</pre></div></li>
+            <li><div><b>Install it for all projects</b><pre>cp -r ui-craft-skill/frontend-design-excellence ~/.claude/skills/</pre><p>Or copy it into one project's <code style="font:13px var(--mono)">.claude/skills/</code> folder.</p></div></li>
+            <li><div><b>Ask for any UI</b><p>“Build a pricing page”, “this form looks amateur”, “make the dashboard look professional” — the skill triggers on its own. Type <code style="font:13px var(--mono)">/frontend-design-excellence</code> to call it directly.</p></div></li>
+          </ol>
+        </div>
+        <div>
+<pre class="tree"><b>frontend-design-excellence/</b>
+├── <b>SKILL.md</b>                <em>workflow + anti-slop list</em>
+├── references/
+│   ├── principles.md       <em>hierarchy, type, color</em>
+│   ├── tokens.md           <em>scales and CSS variables</em>
+│   ├── aesthetics.md       <em>seven directions</em>
+│   ├── components.md       <em>patterns and page recipes</em>
+│   ├── expressive.md       <em>award-level design</em>
+│   ├── motion.md           <em>six motion patterns</em>
+│   ├── tech-stack.md       <em>GSAP, Motion, Lenis, 3D</em>
+│   ├── review-checklist.md <em>the critique loop</em>
+│   └── sources.md          <em>where it all comes from</em>
+├── examples/
+│   ├── dashboard.html
+│   ├── landing.html
+│   ├── settings-form.html
+│   ├── motion-launch.html
+│   └── before-after.md
+├── assets/tokens.css
+└── evals/                  <em>test prompts + checks</em></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>frontend-design-excellence — a design skill for Claude Code.</span>
+    <a href="https://github.com/jaiparmani/ui-craft-skill">github.com/jaiparmani/ui-craft-skill</a>
+  </div>
+</footer>
+
+<script>
+  // Before/after demo
+  const demo = document.querySelector('.demo');
+  const caption = demo.querySelector('.caption');
+  const captions = {
+    slop: '<b>The default.</b> Purple gradient, emoji icon, everything bold and centered, two loud buttons fighting, a delta with no context.',
+    craft: '<b>With the skill.</b> Quiet label, the number carries the weight, tabular figures, a delta with context, one primary action.'
+  };
+  function setMode(m) {
+    demo.dataset.mode = m;
+    demo.querySelectorAll('.switch button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === m)));
+    caption.innerHTML = captions[m];
+  }
+  demo.querySelectorAll('.switch button').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
+  setMode('slop');
+  let auto = setTimeout(() => setMode('craft'), 1800);
+  demo.addEventListener('click', () => clearTimeout(auto), { once: true });
+
+  // Magnetic demo
+  if (matchMedia('(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)').matches) {
+    document.querySelectorAll('[data-mag]').forEach(btn => {
+      const box = btn.parentElement;
+      btn.style.transition = 'transform .35s cubic-bezier(.22,1,.36,1), background .15s';
+      box.addEventListener('pointermove', e => { const r = btn.getBoundingClientRect();
+        btn.style.transform = `translate(${(e.clientX - r.left - r.width / 2) * 0.35}px, ${(e.clientY - r.top - r.height / 2) * 0.35}px)`; });
+      box.addEventListener('pointerleave', () => { btn.style.transform = ''; });
+    });
+  }
+
+  // Copy button
+  document.querySelectorAll('[data-copy]').forEach(btn => btn.addEventListener('click', async () => {
+    const text = document.getElementById(btn.dataset.copy).textContent.replace(/^\$\s*/gm, '');
+    const label = btn.querySelector('span');
+    try { await navigator.clipboard.writeText(text); label.textContent = 'Copied'; }
+    catch { label.textContent = 'Select & copy'; }
+    setTimeout(() => label.textContent = 'Copy', 1600);
+  }));
+</script>
+</body>
+</html>

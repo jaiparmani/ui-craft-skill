@@ -1,0 +1,902 @@
+<!doctype html>
+<!--
+  Support admin: Users
+  Brief
+  1. Who & job: support agents looking up a specific account and changing its role/status.
+  2. Primary: the search box (finding the user); "Invite user" is the single primary button.
+  3. Density: data tool, compact rows.
+  4. Direction: Data-Dense Pro (neutral, accent only for interaction/selection, semantic colors for status).
+  5. Constraints: one static file, no backend, light + dark via prefers-color-scheme.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Users · Support Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --h: 255; --nh: 255;
+    --bg: oklch(0.985 0.003 var(--nh));
+    --surface: #fff;
+    --surface-2: oklch(0.967 0.005 var(--nh));
+    --surface-3: oklch(0.945 0.007 var(--nh));
+    --border: oklch(0.925 0.008 var(--nh));
+    --border-strong: oklch(0.87 0.01 var(--nh));
+    --text: oklch(0.21 0.012 var(--nh));
+    --text-muted: oklch(0.45 0.018 var(--nh));
+    --text-subtle: oklch(0.52 0.018 var(--nh));
+    --accent: oklch(0.52 0.17 var(--h));
+    --accent-hover: oklch(0.46 0.16 var(--h));
+    --accent-fg: #fff;
+    --accent-soft: oklch(0.96 0.025 var(--h));
+    --accent-soft-fg: oklch(0.42 0.14 var(--h));
+    --ring: oklch(0.6 0.17 var(--h) / 0.3);
+    --success: oklch(0.5 0.13 150);  --success-soft: oklch(0.96 0.04 150);
+    --warning: oklch(0.52 0.12 65);  --warning-soft: oklch(0.97 0.05 85);
+    --danger: oklch(0.53 0.2 25);    --danger-soft: oklch(0.96 0.03 25);
+    --neutral-badge: oklch(0.45 0.018 var(--nh)); --neutral-badge-soft: oklch(0.955 0.006 var(--nh));
+    --shadow-xs: 0 1px 2px oklch(0.2 0.02 var(--nh) / 0.06);
+    --shadow-md: 0 2px 4px oklch(0.2 0.02 var(--nh) / 0.04), 0 8px 16px -4px oklch(0.2 0.02 var(--nh) / 0.12);
+    --shadow-lg: 0 4px 8px oklch(0.2 0.02 var(--nh) / 0.04), 0 24px 48px -12px oklch(0.2 0.02 var(--nh) / 0.22);
+    --radius-sm: 4px; --radius: 6px; --radius-lg: 10px;
+    --font: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    color-scheme: light dark;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: oklch(0.155 0.01 var(--nh));
+      --surface: oklch(0.19 0.012 var(--nh));
+      --surface-2: oklch(0.235 0.013 var(--nh));
+      --surface-3: oklch(0.27 0.014 var(--nh));
+      --border: oklch(0.28 0.014 var(--nh));
+      --border-strong: oklch(0.36 0.016 var(--nh));
+      --text: oklch(0.96 0.005 var(--nh));
+      --text-muted: oklch(0.74 0.015 var(--nh));
+      --text-subtle: oklch(0.66 0.015 var(--nh));
+      --accent: oklch(0.7 0.14 var(--h));
+      --accent-hover: oklch(0.77 0.12 var(--h));
+      --accent-fg: oklch(0.15 0.01 var(--nh));
+      --accent-soft: oklch(0.3 0.07 var(--h) / 0.5);
+      --accent-soft-fg: oklch(0.85 0.08 var(--h));
+      --ring: oklch(0.7 0.14 var(--h) / 0.35);
+      --success: oklch(0.77 0.14 150); --success-soft: oklch(0.3 0.06 150 / 0.5);
+      --warning: oklch(0.82 0.13 80);  --warning-soft: oklch(0.32 0.06 75 / 0.5);
+      --danger: oklch(0.73 0.17 25);   --danger-soft: oklch(0.3 0.08 25 / 0.5);
+      --neutral-badge: oklch(0.78 0.015 var(--nh)); --neutral-badge-soft: oklch(0.28 0.014 var(--nh));
+      --shadow-md: 0 8px 24px -6px oklch(0 0 0 / 0.5);
+      --shadow-lg: 0 24px 48px -12px oklch(0 0 0 / 0.6);
+    }
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font-family: var(--font); font-size: 14px; line-height: 1.5;
+    color: var(--text); background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+    font-feature-settings: "cv11", "ss01";
+  }
+  button, input, select { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .i { width: 16px; height: 16px; flex: none; stroke: currentColor; fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+  .num { font-variant-numeric: tabular-nums; }
+  [hidden] { display: none !important; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  /* Top bar */
+  .topbar {
+    height: 48px; display: flex; align-items: center; gap: 24px;
+    padding-inline: 24px; background: var(--surface); border-bottom: 1px solid var(--border);
+  }
+  .brand { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 14px; white-space: nowrap; }
+  .brand-mark { width: 20px; height: 20px; border-radius: var(--radius-sm); background: var(--text); color: var(--surface); display: grid; place-items: center; }
+  .brand-mark .i { width: 12px; height: 12px; stroke-width: 2.25; }
+  .brand small { font-weight: 400; color: var(--text-subtle); }
+  .nav { display: flex; gap: 4px; height: 100%; }
+  .nav a {
+    display: flex; align-items: center; padding-inline: 8px; color: var(--text-muted);
+    text-decoration: none; font-size: 13px; font-weight: 500; border-bottom: 2px solid transparent; margin-bottom: -1px;
+  }
+  .nav a:hover { color: var(--text); }
+  .nav a[aria-current="page"] { color: var(--text); border-bottom-color: var(--text); }
+  .me { margin-left: auto; display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-muted); white-space: nowrap; }
+
+  /* Page */
+  main { max-width: 1280px; margin: 0 auto; padding: 32px 24px 48px; }
+  .page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 24px; }
+  h1 { margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -0.015em; line-height: 1.25; }
+  .page-head p { margin: 4px 0 0; color: var(--text-muted); font-size: 14px; }
+  .page-head p strong { color: var(--text); font-weight: 500; }
+
+  /* Buttons */
+  .btn {
+    height: 32px; padding: 0 12px; display: inline-flex; align-items: center; gap: 6px;
+    border-radius: var(--radius); border: 1px solid var(--border-strong); background: var(--surface);
+    box-shadow: var(--shadow-xs); font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap;
+    transition: background 120ms, border-color 120ms, color 120ms;
+  }
+  .btn:hover { background: var(--surface-2); }
+  .btn:active { transform: translateY(0.5px); }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  .btn:disabled:hover { background: var(--surface); }
+  .btn-primary { background: var(--accent); border-color: var(--accent); color: var(--accent-fg); }
+  .btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+  .btn-danger { background: var(--danger); border-color: var(--danger); color: #fff; }
+  .btn-danger:hover { background: oklch(0.48 0.19 25); }
+  @media (prefers-color-scheme: dark) { .btn-danger { color: oklch(0.15 0.01 var(--nh)); } .btn-danger:hover { background: oklch(0.78 0.15 25); } }
+  .icon-btn {
+    width: 28px; height: 28px; display: inline-grid; place-items: center; border: 0; background: transparent;
+    border-radius: var(--radius); color: var(--text-muted); cursor: pointer;
+  }
+  .icon-btn:hover, .icon-btn[aria-expanded="true"] { background: var(--surface-3); color: var(--text); }
+
+  /* Toolbar */
+  .panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: clip; }
+  .toolbar { display: flex; align-items: center; gap: 12px; padding: 12px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+  .search { position: relative; flex: 1 1 280px; max-width: 400px; }
+  .search .i { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-subtle); pointer-events: none; }
+  .search input {
+    width: 100%; height: 32px; padding: 0 56px 0 32px; border: 1px solid var(--border-strong); border-radius: var(--radius);
+    background: var(--surface); font-size: 13px; box-shadow: var(--shadow-xs);
+    transition: border-color 120ms, box-shadow 120ms;
+  }
+  .search input::placeholder { color: var(--text-subtle); }
+  .search input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--ring); }
+  .search input::-webkit-search-cancel-button { display: none; }
+  .kbd {
+    position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+    font: 11px/1 var(--font); color: var(--text-subtle); border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm); padding: 3px 5px; background: var(--surface-2);
+  }
+  .clear-search { position: absolute; right: 2px; top: 2px; display: none; }
+  .search.has-value .clear-search { display: inline-grid; }
+  .search.has-value .kbd { display: none; }
+
+  .segmented { display: inline-flex; padding: 2px; gap: 2px; background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius); }
+  .segmented button {
+    height: 26px; padding: 0 10px; border: 0; background: transparent; border-radius: var(--radius-sm);
+    font-size: 13px; font-weight: 500; color: var(--text-muted); cursor: pointer; white-space: nowrap;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .segmented button:hover { color: var(--text); }
+  .segmented button[aria-pressed="true"] { background: var(--surface); color: var(--text); box-shadow: var(--shadow-xs), 0 0 0 1px var(--border); }
+  .segmented .count { font-size: 12px; color: var(--text-subtle); font-variant-numeric: tabular-nums; }
+  .select-wrap { position: relative; }
+  .select-wrap select {
+    appearance: none; height: 32px; padding: 0 30px 0 10px; border: 1px solid var(--border-strong); border-radius: var(--radius);
+    background: var(--surface); font-size: 13px; font-weight: 500; box-shadow: var(--shadow-xs); cursor: pointer;
+  }
+  .select-wrap select:focus-visible { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--ring); }
+  .select-wrap .i { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--text-subtle); }
+  .toolbar-end { margin-left: auto; font-size: 13px; color: var(--text-muted); white-space: nowrap; }
+
+  /* Bulk bar */
+  .bulkbar {
+    display: none; align-items: center; gap: 8px; padding: 8px 12px; background: var(--accent-soft);
+    border-bottom: 1px solid var(--border); font-size: 13px; color: var(--accent-soft-fg);
+  }
+  .bulkbar.show { display: flex; }
+  .bulkbar strong { font-weight: 600; margin-right: 8px; }
+  .bulkbar .btn { height: 28px; }
+  .bulkbar .link { margin-left: auto; }
+  .link { background: none; border: 0; padding: 4px; color: inherit; font-size: 13px; font-weight: 500; cursor: pointer; text-decoration: underline; text-underline-offset: 2px; border-radius: var(--radius-sm); }
+
+  /* Table */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead th {
+    position: sticky; top: 0; z-index: 1;
+    height: 36px; padding: 0 12px; text-align: left; font-size: 12px; font-weight: 500; color: var(--text-muted);
+    background: var(--surface-2); border-bottom: 1px solid var(--border); white-space: nowrap;
+  }
+  th.sortable button {
+    all: unset; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; border-radius: var(--radius-sm);
+  }
+  th.sortable button:hover { color: var(--text); }
+  th.sortable button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  th .sort-i { width: 12px; height: 12px; opacity: 0; }
+  th[aria-sort] .sort-i { opacity: 1; color: var(--text); }
+  th[aria-sort="descending"] .sort-i { transform: rotate(180deg); }
+  th.sortable button:hover .sort-i { opacity: 0.6; }
+  th[aria-sort] button { color: var(--text); }
+  tbody td { height: 52px; padding: 0 12px; border-bottom: 1px solid var(--border); color: var(--text-muted); white-space: nowrap; }
+  tbody tr:last-child td { border-bottom: 0; }
+  tbody tr:hover td { background: var(--surface-2); }
+  tbody tr.selected td { background: var(--accent-soft); }
+  .col-check { width: 44px; padding-right: 0; }
+  .col-actions { width: 56px; text-align: right; }
+  td.col-actions { text-align: right; }
+
+  input[type="checkbox"] {
+    appearance: none; width: 16px; height: 16px; margin: 0; display: grid; place-items: center; cursor: pointer;
+    border: 1px solid var(--border-strong); border-radius: var(--radius-sm); background: var(--surface);
+  }
+  input[type="checkbox"]:checked, input[type="checkbox"]:indeterminate { background: var(--accent); border-color: var(--accent); }
+  input[type="checkbox"]:checked::after {
+    content: ""; width: 9px; height: 5px; border: 2px solid var(--accent-fg); border-top: 0; border-right: 0; transform: translateY(-1px) rotate(-45deg);
+  }
+  input[type="checkbox"]:indeterminate::after { content: ""; width: 8px; height: 2px; background: var(--accent-fg); border-radius: 1px; }
+
+  .user { display: flex; align-items: center; gap: 12px; min-width: 0; }
+  .avatar {
+    width: 28px; height: 28px; border-radius: 50%; flex: none; display: grid; place-items: center;
+    font-size: 11px; font-weight: 600; color: var(--text-muted); background: var(--surface-3); letter-spacing: 0.02em;
+  }
+  .user-name { color: var(--text); font-weight: 500; max-width: 240px; overflow: hidden; text-overflow: ellipsis; display: block; }
+  .user-email { max-width: 260px; overflow: hidden; text-overflow: ellipsis; display: block; }
+  .user-text { min-width: 0; line-height: 1.35; }
+  .user-id { font-family: var(--mono); font-size: 11px; color: var(--text-subtle); }
+  mark { background: oklch(0.92 0.1 95); color: inherit; border-radius: 2px; padding: 0 1px; }
+  @media (prefers-color-scheme: dark) { mark { background: oklch(0.45 0.1 95); } }
+
+  .role { display: inline-flex; align-items: center; gap: 6px; color: var(--text); }
+  .role .i { width: 14px; height: 14px; color: var(--text-subtle); }
+
+  .badge { display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 8px; border-radius: 999px; font-size: 12px; font-weight: 500; white-space: nowrap; }
+  .badge::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .badge.active { color: var(--success); background: var(--success-soft); }
+  .badge.invited { color: var(--warning); background: var(--warning-soft); }
+  .badge.suspended { color: var(--neutral-badge); background: var(--neutral-badge-soft); }
+  .badge.suspended::before { background: var(--danger); }
+  .last { color: var(--text-muted); }
+  .last.never { color: var(--text-subtle); font-style: normal; }
+
+  /* Empty */
+  .empty { padding: 64px 24px; text-align: center; }
+  .empty .i { width: 24px; height: 24px; color: var(--text-subtle); margin-bottom: 12px; }
+  .empty h2 { margin: 0 0 4px; font-size: 14px; font-weight: 600; }
+  .empty p { margin: 0 0 16px; color: var(--text-muted); font-size: 13px; }
+
+  /* Footer / pagination */
+  .table-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 12px; border-top: 1px solid var(--border); font-size: 13px; color: var(--text-muted); }
+  .pager { display: flex; align-items: center; gap: 4px; }
+  .pager .page-btn {
+    min-width: 32px; height: 32px; padding: 0 8px; border: 1px solid transparent; background: transparent; border-radius: var(--radius);
+    font-size: 13px; font-weight: 500; color: var(--text-muted); cursor: pointer; font-variant-numeric: tabular-nums;
+    display: inline-grid; place-items: center;
+  }
+  .pager .page-btn:hover:not(:disabled) { background: var(--surface-2); color: var(--text); }
+  .pager .page-btn[aria-current="page"] { border-color: var(--border-strong); background: var(--surface); color: var(--text); box-shadow: var(--shadow-xs); }
+  .pager .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .per-page { display: flex; align-items: center; gap: 8px; }
+  .per-page select { height: 28px; }
+
+  /* Menu */
+  .menu {
+    position: fixed; z-index: 20; min-width: 200px; padding: 4px; background: var(--surface);
+    border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow-md);
+    animation: pop 120ms var(--ease);
+  }
+  @keyframes pop { from { opacity: 0; transform: translateY(-4px); } }
+  .menu[hidden] { display: none; }
+  .menu button {
+    width: 100%; height: 32px; display: flex; align-items: center; gap: 8px; padding: 0 8px; border: 0; background: transparent;
+    border-radius: var(--radius); font-size: 13px; text-align: left; cursor: pointer; color: var(--text);
+  }
+  .menu button .i { color: var(--text-subtle); }
+  .menu button:hover, .menu button:focus-visible { background: var(--surface-2); outline: none; }
+  .menu button.danger { color: var(--danger); }
+  .menu button.danger .i { color: var(--danger); }
+  .menu hr { border: 0; border-top: 1px solid var(--border); margin: 4px -4px; }
+  .menu .menu-label { padding: 6px 8px 4px; font-size: 12px; color: var(--text-subtle); }
+  .menu button .check { margin-left: auto; color: var(--accent); }
+
+  /* Dialog */
+  dialog {
+    width: min(440px, calc(100vw - 32px)); padding: 0; border: 1px solid var(--border); border-radius: 12px;
+    background: var(--surface); color: var(--text); box-shadow: var(--shadow-lg);
+  }
+  dialog::backdrop { background: oklch(0.15 0.01 var(--nh) / 0.45); }
+  dialog[open] { animation: pop 160ms var(--ease); }
+  .dlg-body { padding: 24px 24px 16px; }
+  .dlg-body h2 { margin: 0 0 8px; font-size: 16px; font-weight: 600; letter-spacing: -0.01em; }
+  .dlg-body p { margin: 0; color: var(--text-muted); }
+  .dlg-actions { display: flex; justify-content: flex-end; gap: 8px; padding: 16px 24px; border-top: 1px solid var(--border); background: var(--surface-2); border-radius: 0 0 12px 12px; }
+  .field { display: grid; gap: 6px; margin-top: 16px; }
+  .field label { font-size: 13px; font-weight: 500; }
+  .field input, .field select {
+    height: 36px; padding: 0 10px; border: 1px solid var(--border-strong); border-radius: var(--radius); background: var(--surface); font-size: 14px; width: 100%;
+  }
+  .field input:focus, .field select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--ring); }
+  .field .err { display: none; align-items: center; gap: 4px; color: var(--danger); font-size: 13px; }
+  .field.invalid input { border-color: var(--danger); }
+  .field.invalid .err { display: flex; }
+  .field .help { color: var(--text-muted); font-size: 13px; }
+  .field .select-wrap select { height: 36px; font-weight: 400; font-size: 14px; box-shadow: none; }
+
+  /* Toast */
+  .toasts { position: fixed; right: 24px; bottom: 24px; display: grid; gap: 8px; z-index: 30; }
+  .toast {
+    display: flex; align-items: center; gap: 12px; padding: 10px 12px 10px 14px; min-width: 280px; max-width: 400px;
+    background: var(--text); color: var(--bg); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); font-size: 13px;
+    animation: pop 200ms var(--ease);
+  }
+  .toast .i { color: var(--success); }
+  .toast button { margin-left: auto; background: none; border: 0; color: inherit; font-weight: 600; cursor: pointer; padding: 4px 6px; border-radius: var(--radius-sm); }
+  .toast button:hover { background: oklch(1 0 0 / 0.12); }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .col-last { display: none; }
+  }
+  @media (max-width: 720px) {
+    .topbar { padding-inline: 16px; gap: 16px; }
+    .nav, .me span { display: none; }
+    main { padding: 24px 16px 48px; }
+    .page-head { align-items: flex-start; }
+    .search { max-width: none; flex-basis: 100%; }
+    .search input, .select-wrap select { height: 40px; }
+    .kbd { display: none; }
+    .toolbar-end { display: none; }
+    .segmented { flex: 1 1 100%; min-width: 0; }
+    .segmented button { height: 34px; flex: 1; padding: 0 6px; }
+    .toolbar > .select-wrap { flex: 1 1 100%; }
+    .toolbar > .select-wrap select { width: 100%; }
+    .page-head .btn { height: 40px; }
+
+    /* Reflow rows into stacked items */
+    thead { display: none; }
+    table, tbody { display: block; }
+    tbody tr {
+      display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "user act" "meta act";
+      column-gap: 8px; row-gap: 6px; padding: 12px; border-bottom: 1px solid var(--border); position: relative;
+    }
+    tbody tr:last-child { border-bottom: 0; }
+    tbody td { height: auto; padding: 0; border: 0; background: transparent !important; }
+    tbody tr:hover, tbody tr.selected { background: var(--surface-2); }
+    tbody tr.selected { background: var(--accent-soft); }
+    td.col-check, .bulkbar.show { display: none; } /* bulk selection is a desktop task */
+    .user-id { display: none; }
+    tbody tr { padding: 12px 8px 12px 12px; }
+    td.col-user { grid-area: user; min-width: 0; }
+    td.col-email { display: none; }
+    td.col-role, td.col-status, td.col-last { grid-area: meta; }
+    td.col-meta { grid-area: meta; display: flex !important; gap: 4px 12px; align-items: center; flex-wrap: wrap; padding-left: 40px; }
+    td.col-role, td.col-status, td.col-last.col-desktop { display: none; }
+    td.col-actions { grid-area: act; align-self: start; }
+    .icon-btn { width: 40px; height: 40px; }
+    .user-name, .user-email { max-width: none; }
+    .user-sub { display: block !important; }
+    .table-foot { flex-direction: column-reverse; align-items: stretch; }
+    .pager { justify-content: space-between; }
+    .pager .page-btn { min-width: 40px; height: 40px; }
+    .pager .page-num { display: none; }
+    .pager .page-status { display: inline !important; }
+    .toasts { left: 16px; right: 16px; bottom: 16px; }
+    .toast { min-width: 0; max-width: none; }
+  }
+  .col-meta, .user-sub, .page-status { display: none; }
+  .user-sub { color: var(--text-muted); font-size: 13px; overflow: hidden; text-overflow: ellipsis; }
+
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <!-- Lucide icons (ISC) -->
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M5 12h14M12 5v14"/></symbol>
+  <symbol id="i-chev-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-chev-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+  <symbol id="i-chev-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+  <symbol id="i-arrow-up" viewBox="0 0 24 24"><path d="m5 12 7-7 7 7M12 19V5"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></symbol>
+  <symbol id="i-pen" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.38 3.62a1 1 0 0 1 3 3L7.37 18.64a2 2 0 0 1-.86.5l-2.87.84a.5.5 0 0 1-.62-.62l.84-2.87a2 2 0 0 1 .5-.86z"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.06 12.35a1 1 0 0 1 0-.7 10.75 10.75 0 0 1 19.88 0 1 1 0 0 1 0 .7 10.75 10.75 0 0 1-19.88 0"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></symbol>
+  <symbol id="i-key" viewBox="0 0 24 24"><path d="m15.5 7.5 2.3 2.3a1 1 0 0 0 1.4 0l2.1-2.1a1 1 0 0 0 0-1.4L19 4"/><path d="m21 2-9.6 9.6"/><circle cx="7.5" cy="15.5" r="5.5"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></symbol>
+  <symbol id="i-ban" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></symbol>
+  <symbol id="i-rotate" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></symbol>
+  <symbol id="i-life" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24M14.83 9.17l4.24-4.24M14.83 14.83l4.24 4.24M9.17 14.83l-4.24 4.24"/><circle cx="12" cy="12" r="4"/></symbol>
+</svg>
+
+<header class="topbar">
+  <div class="brand"><span class="brand-mark"><svg class="i"><use href="#i-life"/></svg></span>Fieldnote <small>Support</small></div>
+  <nav class="nav" aria-label="Main">
+    <a href="#">Tickets</a>
+    <a href="#" aria-current="page">Users</a>
+    <a href="#">Workspaces</a>
+    <a href="#">Audit log</a>
+  </nav>
+  <div class="me"><span>Priya Raman</span><span class="avatar" aria-hidden="true">PR</span></div>
+</header>
+
+<main>
+  <div class="page-head">
+    <div>
+      <h1>Users</h1>
+      <p id="summary"></p>
+    </div>
+    <button class="btn btn-primary" id="invite-btn"><svg class="i"><use href="#i-plus"/></svg>Invite user</button>
+  </div>
+
+  <section class="panel" aria-label="User directory">
+    <div class="toolbar">
+      <div class="search" id="search-box">
+        <label for="q" class="sr-only">Search users</label>
+        <svg class="i"><use href="#i-search"/></svg>
+        <input id="q" type="search" placeholder="Search by name, email or ID" autocomplete="off" spellcheck="false">
+        <span class="kbd" aria-hidden="true">/</span>
+        <button class="icon-btn clear-search" id="clear-q" aria-label="Clear search"><svg class="i"><use href="#i-x"/></svg></button>
+      </div>
+      <div class="segmented" role="group" aria-label="Filter by role" id="role-filter"></div>
+      <div class="select-wrap">
+        <label for="status-filter" class="sr-only">Filter by status</label>
+        <select id="status-filter">
+          <option value="all">Any status</option>
+          <option value="active">Active</option>
+          <option value="invited">Invited</option>
+          <option value="suspended">Suspended</option>
+        </select>
+        <svg class="i"><use href="#i-chev-down"/></svg>
+      </div>
+      <div class="toolbar-end num" id="result-count" aria-live="polite"></div>
+    </div>
+
+    <div class="bulkbar" id="bulkbar" role="region" aria-label="Bulk actions">
+      <strong class="num" id="bulk-count"></strong>
+      <button class="btn" data-bulk="resend"><svg class="i"><use href="#i-mail"/></svg>Resend invites</button>
+      <button class="btn" data-bulk="suspend"><svg class="i"><use href="#i-ban"/></svg>Suspend</button>
+      <button class="link" id="bulk-clear">Clear selection</button>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th class="col-check"><input type="checkbox" id="check-all" aria-label="Select all users on this page"></th>
+            <th class="sortable" data-key="name"><button>Name<svg class="i sort-i"><use href="#i-arrow-up"/></svg></button></th>
+            <th class="sortable" data-key="email"><button>Email<svg class="i sort-i"><use href="#i-arrow-up"/></svg></button></th>
+            <th class="sortable" data-key="role"><button>Role<svg class="i sort-i"><use href="#i-arrow-up"/></svg></button></th>
+            <th class="sortable" data-key="status"><button>Status<svg class="i sort-i"><use href="#i-arrow-up"/></svg></button></th>
+            <th class="sortable col-last" data-key="lastActive"><button>Last active<svg class="i sort-i"><use href="#i-arrow-up"/></svg></button></th>
+            <th class="col-actions"><span class="sr-only">Actions</span></th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+
+    <div class="empty" id="empty" hidden>
+      <svg class="i"><use href="#i-search"/></svg>
+      <h2>No users match these filters</h2>
+      <p id="empty-msg"></p>
+      <button class="btn" id="reset-filters">Clear filters</button>
+    </div>
+
+    <div class="table-foot" id="foot">
+      <div class="per-page">
+        <label for="per-page">Rows per page</label>
+        <div class="select-wrap">
+          <select id="per-page"><option>10</option><option>25</option><option>50</option></select>
+          <svg class="i"><use href="#i-chev-down"/></svg>
+        </div>
+      </div>
+      <nav class="pager" aria-label="Pagination" id="pager"></nav>
+    </div>
+  </section>
+</main>
+
+<div class="menu" id="menu" role="menu" hidden></div>
+
+<dialog id="confirm">
+  <form method="dialog">
+    <div class="dlg-body">
+      <h2 id="confirm-title"></h2>
+      <p id="confirm-text"></p>
+    </div>
+    <div class="dlg-actions">
+      <button class="btn" value="cancel">Cancel</button>
+      <button class="btn btn-danger" value="ok" id="confirm-ok"></button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="invite">
+  <form id="invite-form" novalidate>
+    <div class="dlg-body">
+      <h2>Invite a user</h2>
+      <p>They'll get an email with a link to set up their account. Invites expire after 7 days.</p>
+      <div class="field" id="f-name">
+        <label for="inv-name">Full name</label>
+        <input id="inv-name" autocomplete="off">
+        <span class="err"><svg class="i"><use href="#i-alert"/></svg>Enter the person's name.</span>
+      </div>
+      <div class="field" id="f-email">
+        <label for="inv-email">Work email</label>
+        <input id="inv-email" type="email" autocomplete="off" placeholder="name@company.com">
+        <span class="err" id="email-err"><svg class="i"><use href="#i-alert"/></svg><span>Enter a valid email address.</span></span>
+      </div>
+      <div class="field">
+        <label for="inv-role">Role</label>
+        <div class="select-wrap">
+          <select id="inv-role"><option value="viewer">Viewer</option><option value="editor">Editor</option><option value="admin">Admin</option></select>
+          <svg class="i"><use href="#i-chev-down"/></svg>
+        </div>
+        <span class="help">Viewers can read; editors can change content; admins manage billing and members.</span>
+      </div>
+    </div>
+    <div class="dlg-actions">
+      <button type="button" class="btn" id="invite-cancel">Cancel</button>
+      <button type="submit" class="btn btn-primary">Send invite</button>
+    </div>
+  </form>
+</dialog>
+
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<script>
+// Fixed "now" so relative times are stable.
+const NOW = new Date("2026-11-18T10:30:00Z").getTime();
+const MIN = 60e3, HR = 60 * MIN, DAY = 24 * HR;
+
+const users = [
+  { id: "usr_8f2a1c", name: "Amara Okonkwo",        email: "amara.okonkwo@northwind.io",      role: "admin",  status: "active",    lastActive: NOW - 3 * MIN },
+  { id: "usr_3b91de", name: "Daniel Whitfield",     email: "d.whitfield@northwind.io",        role: "editor", status: "active",    lastActive: NOW - 42 * MIN },
+  { id: "usr_c40e77", name: "Sofía Hernández-Ruiz", email: "sofia.hernandez@lumenhealth.com", role: "editor", status: "active",    lastActive: NOW - 2 * HR },
+  { id: "usr_51aa09", name: "Kenji Watanabe",       email: "kenji@tanuki.studio",             role: "viewer", status: "active",    lastActive: NOW - 5 * HR },
+  { id: "usr_9d0c32", name: "Priya Natarajan",      email: "priya.n@quarry.dev",              role: "admin",  status: "active",    lastActive: NOW - 1 * DAY - 3 * HR },
+  { id: "usr_e7f210", name: "Marcus Bell",          email: "marcus.bell@brightline.co",       role: "viewer", status: "suspended", lastActive: NOW - 34 * DAY },
+  { id: "usr_0a6b4e", name: "Léa Fontaine",         email: "lea.fontaine@atelier-nord.fr",    role: "editor", status: "invited",   lastActive: null },
+  { id: "usr_7cc5f1", name: "Tomasz Kowalczyk",     email: "t.kowalczyk@northwind.io",        role: "viewer", status: "active",    lastActive: NOW - 3 * DAY },
+  { id: "usr_2e8d93", name: "Hannah Lindqvist",     email: "hannah@fjordlabs.se",             role: "editor", status: "active",    lastActive: NOW - 6 * HR },
+  { id: "usr_b13f6a", name: "Oluwaseun Adebayo-Williams", email: "seun.adebayo-williams@meridianlogistics.com", role: "viewer", status: "active", lastActive: NOW - 9 * DAY },
+  { id: "usr_44d2b8", name: "Grace Liu",            email: "grace.liu@quarry.dev",            role: "editor", status: "invited",   lastActive: null },
+  { id: "usr_f90a17", name: "Rafael Costa",         email: "rafael.costa@brightline.co",      role: "viewer", status: "active",    lastActive: NOW - 18 * MIN },
+  { id: "usr_6e3c58", name: "Emily Thornton",       email: "emily.thornton@lumenhealth.com",  role: "admin",  status: "active",    lastActive: NOW - 2 * DAY },
+  { id: "usr_d81b04", name: "Arjun Mehta",          email: "arjun@tanuki.studio",             role: "viewer", status: "suspended", lastActive: NOW - 61 * DAY },
+  { id: "usr_15f9ce", name: "Nadia Haddad",         email: "nadia.haddad@cedarpoint.ae",      role: "editor", status: "active",    lastActive: NOW - 4 * DAY },
+  { id: "usr_a2047d", name: "Will Fraser",          email: "will@fjordlabs.se",               role: "viewer", status: "invited",   lastActive: null },
+  { id: "usr_38be61", name: "Chiara Romano",        email: "chiara.romano@atelier-nord.fr",   role: "viewer", status: "active",    lastActive: NOW - 13 * DAY },
+  { id: "usr_7a59e2", name: "Benjamin Osei",        email: "ben.osei@meridianlogistics.com",  role: "editor", status: "active",    lastActive: NOW - 1 * HR },
+  { id: "usr_c6d813", name: "Yuki Tanaka",          email: "yuki.tanaka@northwind.io",        role: "viewer", status: "active",    lastActive: NOW - 20 * DAY },
+  { id: "usr_09e7af", name: "Isabel Moreno",        email: "isabel@cedarpoint.ae",            role: "admin",  status: "invited",   lastActive: null },
+  { id: "usr_5f1a3b", name: "Connor Doyle",         email: "connor.doyle@brightline.co",      role: "editor", status: "suspended", lastActive: NOW - 102 * DAY },
+  { id: "usr_e2c94d", name: "Mei Chen",             email: "mei.chen@lumenhealth.com",        role: "viewer", status: "active",    lastActive: NOW - 7 * HR },
+  { id: "usr_8b6f20", name: "Elias Becker",         email: "elias.becker@quarry.dev",         role: "viewer", status: "active",    lastActive: NOW - 45 * DAY },
+  { id: "usr_31d7c5", name: "Fatima Zahra",         email: "fatima.zahra@cedarpoint.ae",      role: "editor", status: "active",    lastActive: NOW - 26 * HR },
+  { id: "usr_d4a08e", name: "Noah Jensen",          email: "noah@fjordlabs.se",               role: "viewer", status: "active",    lastActive: NOW - 8 * MIN },
+];
+
+const ROLES = { admin: { label: "Admin", icon: "i-shield" }, editor: { label: "Editor", icon: "i-pen" }, viewer: { label: "Viewer", icon: "i-eye" } };
+const STATUS = { active: "Active", invited: "Invited", suspended: "Suspended" };
+
+const state = { q: "", role: "all", status: "all", sort: { key: "lastActive", dir: "descending" }, page: 1, perPage: 10, selected: new Set() };
+
+const $ = (s, el = document) => el.querySelector(s);
+const esc = s => s.replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const initials = n => n.split(/\s+/).map(p => p[0]).slice(0, 2).join("").toUpperCase();
+const fmtDate = t => new Date(t).toLocaleDateString("en-US", { month: "short", day: "numeric", year: new Date(t).getUTCFullYear() !== new Date(NOW).getUTCFullYear() ? "numeric" : undefined });
+const fmtFull = t => new Date(t).toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" });
+function relTime(t) {
+  if (t == null) return "Never";
+  const d = NOW - t;
+  if (d < MIN) return "Just now";
+  if (d < HR) return `${Math.round(d / MIN)} min ago`;
+  if (d < DAY) return `${Math.round(d / HR)} hr ago`;
+  if (d < 2 * DAY) return "Yesterday";
+  if (d < 7 * DAY) return `${Math.floor(d / DAY)} days ago`;
+  return fmtDate(t);
+}
+function highlight(text) {
+  if (!state.q) return esc(text);
+  const i = text.toLowerCase().indexOf(state.q.toLowerCase());
+  if (i < 0) return esc(text);
+  return esc(text.slice(0, i)) + "<mark>" + esc(text.slice(i, i + state.q.length)) + "</mark>" + esc(text.slice(i + state.q.length));
+}
+
+function filtered() {
+  const q = state.q.trim().toLowerCase();
+  let list = users.filter(u =>
+    (state.role === "all" || u.role === state.role) &&
+    (state.status === "all" || u.status === state.status) &&
+    (!q || u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q) || u.id.includes(q)));
+  const { key, dir } = state.sort;
+  const m = dir === "ascending" ? 1 : -1;
+  const roleOrder = { admin: 0, editor: 1, viewer: 2 }, statusOrder = { active: 0, invited: 1, suspended: 2 };
+  list.sort((a, b) => {
+    let va = a[key], vb = b[key];
+    if (key === "role") { va = roleOrder[va]; vb = roleOrder[vb]; }
+    if (key === "status") { va = statusOrder[va]; vb = statusOrder[vb]; }
+    if (key === "lastActive") { va = va ?? -Infinity; vb = vb ?? -Infinity; }
+    if (typeof va === "string") return va.localeCompare(vb) * m;
+    return (va - vb) * m;
+  });
+  return list;
+}
+
+function renderRoleFilter() {
+  const counts = { all: users.length };
+  users.forEach(u => counts[u.role] = (counts[u.role] || 0) + 1);
+  $("#role-filter").innerHTML = ["all", "admin", "editor", "viewer"].map(r =>
+    `<button type="button" data-role="${r}" aria-pressed="${state.role === r}">${r === "all" ? "All roles" : ROLES[r].label}<span class="count">${counts[r] || 0}</span></button>`).join("");
+}
+
+function render() {
+  const list = filtered();
+  const pages = Math.max(1, Math.ceil(list.length / state.perPage));
+  state.page = Math.min(state.page, pages);
+  const start = (state.page - 1) * state.perPage;
+  const pageRows = list.slice(start, start + state.perPage);
+
+  const active = users.filter(u => u.status === "active").length;
+  const invited = users.filter(u => u.status === "invited").length;
+  $("#summary").innerHTML = `<strong class="num">${users.length}</strong> people across all workspaces · <span class="num">${active}</span> active, <span class="num">${invited}</span> pending invite`;
+
+  $("#result-count").textContent = list.length === users.length ? `${users.length} users` : `${list.length} of ${users.length} users`;
+
+  $("#rows").innerHTML = pageRows.map(u => `
+    <tr data-id="${u.id}" class="${state.selected.has(u.id) ? "selected" : ""}">
+      <td class="col-check"><input type="checkbox" aria-label="Select ${esc(u.name)}" ${state.selected.has(u.id) ? "checked" : ""}></td>
+      <td class="col-user">
+        <div class="user">
+          <span class="avatar" aria-hidden="true">${initials(u.name)}</span>
+          <div class="user-text">
+            <span class="user-name" title="${esc(u.name)}">${highlight(u.name)}</span>
+            <span class="user-id">${highlight(u.id)}</span>
+            <span class="user-sub" title="${esc(u.email)}">${highlight(u.email)}</span>
+          </div>
+        </div>
+      </td>
+      <td class="col-email"><span class="user-email" title="${esc(u.email)}">${highlight(u.email)}</span></td>
+      <td class="col-role"><span class="role"><svg class="i"><use href="#${ROLES[u.role].icon}"/></svg>${ROLES[u.role].label}</span></td>
+      <td class="col-status"><span class="badge ${u.status}">${STATUS[u.status]}</span></td>
+      <td class="col-last col-desktop"><span class="last num ${u.lastActive == null ? "never" : ""}" ${u.lastActive ? `title="${fmtFull(u.lastActive)}"` : `title="Hasn't accepted the invite yet"`}>${relTime(u.lastActive)}</span></td>
+      <td class="col-meta">
+        <span class="role"><svg class="i"><use href="#${ROLES[u.role].icon}"/></svg>${ROLES[u.role].label}</span>
+        <span class="badge ${u.status}">${STATUS[u.status]}</span>
+        <span class="last num">${u.lastActive == null ? "Never signed in" : relTime(u.lastActive)}</span>
+      </td>
+      <td class="col-actions"><button class="icon-btn" data-menu="${u.id}" aria-haspopup="menu" aria-expanded="false" aria-label="Actions for ${esc(u.name)}"><svg class="i"><use href="#i-more"/></svg></button></td>
+    </tr>`).join("");
+
+  const empty = list.length === 0;
+  $("#empty").hidden = !empty;
+  $(".table-wrap").hidden = empty;
+  $("#foot").hidden = empty;
+  if (empty) {
+    const parts = [];
+    if (state.q) parts.push(`“${state.q}”`);
+    if (state.role !== "all") parts.push(ROLES[state.role].label.toLowerCase() + "s");
+    if (state.status !== "all") parts.push(STATUS[state.status].toLowerCase());
+    $("#empty-msg").textContent = `Nothing found for ${parts.join(", ")}. Check the spelling or search by user ID.`;
+  }
+
+  // Sort headers
+  document.querySelectorAll("th.sortable").forEach(th => {
+    if (th.dataset.key === state.sort.key) th.setAttribute("aria-sort", state.sort.dir); else th.removeAttribute("aria-sort");
+  });
+
+  // Select-all
+  const ids = pageRows.map(u => u.id);
+  const nSel = ids.filter(id => state.selected.has(id)).length;
+  const ca = $("#check-all");
+  ca.checked = nSel > 0 && nSel === ids.length;
+  ca.indeterminate = nSel > 0 && nSel < ids.length;
+  $("#bulkbar").classList.toggle("show", state.selected.size > 0);
+  $("#bulk-count").textContent = `${state.selected.size} selected`;
+
+  renderPager(list.length, pages, start, pageRows.length);
+  renderRoleFilter();
+}
+
+function renderPager(total, pages, start, n) {
+  const nums = [];
+  for (let p = 1; p <= pages; p++) {
+    if (p === 1 || p === pages || Math.abs(p - state.page) <= 1) nums.push(p);
+    else if (nums[nums.length - 1] !== "…") nums.push("…");
+  }
+  $("#pager").innerHTML = `
+    <span class="num" style="margin-right:12px">${total ? `${start + 1}–${start + n} of ${total}` : "0"}</span>
+    <button class="page-btn" data-page="${state.page - 1}" ${state.page === 1 ? "disabled" : ""} aria-label="Previous page"><svg class="i"><use href="#i-chev-left"/></svg></button>
+    ${nums.map(p => p === "…" ? `<span class="page-num" aria-hidden="true">…</span>` :
+      `<button class="page-btn page-num" data-page="${p}" ${p === state.page ? 'aria-current="page"' : ""} aria-label="Page ${p}">${p}</button>`).join("")}
+    <span class="page-status num">Page ${state.page} of ${pages}</span>
+    <button class="page-btn" data-page="${state.page + 1}" ${state.page === pages ? "disabled" : ""} aria-label="Next page"><svg class="i"><use href="#i-chev-right"/></svg></button>`;
+}
+
+// ---- Events
+const qInput = $("#q");
+qInput.addEventListener("input", () => {
+  state.q = qInput.value; state.page = 1;
+  $("#search-box").classList.toggle("has-value", !!qInput.value);
+  render();
+});
+$("#clear-q").addEventListener("click", () => { qInput.value = ""; qInput.dispatchEvent(new Event("input")); qInput.focus(); });
+document.addEventListener("keydown", e => {
+  if (e.key === "/" && !/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName) && !document.querySelector("dialog[open]")) { e.preventDefault(); qInput.focus(); }
+  if (e.key === "Escape" && document.activeElement === qInput && qInput.value) { $("#clear-q").click(); }
+});
+$("#role-filter").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  state.role = b.dataset.role; state.page = 1; render();
+});
+$("#status-filter").addEventListener("change", e => { state.status = e.target.value; state.page = 1; render(); });
+$("#per-page").addEventListener("change", e => { state.perPage = +e.target.value; state.page = 1; render(); });
+$("#pager").addEventListener("click", e => {
+  const b = e.target.closest("button[data-page]"); if (!b || b.disabled) return;
+  state.page = +b.dataset.page; render();
+});
+$("#reset-filters").addEventListener("click", () => {
+  state.q = ""; state.role = "all"; state.status = "all"; qInput.value = ""; $("#status-filter").value = "all";
+  $("#search-box").classList.remove("has-value"); render(); qInput.focus();
+});
+document.querySelectorAll("th.sortable button").forEach(btn => btn.addEventListener("click", () => {
+  const key = btn.parentElement.dataset.key;
+  state.sort = state.sort.key === key
+    ? { key, dir: state.sort.dir === "ascending" ? "descending" : "ascending" }
+    : { key, dir: key === "lastActive" ? "descending" : "ascending" };
+  render();
+}));
+$("#rows").addEventListener("change", e => {
+  if (e.target.type !== "checkbox") return;
+  const id = e.target.closest("tr").dataset.id;
+  e.target.checked ? state.selected.add(id) : state.selected.delete(id);
+  render();
+});
+$("#check-all").addEventListener("change", e => {
+  document.querySelectorAll("#rows tr").forEach(tr => e.target.checked ? state.selected.add(tr.dataset.id) : state.selected.delete(tr.dataset.id));
+  render();
+});
+$("#bulk-clear").addEventListener("click", () => { state.selected.clear(); render(); });
+document.querySelectorAll("[data-bulk]").forEach(b => b.addEventListener("click", () => {
+  const sel = users.filter(u => state.selected.has(u.id));
+  if (b.dataset.bulk === "resend") {
+    const inv = sel.filter(u => u.status === "invited");
+    toast(inv.length ? `Resent ${inv.length} invite${inv.length > 1 ? "s" : ""}` : "None of the selected users have a pending invite");
+  } else {
+    const targets = sel.filter(u => u.status !== "suspended");
+    if (!targets.length) return toast("Selected users are already suspended");
+    confirmAction(`Suspend ${targets.length} user${targets.length > 1 ? "s" : ""}?`,
+      "They'll be signed out everywhere and won't be able to sign in until reactivated. Their content stays intact.",
+      "Suspend users", () => {
+        const prev = targets.map(u => [u, u.status]);
+        targets.forEach(u => u.status = "suspended"); state.selected.clear(); render();
+        toast(`Suspended ${targets.length} user${targets.length > 1 ? "s" : ""}`, () => { prev.forEach(([u, s]) => u.status = s); render(); });
+      });
+  }
+}));
+
+// ---- Row menu
+const menu = $("#menu");
+let menuFor = null, menuBtn = null;
+function openMenu(btn) {
+  const u = users.find(x => x.id === btn.dataset.menu);
+  menuFor = u; menuBtn = btn; btn.setAttribute("aria-expanded", "true");
+  const roleItems = Object.entries(ROLES).map(([k, r]) =>
+    `<button role="menuitemradio" aria-checked="${u.role === k}" data-act="role" data-role="${k}"><svg class="i"><use href="#${r.icon}"/></svg>${r.label}${u.role === k ? '<svg class="i check"><use href="#i-check"/></svg>' : ""}</button>`).join("");
+  menu.innerHTML = `
+    <div class="menu-label">Change role</div>
+    ${roleItems}
+    <hr>
+    ${u.status === "invited" ? `<button role="menuitem" data-act="resend"><svg class="i"><use href="#i-mail"/></svg>Resend invite</button>` : `<button role="menuitem" data-act="reset"><svg class="i"><use href="#i-key"/></svg>Send password reset</button>`}
+    <button role="menuitem" data-act="copy"><svg class="i"><use href="#i-copy"/></svg>Copy email</button>
+    <hr>
+    ${u.status === "suspended"
+      ? `<button role="menuitem" data-act="reactivate"><svg class="i"><use href="#i-rotate"/></svg>Reactivate user</button>`
+      : u.status === "invited"
+        ? `<button role="menuitem" class="danger" data-act="revoke"><svg class="i"><use href="#i-x"/></svg>Revoke invite</button>`
+        : `<button role="menuitem" class="danger" data-act="suspend"><svg class="i"><use href="#i-ban"/></svg>Suspend user</button>`}`;
+  menu.hidden = false;
+  const r = btn.getBoundingClientRect(), mh = menu.offsetHeight, mw = menu.offsetWidth;
+  const top = r.bottom + 4 + mh > innerHeight ? r.top - mh - 4 : r.bottom + 4;
+  menu.style.top = Math.max(8, top) + "px";
+  menu.style.left = Math.max(8, r.right - mw) + "px";
+  menu.querySelector("button").focus();
+}
+function closeMenu(focusBack = true) {
+  if (menu.hidden) return;
+  menu.hidden = true; menuBtn?.setAttribute("aria-expanded", "false");
+  if (focusBack) menuBtn?.focus();
+}
+$("#rows").addEventListener("click", e => {
+  const b = e.target.closest("[data-menu]"); if (!b) return;
+  e.stopPropagation();
+  if (!menu.hidden && menuBtn === b) return closeMenu();
+  closeMenu(false); openMenu(b);
+});
+document.addEventListener("click", e => { if (!menu.contains(e.target)) closeMenu(false); });
+window.addEventListener("scroll", () => closeMenu(false), true);
+window.addEventListener("resize", () => closeMenu(false));
+menu.addEventListener("keydown", e => {
+  const items = [...menu.querySelectorAll("button")], i = items.indexOf(document.activeElement);
+  if (e.key === "ArrowDown") { e.preventDefault(); items[(i + 1) % items.length].focus(); }
+  if (e.key === "ArrowUp") { e.preventDefault(); items[(i - 1 + items.length) % items.length].focus(); }
+  if (e.key === "Escape" || e.key === "Tab") { e.preventDefault(); closeMenu(); }
+});
+menu.addEventListener("click", e => {
+  const b = e.target.closest("button[data-act]"); if (!b) return;
+  const u = menuFor; closeMenu();
+  const first = u.name.split(" ")[0];
+  switch (b.dataset.act) {
+    case "role": {
+      if (u.role === b.dataset.role) return;
+      const prev = u.role; u.role = b.dataset.role; render();
+      toast(`${u.name} is now ${ROLES[u.role].label === "Admin" ? "an" : "a"} ${ROLES[u.role].label.toLowerCase()}`, () => { u.role = prev; render(); });
+      break;
+    }
+    case "resend": toast(`Invite resent to ${u.email}`); break;
+    case "reset": toast(`Password reset link sent to ${u.email}`); break;
+    case "copy": navigator.clipboard?.writeText(u.email).catch(() => {}); toast("Email copied to clipboard"); break;
+    case "reactivate": u.status = "active"; render(); toast(`${u.name} can sign in again`); break;
+    case "suspend":
+      confirmAction(`Suspend ${u.name}?`, `${first} will be signed out everywhere and can't sign in until reactivated. Their content stays intact.`, "Suspend user", () => {
+        u.status = "suspended"; render(); toast(`${u.name} suspended`, () => { u.status = "active"; render(); });
+      }); break;
+    case "revoke":
+      confirmAction(`Revoke invite for ${u.name}?`, `The link sent to ${u.email} will stop working. You can invite them again later.`, "Revoke invite", () => {
+        const idx = users.indexOf(u); users.splice(idx, 1); state.selected.delete(u.id); render();
+        toast("Invite revoked", () => { users.splice(idx, 0, u); render(); });
+      }); break;
+  }
+});
+
+// ---- Confirm dialog
+const dlg = $("#confirm");
+let onConfirm = null;
+function confirmAction(title, text, okLabel, fn) {
+  $("#confirm-title").textContent = title; $("#confirm-text").textContent = text; $("#confirm-ok").textContent = okLabel;
+  onConfirm = fn; dlg.showModal(); dlg.querySelector('button[value="cancel"]').focus();
+}
+dlg.addEventListener("close", () => { if (dlg.returnValue === "ok" && onConfirm) onConfirm(); onConfirm = null; dlg.returnValue = ""; });
+
+// ---- Invite dialog
+const inv = $("#invite"), invForm = $("#invite-form");
+$("#invite-btn").addEventListener("click", () => {
+  invForm.reset(); inv.querySelectorAll(".field").forEach(f => f.classList.remove("invalid"));
+  inv.showModal(); $("#inv-name").focus();
+});
+$("#invite-cancel").addEventListener("click", () => inv.close());
+function validateField(id) {
+  const el = $(id), f = el.closest(".field");
+  let ok = !!el.value.trim();
+  if (id === "#inv-email") {
+    const v = el.value.trim().toLowerCase();
+    let msg = "Enter a valid email address.";
+    ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+    if (ok && users.some(u => u.email.toLowerCase() === v)) { ok = false; msg = "This person already has an account."; }
+    $("#email-err span").textContent = msg;
+  }
+  f.classList.toggle("invalid", !ok);
+  el.setAttribute("aria-invalid", !ok);
+  return ok;
+}
+["#inv-name", "#inv-email"].forEach(id => $(id).addEventListener("blur", () => { if ($(id).value) validateField(id); }));
+invForm.addEventListener("submit", e => {
+  e.preventDefault();
+  const a = validateField("#inv-name"), b = validateField("#inv-email");
+  if (!a || !b) { (a ? $("#inv-email") : $("#inv-name")).focus(); return; }
+  const u = { id: "usr_" + Math.random().toString(16).slice(2, 8), name: $("#inv-name").value.trim(), email: $("#inv-email").value.trim(), role: $("#inv-role").value, status: "invited", lastActive: null };
+  users.unshift(u); inv.close();
+  state.sort = { key: "lastActive", dir: "descending" }; render();
+  toast(`Invite sent to ${u.email}`);
+});
+
+// ---- Toasts
+function toast(msg, undo) {
+  const wrap = $("#toasts");
+  while (wrap.children.length >= 3) wrap.firstChild.remove();
+  const t = document.createElement("div");
+  t.className = "toast"; t.setAttribute("role", "status");
+  t.innerHTML = `<svg class="i"><use href="#i-check-circle"/></svg><span>${esc(msg)}</span>${undo ? '<button type="button">Undo</button>' : ""}`;
+  if (undo) t.querySelector("button").addEventListener("click", () => { undo(); t.remove(); });
+  wrap.appendChild(t);
+  setTimeout(() => t.remove(), 5000);
+}
+
+render();
+</script>
+</body>
+</html>
