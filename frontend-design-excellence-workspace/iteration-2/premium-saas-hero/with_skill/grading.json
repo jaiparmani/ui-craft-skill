@@ -1,0 +1,64 @@
+{
+  "expectations": [
+    {
+      "text": "index.html honours prefers-reduced-motion by disabling or simplifying its motion (CSS media query or JS matchMedia check)",
+      "passed": true,
+      "evidence": "Reduced motion shows the review comment immediately; page complete"
+    },
+    {
+      "text": "index.html's main headline and body copy are visible with JavaScript disabled (nothing essential is left hidden by CSS waiting for a script)",
+      "passed": true,
+      "evidence": "With scripts removed headline, subhead, CTAs and PR window all render"
+    },
+    {
+      "text": "index.html loads with no console errors",
+      "passed": true,
+      "evidence": "No console errors at 375px"
+    },
+    {
+      "text": "index.html animates only transform, opacity, clip-path or filter \u2014 no per-frame animation of top/left/width/height/margin",
+      "passed": true,
+      "evidence": "Static scan: no layout properties animated"
+    },
+    {
+      "text": "index.html has no horizontal page scroll at a 390px-wide viewport",
+      "passed": true,
+      "evidence": "scrollWidth 375 = viewport 375"
+    },
+    {
+      "text": "index.html varies entrance motion by element role (at least two distinct reveal treatments, e.g. line/mask reveal for headlines and scale/clip for media), rather than one identical fade-up everywhere",
+      "passed": true,
+      "evidence": "Scan line over diff, comment slide-open, bar fills, cycling shortcuts"
+    },
+    {
+      "text": "index.html uses no emoji and no default purple/indigo-to-blue/pink gradient",
+      "passed": true,
+      "evidence": "No emoji; amber accent, no purple gradient"
+    },
+    {
+      "text": "index.html's hero contains a convincing product UI showing a review comment on a pull request (diff lines, author, comment text)",
+      "passed": true,
+      "evidence": "PR #2481 diff with author, highlighted line and Lintel comment"
+    },
+    {
+      "text": "index.html has micro-interactions beyond basic button hover (e.g. cursor-following spotlight, magnetic button, tilt, animated icon or keyboard-shortcut feedback)",
+      "passed": true,
+      "evidence": "Cursor-following spotlight on tiles and window, magnetic primary button, 'A' key applies suggestion"
+    },
+    {
+      "text": "index.html uses a dark, restrained palette with one accent and hairline borders rather than heavy shadows or glows everywhere",
+      "passed": true,
+      "evidence": "Near-black, hairline borders, single amber accent"
+    }
+  ],
+  "summary": {
+    "passed": 10,
+    "failed": 0,
+    "total": 10,
+    "pass_rate": 1.0
+  },
+  "timing": {
+    "executor_duration_seconds": 107.3,
+    "total_duration_seconds": 107.3
+  }
+}

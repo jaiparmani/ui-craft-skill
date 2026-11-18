@@ -1,0 +1,64 @@
+{
+  "expectations": [
+    {
+      "text": "index.html honours prefers-reduced-motion by disabling or simplifying its motion (CSS media query or JS matchMedia check)",
+      "passed": true,
+      "evidence": "prefers-reduced-motion handled; reduced run shows a finished still frame"
+    },
+    {
+      "text": "index.html's main headline and body copy are visible with JavaScript disabled (nothing essential is left hidden by CSS waiting for a script)",
+      "passed": true,
+      "evidence": "With scripts removed the wordmark, nav and intro copy all render (CSS gradient-text fallback)"
+    },
+    {
+      "text": "index.html loads with no console errors",
+      "passed": true,
+      "evidence": "No console errors at 375px and 1440px"
+    },
+    {
+      "text": "index.html animates only transform, opacity, clip-path or filter \u2014 no per-frame animation of top/left/width/height/margin",
+      "passed": true,
+      "evidence": "Static scan: no layout properties in @keyframes or tweens"
+    },
+    {
+      "text": "index.html has no horizontal page scroll at a 390px-wide viewport",
+      "passed": true,
+      "evidence": "scrollWidth 375 = viewport 375"
+    },
+    {
+      "text": "index.html varies entrance motion by element role (at least two distinct reveal treatments, e.g. line/mask reveal for headlines and scale/clip for media), rather than one identical fade-up everywhere",
+      "passed": true,
+      "evidence": "SplitText line masks for type, clip-path wipes for covers, scrubbed scale for the aurora, staggered count-ups"
+    },
+    {
+      "text": "index.html uses no emoji and no default purple/indigo-to-blue/pink gradient",
+      "passed": true,
+      "evidence": "No emoji; gradients are on-brand aurora greens"
+    },
+    {
+      "text": "index.html implements smooth scrolling (Lenis or an equivalent) that keeps native scroll and anchor links working",
+      "passed": true,
+      "evidence": "Lenis wired to ScrollTrigger; nav anchors scroll via lenis.scrollTo"
+    },
+    {
+      "text": "index.html includes intro, 4 selected projects, a what-we-do section and contact details",
+      "passed": true,
+      "evidence": "Hero, statement, 4 projects (Polarnatt, Fjellgang, Kystlyd, Tindra), services, contact"
+    },
+    {
+      "text": "index.html has a clearly identifiable signature moment (one standout interaction or scroll scene) rather than evenly distributed effects",
+      "passed": true,
+      "evidence": "Signature: canvas aurora inside the NORTHLIGHT wordmark that spills out to fill the screen while pinned"
+    }
+  ],
+  "summary": {
+    "passed": 10,
+    "failed": 0,
+    "total": 10,
+    "pass_rate": 1.0
+  },
+  "timing": {
+    "executor_duration_seconds": 399.7,
+    "total_duration_seconds": 399.7
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "expectations": [
+    {
+      "text": "index.html honours prefers-reduced-motion by disabling or simplifying its motion (CSS media query or JS matchMedia check)",
+      "passed": true,
+      "evidence": "End state shown without animation under reduced motion"
+    },
+    {
+      "text": "index.html's main headline and body copy are visible with JavaScript disabled (nothing essential is left hidden by CSS waiting for a script)",
+      "passed": false,
+      "evidence": "With scripts removed the hero headline, subhead and CTAs are invisible; only the background grid and product window show"
+    },
+    {
+      "text": "index.html loads with no console errors",
+      "passed": true,
+      "evidence": "No console errors at 375px"
+    },
+    {
+      "text": "index.html animates only transform, opacity, clip-path or filter \u2014 no per-frame animation of top/left/width/height/margin",
+      "passed": true,
+      "evidence": "Static scan: no layout properties animated"
+    },
+    {
+      "text": "index.html has no horizontal page scroll at a 390px-wide viewport",
+      "passed": true,
+      "evidence": "scrollWidth 375 = viewport 375"
+    },
+    {
+      "text": "index.html varies entrance motion by element role (at least two distinct reveal treatments, e.g. line/mask reveal for headlines and scale/clip for media), rather than one identical fade-up everywhere",
+      "passed": true,
+      "evidence": "Window tilt-in, typed comment, count-up ring, orbiting integrations"
+    },
+    {
+      "text": "index.html uses no emoji and no default purple/indigo-to-blue/pink gradient",
+      "passed": false,
+      "evidence": "Uses \ud83d\udc40 and \ud83d\udc4d emoji (as GitHub-style reaction counts; arguably content rather than icons)"
+    },
+    {
+      "text": "index.html's hero contains a convincing product UI showing a review comment on a pull request (diff lines, author, comment text)",
+      "passed": true,
+      "evidence": "PR #2184 diff with flagged line and typed Lintel comment"
+    },
+    {
+      "text": "index.html has micro-interactions beyond basic button hover (e.g. cursor-following spotlight, magnetic button, tilt, animated icon or keyboard-shortcut feedback)",
+      "passed": true,
+      "evidence": "Cursor-tracking tile glow, command palette reacting to arrow keys, edge light following the cursor"
+    },
+    {
+      "text": "index.html uses a dark, restrained palette with one accent and hairline borders rather than heavy shadows or glows everywhere",
+      "passed": true,
+      "evidence": "Near-black with hairline borders and an amber accent; one large glow and beam behind the hero"
+    }
+  ],
+  "summary": {
+    "passed": 8,
+    "failed": 2,
+    "total": 10,
+    "pass_rate": 0.8
+  },
+  "timing": {
+    "executor_duration_seconds": 19.0,
+    "total_duration_seconds": 19.0
+  }
+}

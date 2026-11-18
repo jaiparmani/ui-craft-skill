@@ -1,0 +1,788 @@
+<!doctype html>
+<!--
+  Northlight: home page.
+  Mode: Expressive. Direction: Kinetic Editorial on a polar-night stage.
+  Concept: "We design by the light we grew up under": the aurora is the studio's medium.
+  Signature moment: the aurora lives inside the giant NORTHLIGHT wordmark; as you scroll, the hero pins
+  and the light spills out of the letters until it fills the screen.
+  Motion personality: luminous, unhurried, weighty -> expo/power4 out, 1-1.4s reveals, scrubbed pin.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Northlight: Brand identity &amp; motion studio, Oslo</title>
+<meta name="description" content="Northlight is a three-person studio in Oslo making brand identities and motion for music festivals and outdoor brands.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lenis@1.3.4/dist/lenis.css">
+<style>
+  :root {
+    /* Colour: polar night, snow, one aurora accent */
+    --night:   oklch(0.145 0.018 230);
+    --night-2: oklch(0.18 0.02 230);
+    --line:    oklch(0.3 0.02 230);
+    --snow:    oklch(0.95 0.01 200);
+    --frost:   oklch(0.76 0.018 220);   /* secondary text, >7:1 on night */
+    --dim:     oklch(0.62 0.018 220);   /* meta text, >4.5:1 on night */
+    --aurora:  oklch(0.87 0.16 162);    /* the one accent */
+
+    /* Type */
+    --sans: "Archivo", system-ui, sans-serif;
+    --serif: "Instrument Serif", Georgia, serif;
+    --t-label: 12px;
+    --t-small: 15px;
+    --t-body: 18px;
+    --t-lead: clamp(24px, 2.4vw, 34px);
+    --t-head: clamp(44px, 7vw, 120px);
+    --t-display: 11vw;
+
+    /* Space (4px scale) */
+    --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-6: 24px; --s-8: 32px; --s-12: 48px; --s-16: 64px; --s-24: 96px; --s-32: 128px; --s-48: 192px;
+    --gutter: clamp(20px, 3.3vw, 48px);
+
+    /* Motion */
+    --d-fast: 160ms; --d-mid: 420ms; --d-slow: 1100ms;
+    --ease-out: cubic-bezier(.16, 1, .3, 1);
+    --ease-in-out: cubic-bezier(.65, 0, .35, 1);
+  }
+  * { box-sizing: border-box; }
+  html { background: var(--night); color-scheme: dark; }
+  body { margin: 0; background: var(--night); color: var(--snow); font: 400 var(--t-body)/1.55 var(--sans); -webkit-font-smoothing: antialiased; overflow-x: clip; }
+  a { color: inherit; }
+  img, svg { display: block; }
+  h1, h2, h3, p, ul, ol, dl, dd { margin: 0; padding: 0; }
+  ul, ol { list-style: none; }
+  h2, h3 { font-weight: 500; text-wrap: balance; }
+  p { text-wrap: pretty; }
+  ::selection { background: var(--aurora); color: var(--night); }
+  :focus-visible { outline: 2px solid var(--aurora); outline-offset: 4px; border-radius: 2px; }
+  .label { font: 500 var(--t-label)/1.4 var(--sans); letter-spacing: .14em; text-transform: uppercase; color: var(--frost); font-variant-numeric: tabular-nums; }
+  .wrap { padding-inline: var(--gutter); }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .skip { position: fixed; left: var(--s-4); top: var(--s-4); z-index: 100; padding: var(--s-3) var(--s-4); background: var(--snow); color: var(--night); transform: translateY(-200%); }
+  .skip:focus { transform: none; }
+
+  /* Grain */
+  .grain { position: fixed; inset: -50%; z-index: 60; pointer-events: none; opacity: .07; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+
+  /* Nav */
+  .nav { position: fixed; inset: 0 0 auto; z-index: 50; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: var(--s-6); padding: var(--s-6) var(--gutter); mix-blend-mode: difference; color: #fff; }
+  .brand { display: inline-flex; align-items: center; gap: 10px; font: 700 15px/1 var(--sans); font-stretch: 125%; letter-spacing: .02em; text-transform: uppercase; text-decoration: none; justify-self: start; }
+  .brand svg { width: 18px; height: 18px; }
+  .nav ul { display: flex; gap: var(--s-8); }
+  .nav ul a { font: 500 var(--t-label)/1 var(--sans); letter-spacing: .14em; text-transform: uppercase; text-decoration: none; position: relative; padding-block: 6px; }
+  .nav ul a::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: right; transition: transform var(--d-mid) var(--ease-out); }
+  .nav ul a:hover::after { transform: scaleX(1); transform-origin: left; }
+  .nav-end { justify-self: end; display: flex; align-items: center; gap: var(--s-6); }
+  .clock { font: 500 var(--t-label)/1 var(--sans); letter-spacing: .14em; text-transform: uppercase; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .pill { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 18px; border: 1px solid currentColor; border-radius: 999px; text-decoration: none; font: 500 14px/1 var(--sans); white-space: nowrap; transition: background var(--d-fast) ease-out, color var(--d-fast) ease-out; }
+  .pill:hover { background: #fff; color: #000; }
+  .pill svg { width: 14px; height: 14px; }
+
+  /* Hero */
+  .hero { position: relative; height: 100svh; min-height: 560px; overflow: hidden; background: var(--night); }
+  .hero canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .hero-inner { position: relative; height: 100%; display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1fr auto; padding-top: 104px; padding-bottom: var(--s-8); }
+  .hero-meta { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-6); padding-bottom: var(--s-4); border-bottom: 1px solid var(--line); }
+  .hero-meta > :nth-child(2) { text-align: center; }
+  .hero-meta > :nth-child(3) { text-align: right; }
+  .wordmark { align-self: center; margin: 0; font: 800 var(--t-display)/.86 var(--sans); font-stretch: 125%; letter-spacing: -0.035em; text-transform: uppercase; white-space: nowrap;
+    background: linear-gradient(180deg, oklch(0.75 0.12 300) 0%, var(--aurora) 55%, oklch(0.97 0.05 165) 80%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .wordmark .w { display: inline-block; }
+  .hero.canvas-on .wordmark { opacity: 0; }
+  .hero-foot { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: var(--s-8); }
+  .hero-foot p { font: 400 var(--t-lead)/1.2 var(--serif); max-width: 26ch; }
+  .hero-foot p em { color: var(--aurora); }
+  .scroll-cue { display: flex; align-items: center; gap: var(--s-3); }
+  .scroll-cue i { width: 1px; height: 48px; background: var(--line); position: relative; overflow: hidden; }
+  .scroll-cue i::after { content: ""; position: absolute; inset: 0; background: var(--snow); animation: cue 2.4s var(--ease-in-out) infinite; }
+  @keyframes cue { 0% { transform: translateY(-100%); } 60%, 100% { transform: translateY(100%); } }
+  .breakout { position: absolute; left: var(--gutter); right: var(--gutter); bottom: var(--s-12); display: none; pointer-events: none; }
+  .breakout p { font: 400 clamp(40px, 6.4vw, 110px)/.95 var(--serif); letter-spacing: -0.01em; max-width: 14ch; text-shadow: 0 2px 40px oklch(0.1 0.02 230 / .6); }
+  .breakout p em { font-style: italic; }
+  .breakout p.label { margin-bottom: var(--s-6); font: 500 var(--t-label)/1.4 var(--sans); letter-spacing: .14em; color: var(--snow); text-shadow: none; }
+
+  /* Manifesto */
+  .manifesto { padding-block: var(--s-48) var(--s-32); display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--s-6); }
+  .manifesto .label { grid-column: 1 / 3; padding-top: 14px; }
+  .manifesto .statement { grid-column: 3 / 12; font: 400 clamp(32px, 4.2vw, 68px)/1.08 var(--serif); letter-spacing: -0.005em; text-wrap: balance; }
+  .manifesto .statement em { color: var(--aurora); }
+  .facts { grid-column: 3 / 13; margin-top: var(--s-24); display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--line); }
+  .facts div { padding: var(--s-6) var(--s-6) 0 0; }
+  .facts div + div { padding-left: var(--s-6); border-left: 1px solid var(--line); }
+  .facts dt { font: 600 clamp(40px, 4.4vw, 72px)/1 var(--sans); font-stretch: 112%; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+  .facts dd { margin-top: var(--s-3); color: var(--frost); font-size: var(--t-small); max-width: 22ch; }
+
+  /* Section heads */
+  .sec-head { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--s-6); align-items: end; padding-bottom: var(--s-8); border-bottom: 1px solid var(--line); margin-bottom: var(--s-16); }
+  .sec-head h2 { grid-column: 1 / 9; font: 800 var(--t-head)/.88 var(--sans); font-stretch: 125%; letter-spacing: -0.04em; text-transform: uppercase; }
+  .sec-head h2 em { font: italic 400 1.04em/0 var(--serif); text-transform: none; letter-spacing: -0.02em; color: var(--aurora); }
+  .sec-head .label { grid-column: 9 / 13; justify-self: end; text-align: right; }
+
+  /* Work */
+  .work { padding-block: var(--s-24); }
+  .projects { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--s-6); row-gap: var(--s-32); }
+  .project { position: relative; }
+  .project:nth-child(1) { grid-column: 1 / 9; }
+  .project:nth-child(2) { grid-column: 9 / 13; margin-top: 40%; }
+  .project:nth-child(3) { grid-column: 2 / 7; }
+  .project:nth-child(4) { grid-column: 7 / 13; margin-top: 30%; }
+  .project a { text-decoration: none; display: block; }
+  .cover { position: relative; overflow: hidden; aspect-ratio: 16 / 11; background: var(--night-2); }
+  .project:nth-child(2) .cover, .project:nth-child(3) .cover { aspect-ratio: 4 / 5; }
+  .art { position: absolute; inset: -5% 0; transition: transform 1.2s var(--ease-out); }
+  .project a:hover .art { transform: scale(1.035); }
+  .cap { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: var(--s-4); align-items: baseline; padding-top: var(--s-6); }
+  .cap .idx { color: var(--dim); }
+  .cap h3 { font: 600 clamp(26px, 2.4vw, 36px)/1.05 var(--sans); font-stretch: 112%; letter-spacing: -0.02em; }
+  .cap .year { color: var(--dim); }
+  .cap .desc { grid-column: 2 / 4; color: var(--frost); font-size: var(--t-small); max-width: 46ch; }
+  .cap .tags { grid-column: 2 / 4; display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-4); }
+  .cap .tags li { color: var(--dim); }
+  .cap .arrow { width: 22px; height: 22px; transition: transform var(--d-mid) var(--ease-out); }
+  .project a:hover .arrow { transform: translate(4px, -4px); color: var(--aurora); }
+  .project a:focus-visible { outline-offset: 8px; }
+
+  /* Cover art: Polarnatt */
+  .a-polar { background: linear-gradient(180deg, oklch(0.16 0.05 275), oklch(0.24 0.07 290) 62%, oklch(0.13 0.03 270) 62.2%); }
+  .a-polar .sun { position: absolute; left: 50%; top: 62%; width: 46%; aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 50%; background: radial-gradient(circle, oklch(0.82 0.12 25) 0 30%, oklch(0.62 0.16 15 / .55) 45%, transparent 70%); clip-path: inset(0 0 50% 0); }
+  .a-polar .t { position: absolute; left: 6%; right: 6%; top: 15%; font: 800 clamp(48px, 7.4vw, 124px)/.8 var(--sans); font-stretch: 62%; letter-spacing: -0.02em; text-transform: uppercase; color: oklch(0.88 0.06 20); display: flex; justify-content: space-between; }
+  .a-polar .m { position: absolute; left: 6%; right: 6%; bottom: 14%; display: flex; justify-content: space-between; font: 500 11px/1.4 var(--sans); letter-spacing: .16em; text-transform: uppercase; color: oklch(0.8 0.05 20); }
+  /* Fjellgang */
+  .a-fjell { background: oklch(0.67 0.19 42); color: oklch(0.2 0.04 40); }
+  .a-fjell svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .a-fjell .t { position: absolute; left: 8%; bottom: 16%; font: 800 clamp(40px, 4.2vw, 68px)/.9 var(--sans); letter-spacing: -0.05em; }
+  .a-fjell .m { position: absolute; left: 8%; top: 15%; font: 500 11px/1.5 var(--sans); letter-spacing: .16em; text-transform: uppercase; }
+  /* Kystlyd */
+  .a-kyst { background: oklch(0.91 0.035 205); color: oklch(0.3 0.09 250); }
+  .a-kyst .sea { position: absolute; left: 0; right: 0; bottom: 8%; height: 46%; display: flex; flex-direction: column; justify-content: flex-end; gap: 7%; }
+  .a-kyst .sea i { display: block; background: currentColor; }
+  .a-kyst .t { position: absolute; left: 8%; top: 15%; font: 800 clamp(44px, 5vw, 84px)/.84 var(--sans); font-stretch: 125%; letter-spacing: -0.04em; text-transform: uppercase; }
+  .a-kyst .m { position: absolute; right: 8%; top: 16%; text-align: right; font: 500 11px/1.5 var(--sans); letter-spacing: .16em; text-transform: uppercase; }
+  /* Tindra */
+  .a-tindra { background: oklch(0.12 0.01 60); color: oklch(0.95 0.03 85); }
+  .a-tindra .beam { position: absolute; left: 50%; top: 18%; width: 160%; height: 120%; transform: translateX(-50%); background: conic-gradient(from 160deg at 50% 0%, transparent 0deg, oklch(0.92 0.08 85 / .55) 14deg, oklch(0.97 0.05 90 / .8) 20deg, oklch(0.92 0.08 85 / .55) 26deg, transparent 40deg); filter: blur(10px); }
+  .a-tindra .lamp { position: absolute; left: 50%; top: 18%; width: 22px; height: 22px; transform: translate(-50%, -50%); border-radius: 50%; background: oklch(0.99 0.03 90); box-shadow: 0 0 40px 12px oklch(0.95 0.08 85 / .6); }
+  .a-tindra .t { position: absolute; left: 8%; bottom: 16%; font: italic 400 clamp(56px, 7vw, 120px)/.9 var(--serif); letter-spacing: -0.02em; }
+  .a-tindra .m { position: absolute; right: 8%; bottom: 18%; text-align: right; font: 500 11px/1.5 var(--sans); letter-spacing: .16em; text-transform: uppercase; }
+
+  /* Marquee */
+  .marquee { overflow: hidden; border-block: 1px solid var(--line); padding-block: var(--s-6); margin-top: var(--s-24); }
+  .marquee-track { display: flex; width: max-content; animation: marquee 48s linear infinite; }
+  .marquee span { display: inline-flex; align-items: center; gap: var(--s-12); padding-right: var(--s-12); font: 400 clamp(32px, 4vw, 64px)/1 var(--serif); white-space: nowrap; color: var(--frost); }
+  .marquee span:nth-child(even) { font-style: italic; color: var(--snow); }
+  .marquee svg { width: 22px; height: 22px; color: var(--aurora); }
+  @keyframes marquee { to { transform: translateX(-50%); } }
+
+  /* Services */
+  .services { padding-block: var(--s-32) var(--s-24); }
+  .svc { position: relative; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--s-6); padding-block: var(--s-8) var(--s-12); }
+  .svc::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 1px; background: var(--line); transform-origin: left; transform: scaleX(var(--draw, 1)); }
+  .svc::after { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 1px; background: var(--aurora); transform: scaleX(0); transform-origin: left; transition: transform 900ms var(--ease-out); }
+  .svc:hover::after { transform: scaleX(1); }
+  .svc .idx { grid-column: 1 / 2; padding-top: 12px; color: var(--dim); }
+  .svc h3 { grid-column: 2 / 8; font: 600 clamp(36px, 4.6vw, 80px)/.95 var(--sans); font-stretch: 118%; letter-spacing: -0.035em; transition: transform var(--d-mid) var(--ease-out); }
+  .svc:hover h3 { transform: translateX(var(--s-3)); }
+  .svc h3 em { font: italic 400 1.06em/0 var(--serif); letter-spacing: -0.01em; }
+  .svc .body { grid-column: 8 / 13; display: grid; gap: var(--s-6); padding-top: 10px; }
+  .svc .body p { color: var(--frost); max-width: 44ch; }
+  .svc .body ul { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+  .svc .body li { font: 500 13px/1 var(--sans); padding: 8px 12px; border: 1px solid var(--line); border-radius: 999px; color: var(--frost); white-space: nowrap; }
+
+  /* Team */
+  .team { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--s-6); padding-top: var(--s-16); border-top: 1px solid var(--line); }
+  .team > .label { grid-column: 1 / 3; }
+  .team ul { grid-column: 3 / 13; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-6); }
+  .team li b { display: block; font: 400 30px/1.1 var(--serif); }
+  .team li span { display: block; margin-top: 6px; color: var(--dim); font-size: var(--t-small); }
+
+  /* Contact */
+  .contact { position: relative; overflow: hidden; padding-block: var(--s-32) 0; }
+  .contact .wrap { position: relative; z-index: 1; }
+  .contact .lead { font: 400 var(--t-lead)/1.2 var(--serif); max-width: 24ch; color: var(--frost); margin-top: var(--s-6); }
+  .contact h2 { font: 800 clamp(64px, 13vw, 240px)/.84 var(--sans); font-stretch: 125%; letter-spacing: -0.045em; text-transform: uppercase; }
+  .contact h2 em { font: italic 400 1.02em/0 var(--serif); text-transform: none; letter-spacing: -0.02em; color: var(--aurora); }
+  .mail { display: inline-flex; align-items: center; gap: var(--s-4); margin-top: var(--s-16); padding: var(--s-6) var(--s-8); border-radius: 999px; background: var(--snow); color: var(--night); text-decoration: none; font: 600 clamp(20px, 2.2vw, 32px)/1 var(--sans); letter-spacing: -0.01em; white-space: nowrap; transition: background var(--d-fast) ease-out; will-change: transform; }
+  .mail:hover { background: var(--aurora); }
+  .mail:active { transform: scale(.98); }
+  .mail svg { width: 1em; height: 1em; }
+  .contact-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--s-6); margin-top: var(--s-24); padding-top: var(--s-6); border-top: 1px solid var(--line); }
+  .contact-grid > div { grid-column: span 3; display: grid; gap: var(--s-2); align-content: start; }
+  .contact-grid .label { color: var(--dim); }
+  .contact-grid p, .contact-grid a { font-size: var(--t-small); color: var(--snow); }
+  .contact-grid a { text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 4px; transition: text-decoration-color var(--d-fast); }
+  .contact-grid a:hover { text-decoration-color: var(--aurora); }
+  .status { display: inline-flex; align-items: center; gap: 8px; }
+  .status::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--aurora); box-shadow: 0 0 12px var(--aurora); }
+  .sky-foot { position: relative; height: 46vh; min-height: 280px; margin-top: var(--s-12); }
+  .sky-foot canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .sky-foot::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, oklch(0.22 0.06 165 / .0), oklch(0.5 0.12 165 / .25) 70%, oklch(0.75 0.14 162 / .35)); }
+  .sky-foot.canvas-on::before { display: none; }
+  footer { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; display: flex; justify-content: space-between; gap: var(--s-6); padding: var(--s-6) var(--gutter); }
+  footer .label { color: var(--snow); }
+
+  /* Cursor */
+  .cursor { position: fixed; left: 0; top: 0; z-index: 70; width: 96px; height: 96px; margin: -48px 0 0 -48px; border-radius: 50%; background: var(--snow); color: var(--night); display: grid; place-items: center; pointer-events: none; transform: scale(0); font: 600 12px/1 var(--sans); letter-spacing: .12em; text-transform: uppercase; }
+
+  /* Responsive */
+  @media (max-width: 1100px) {
+    .nav ul { display: none; }
+    .nav { grid-template-columns: 1fr auto; }
+  }
+  @media (max-width: 760px) {
+    :root { --t-display: 19vw; }
+    .clock { display: none; }
+    .hero-inner { padding-top: 88px; }
+    .hero-meta { grid-template-columns: minmax(0, 1fr) auto; }
+    .hero-meta > :nth-child(2) { display: none; }
+    .wordmark { line-height: .82; }
+    .wordmark .w { display: block; }
+    .hero-foot { grid-template-columns: minmax(0, 1fr); }
+    .scroll-cue { display: none; }
+    .manifesto, .sec-head, .projects, .svc, .team, .contact-grid { grid-template-columns: minmax(0, 1fr); }
+    .manifesto { padding-block: var(--s-24); }
+    .manifesto > *, .sec-head > *, .project, .svc > *, .team > *, .team ul, .contact-grid > div { grid-column: 1 / -1 !important; }
+    .project { margin-top: 0 !important; }
+    .projects { row-gap: var(--s-16); }
+    .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: var(--s-12); }
+    .facts div:nth-child(3) { border-left: 0; padding-left: 0; }
+    .facts div:nth-child(n+3) { margin-top: var(--s-6); border-top: 1px solid var(--line); }
+    .sec-head { margin-bottom: var(--s-12); }
+    .sec-head .label { justify-self: start; text-align: left; }
+    .svc { gap: var(--s-4); }
+    .svc .idx { padding-top: 0; }
+    .team ul { grid-template-columns: minmax(0, 1fr); }
+    .mail { padding: var(--s-4) var(--s-6); font-size: 18px; }
+    .contact-grid > div + div { margin-top: var(--s-4); }
+    footer { flex-direction: column; gap: var(--s-2); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-track, .scroll-cue i::after { animation: none; }
+    .art, .svc h3, .svc::after { transition: none; }
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="grain" aria-hidden="true"></div>
+<div class="cursor" aria-hidden="true">View case</div>
+
+<header class="nav">
+  <a class="brand" href="#top" aria-label="Northlight, home">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 20 C 6 8, 10 4, 12 4 S 18 8, 22 20"/><path d="M6 20 C 8 13, 10 10, 12 10 S 16 13, 18 20"/></svg>
+    Northlight
+  </a>
+  <ul>
+    <li><a href="#work">Work</a></li>
+    <li><a href="#services">What we do</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-end">
+    <span class="clock" aria-label="Local time in Oslo">Oslo <span data-clock>--:--</span></span>
+    <a class="pill" href="#contact">Start a project
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg>
+    </a>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero" id="top">
+    <canvas aria-hidden="true"></canvas>
+    <div class="hero-inner wrap">
+      <div class="hero-meta label">
+        <span data-intro>Identity &amp; motion studio</span>
+        <span data-intro>59.91°N · 10.75°E</span>
+        <span data-intro>Oslo, since 2019</span>
+      </div>
+      <h1 class="wordmark" aria-label="Northlight"><span class="w">North</span><span class="w">light</span></h1>
+      <div class="hero-foot">
+        <p data-intro>Brand identities and motion for <em>music festivals</em> and the outdoor brands that dress their crowds.</p>
+        <span class="scroll-cue label" data-intro aria-hidden="true"><i></i>Scroll to let the light out</span>
+      </div>
+    </div>
+    <div class="breakout" aria-hidden="true">
+      <p class="label">Our medium</p>
+      <p data-break>We grew up under this light.</p>
+      <p data-break><em>Now we design with it.</em></p>
+    </div>
+  </section>
+
+  <section class="manifesto wrap" aria-labelledby="studio-label">
+    <p class="label" id="studio-label">The studio</p>
+    <p class="statement" data-words>Northlight is three people in an old print shop on Grünerløkka. We make identities for festivals that run past midnight and outdoor brands that live in bad weather: systems built to <em>move</em>, from a 40-metre stage screen down to a 16-pixel app icon.</p>
+    <dl class="facts">
+      <div><dt data-count="3">3</dt><dd>People. Every project is led by the ones who design it.</dd></div>
+      <div><dt data-count="11">11</dt><dd>Festivals branded across Norway, Sweden and Iceland.</dd></div>
+      <div><dt data-count="38">38</dt><dd>Identities shipped since we opened the studio in 2019.</dd></div>
+      <div><dt data-count="2">2</dt><dd>New projects a season. We keep it small on purpose.</dd></div>
+    </dl>
+  </section>
+
+  <section class="work wrap" id="work" aria-labelledby="work-title">
+    <div class="sec-head">
+      <h2 id="work-title" data-lines>Selected <em>work</em></h2>
+      <p class="label">04 projects · 2023 to 2026</p>
+    </div>
+
+    <ol class="projects">
+      <li class="project">
+        <a href="#work" aria-label="Polarnatt Festival, case study">
+          <div class="cover" data-cover>
+            <div class="art a-polar" data-speed="0.9">
+              <div class="t" aria-hidden="true"><span>Polar</span><span>natt</span></div>
+              <div class="sun"></div>
+              <div class="m" aria-hidden="true"><span>Tromsø</span><span>23 to 25 January</span><span>No sunrise, all night</span></div>
+            </div>
+          </div>
+          <div class="cap">
+            <span class="label idx">01</span>
+            <h3>Polarnatt Festival</h3>
+            <span class="label year">2026</span>
+            <p class="desc">A winter music festival held in the weeks the sun never rises. We built an identity around a sun that stays just below the horizon, and a motion system that slowly brightens through the line-up.</p>
+            <ul class="tags label"><li>Identity</li><li>Motion system</li><li>Stage visuals</li></ul>
+          </div>
+        </a>
+      </li>
+      <li class="project">
+        <a href="#work" aria-label="Fjellgang, case study">
+          <div class="cover" data-cover>
+            <div class="art a-fjell" data-speed="0.85">
+              <svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true">
+                <g transform="translate(250 190)">
+                  <ellipse rx="30" ry="18" transform="rotate(-18)"/><ellipse rx="62" ry="40" transform="rotate(-14) translate(-6 4)"/><ellipse rx="96" ry="64" transform="rotate(-10) translate(-12 10)"/><ellipse rx="132" ry="90" transform="rotate(-8) translate(-20 18)"/><ellipse rx="172" ry="118" transform="rotate(-5) translate(-30 26)"/><ellipse rx="214" ry="150" transform="rotate(-3) translate(-40 36)"/><ellipse rx="262" ry="186" transform="rotate(0) translate(-52 48)"/><ellipse rx="316" ry="226" transform="rotate(2) translate(-64 62)"/><ellipse rx="374" ry="270" transform="rotate(4) translate(-78 78)"/>
+                </g>
+              </svg>
+              <p class="m" aria-hidden="true">AW26<br>Built for the long way up</p>
+              <p class="t" aria-hidden="true">fjellgang</p>
+            </div>
+          </div>
+          <div class="cap">
+            <span class="label idx">02</span>
+            <h3>Fjellgang</h3>
+            <span class="label year">2025</span>
+            <p class="desc">A rebrand for a Bergen hiking-apparel label. Contour lines from the routes their customers actually walk became the pattern, the packaging and the shop windows.</p>
+            <ul class="tags label"><li>Rebrand</li><li>Packaging</li><li>Retail</li></ul>
+          </div>
+        </a>
+      </li>
+      <li class="project">
+        <a href="#work" aria-label="Kystlyd, case study">
+          <div class="cover" data-cover>
+            <div class="art a-kyst" data-speed="0.88">
+              <p class="t" aria-hidden="true">Kyst<br>lyd</p>
+              <p class="m" aria-hidden="true">Bergen<br>14 to 16 Aug</p>
+              <div class="sea" aria-hidden="true"><i style="height:1px"></i><i style="height:2px"></i><i style="height:3px"></i><i style="height:5px"></i><i style="height:7px"></i><i style="height:10px"></i><i style="height:14px"></i><i style="height:19px"></i><i style="height:26px"></i></div>
+            </div>
+          </div>
+          <div class="cap">
+            <span class="label idx">03</span>
+            <h3>Kystlyd</h3>
+            <span class="label year">2024</span>
+            <p class="desc">A coastal sound festival on a working pier. The identity is a waveform that is also the sea; every artist's set gets its own swell, generated from the track.</p>
+            <ul class="tags label"><li>Identity</li><li>Generative motion</li><li>Wayfinding</li></ul>
+          </div>
+        </a>
+      </li>
+      <li class="project">
+        <a href="#work" aria-label="Tindra headlamps, case study">
+          <div class="cover" data-cover>
+            <div class="art a-tindra" data-speed="0.9">
+              <div class="beam"></div><div class="lamp"></div>
+              <p class="t" aria-hidden="true">Tindra</p>
+              <p class="m" aria-hidden="true">Lights for<br>long nights</p>
+            </div>
+          </div>
+          <div class="cap">
+            <span class="label idx">04</span>
+            <h3>Tindra</h3>
+            <span class="label year">2023</span>
+            <p class="desc">Naming, identity and a launch film for a Trondheim headlamp maker. Every frame was shot after dark, lit only by the product.</p>
+            <ul class="tags label"><li>Naming</li><li>Identity</li><li>Launch film</li></ul>
+          </div>
+        </a>
+      </li>
+    </ol>
+  </section>
+
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track">
+      <span>Festival identities <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0 13.6 10.4 24 12 13.6 13.6 12 24 10.4 13.6 0 12 10.4 10.4Z"/></svg></span>
+      <span>Motion systems <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0 13.6 10.4 24 12 13.6 13.6 12 24 10.4 13.6 0 12 10.4 10.4Z"/></svg></span>
+      <span>Stage visuals <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0 13.6 10.4 24 12 13.6 13.6 12 24 10.4 13.6 0 12 10.4 10.4Z"/></svg></span>
+      <span>Outdoor brands <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0 13.6 10.4 24 12 13.6 13.6 12 24 10.4 13.6 0 12 10.4 10.4Z"/></svg></span>
+      <span>Festival identities <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0 13.6 10.4 24 12 13.6 13.6 12 24 10.4 13.6 0 12 10.4 10.4Z"/></svg></span>
+      <span>Motion systems <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0 13.6 10.4 24 12 13.6 13.6 12 24 10.4 13.6 0 12 10.4 10.4Z"/></svg></span>
+      <span>Stage visuals <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0 13.6 10.4 24 12 13.6 13.6 12 24 10.4 13.6 0 12 10.4 10.4Z"/></svg></span>
+      <span>Outdoor brands <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0 13.6 10.4 24 12 13.6 13.6 12 24 10.4 13.6 0 12 10.4 10.4Z"/></svg></span>
+    </div>
+  </div>
+
+  <section class="services wrap" id="services" aria-labelledby="svc-title">
+    <div class="sec-head">
+      <h2 id="svc-title" data-lines>What we <em>do</em></h2>
+      <p class="label">Four disciplines, one small team</p>
+    </div>
+    <div class="svc">
+      <span class="label idx">01</span>
+      <h3>Brand <em>identity</em></h3>
+      <div class="body"><p>Names, marks, type and colour systems that hold up everywhere a festival or brand shows up: from a wristband to a 40-metre stage.</p><ul><li>Strategy workshop</li><li>Logo &amp; wordmark</li><li>Type &amp; colour</li><li>Guidelines</li></ul></div>
+    </div>
+    <div class="svc">
+      <span class="label idx">02</span>
+      <h3>Motion <em>identity</em></h3>
+      <div class="body"><p>Logos that move, animated type, idents and the visuals that play behind the headliner. Designed in motion from the first sketch, not animated afterwards.</p><ul><li>Motion principles</li><li>Logo animation</li><li>LED &amp; stage</li><li>Social toolkits</li></ul></div>
+    </div>
+    <div class="svc">
+      <span class="label idx">03</span>
+      <h3>Festival <em>systems</em></h3>
+      <div class="body"><p>Everything a festival needs to look like itself for three days: posters, line-up layouts, wayfinding in the dark, merch and the app.</p><ul><li>Poster &amp; line-up</li><li>Wayfinding</li><li>Merch</li><li>Ticketing UI</li></ul></div>
+    </div>
+    <div class="svc">
+      <span class="label idx">04</span>
+      <h3>Campaign <em>&amp; film</em></h3>
+      <div class="body"><p>Art direction and title design for launches and seasonal campaigns, shot in the places the product is actually made for.</p><ul><li>Art direction</li><li>Title design</li><li>Launch film</li><li>Out of home</li></ul></div>
+    </div>
+    <div class="team">
+      <p class="label">The three of us</p>
+      <ul>
+        <li><b>Ingrid Solberg</b><span>Design director, typography</span></li>
+        <li><b>Mats Aune</b><span>Motion director, stage visuals</span></li>
+        <li><b>Sanna Lie</b><span>Strategy &amp; production</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="contact" id="contact" aria-labelledby="contact-title">
+    <div class="wrap">
+      <p class="label">Contact</p>
+      <h2 id="contact-title" data-lines style="margin-top:24px">Say <em>hei</em>.</h2>
+      <p class="lead">Got a festival, a mountain or a long night that needs a look? Tell us about it. We reply within two working days.</p>
+      <a class="mail" href="mailto:hei@northlight.studio" data-magnetic>hei@northlight.studio
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg>
+      </a>
+      <div class="contact-grid">
+        <div><span class="label">Availability</span><p class="status">Booking projects from March 2027</p></div>
+        <div><span class="label">Studio</span><p>Markveien 35B, 0554 Oslo<br>Visits by appointment</p></div>
+        <div><span class="label">Elsewhere</span><p><a href="#contact">Instagram</a> · <a href="#contact">Vimeo</a> · <a href="#contact">Are.na</a></p></div>
+        <div><span class="label">New business</span><p><a href="mailto:sanna@northlight.studio">sanna@northlight.studio</a><br>+47 912 34 567</p></div>
+      </div>
+    </div>
+    <div class="sky-foot" aria-hidden="true"><canvas></canvas></div>
+    <footer>
+      <span class="label">© 2026 Northlight AS</span>
+      <span class="label">Designed and built in Oslo, under the light</span>
+    </footer>
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.3.4/dist/lenis.min.js"></script>
+<script>
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const DPR = Math.min(window.devicePixelRatio || 1, 2);
+
+  // ---------- Oslo clock ----------
+  const clock = document.querySelector('[data-clock]');
+  const fmt = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Oslo', hour: '2-digit', minute: '2-digit' });
+  const tick = () => { clock.textContent = fmt.format(new Date()); };
+  tick(); setInterval(tick, 15000);
+
+  // ---------- Aurora renderer (low-res offscreen canvas, upscaled = natural softness) ----------
+  function sprite(stops) {
+    const c = document.createElement('canvas'); c.width = 1; c.height = 256;
+    const g = c.getContext('2d'), gr = g.createLinearGradient(0, 0, 0, 256);
+    stops.forEach(([o, col]) => gr.addColorStop(o, col)); g.fillStyle = gr; g.fillRect(0, 0, 1, 256); return c;
+  }
+  const SPR = {
+    green: sprite([[0, 'rgba(120,70,210,0)'], [.3, 'rgba(150,90,220,.28)'], [.6, 'rgba(50,215,155,.6)'], [.88, 'rgba(140,255,200,.95)'], [.96, 'rgba(225,255,238,1)'], [1, 'rgba(225,255,238,0)']]),
+    teal:  sprite([[0, 'rgba(0,0,0,0)'], [.45, 'rgba(40,170,200,.3)'], [.86, 'rgba(90,240,215,.85)'], [1, 'rgba(90,240,215,0)']]),
+    rose:  sprite([[0, 'rgba(0,0,0,0)'], [.35, 'rgba(220,90,170,.32)'], [.8, 'rgba(160,110,235,.4)'], [1, 'rgba(0,0,0,0)']])
+  };
+  function Aurora(ribbons, scale) {
+    const c = document.createElement('canvas'), x = c.getContext('2d');
+    return { canvas: c, draw(W, H, t, px) {
+      const w = Math.max(2, Math.round(W * scale)), h = Math.max(2, Math.round(H * scale));
+      if (c.width !== w || c.height !== h) { c.width = w; c.height = h; }
+      x.globalCompositeOperation = 'source-over'; x.globalAlpha = 1; x.clearRect(0, 0, w, h);
+      x.globalCompositeOperation = 'lighter';
+      const step = 2;
+      for (const r of ribbons) {
+        const s = SPR[r.c];
+        for (let i = -step; i < w + step; i += step) {
+          const n = i / w;
+          const y = h * (r.base + r.amp * Math.sin(n * r.f1 + t * r.s1 + r.p) + r.amp * .5 * Math.sin(n * r.f2 - t * r.s2 + r.p * 1.7) + px * .05 * Math.sin(n * 3.1 + r.p));
+          const fold = .5 + .5 * Math.sin(n * r.f3 + t * r.s3 + r.p * 2.3);
+          const ray = .72 + .28 * Math.sin(i * .9 + t * 1.1 + Math.sin(i * .11 + t * .3) * 3);
+          const ih = h * r.height * (.55 + .45 * fold);
+          x.globalAlpha = r.a * (.2 + .8 * fold * fold) * ray;
+          x.drawImage(s, 0, 0, 1, 256, i, y - ih, step, ih);
+        }
+      }
+      x.globalAlpha = 1;
+    } };
+  }
+  function stars(W, H, seed) {
+    const c = document.createElement('canvas'); c.width = W * DPR; c.height = H * DPR;
+    const g = c.getContext('2d'); g.scale(DPR, DPR);
+    let s = seed; const rnd = () => (s = (s * 16807) % 2147483647) / 2147483647;
+    const n = Math.round(W * H / 5200);
+    for (let i = 0; i < n; i++) {
+      g.globalAlpha = .2 + rnd() * .7; g.fillStyle = rnd() > .9 ? '#ffe4c2' : '#eef6f6';
+      g.beginPath(); g.arc(rnd() * W, rnd() * H * .85, .4 + rnd() * rnd() * 1.4, 0, 7); g.fill();
+    }
+    return c;
+  }
+
+  // ---------- Hero: aurora inside the wordmark ----------
+  const hero = document.querySelector('.hero');
+  const hCanvas = hero.querySelector('canvas');
+  const hctx = hCanvas.getContext('2d');
+  const heroAur = Aurora([
+    { c: 'rose',  base: .5,  height: .5,  amp: .05, f1: 5, f2: 11, f3: 7,  s1: .11, s2: .07, s3: .16, p: 2.1, a: .7 },
+    { c: 'green', base: .6,  height: .46, amp: .06, f1: 4, f2: 9,  f3: 13, s1: .14, s2: .09, s3: .22, p: 0,   a: .95 },
+    { c: 'teal',  base: .7,  height: .32, amp: .05, f1: 6, f2: 13, f3: 10, s1: .1,  s2: .12, s3: .18, p: 4.2, a: .8 },
+    { c: 'green', base: .5,  height: .3,  amp: .07, f1: 7, f2: 15, f3: 17, s1: .17, s2: .05, s3: .27, p: 1.3, a: .55 }
+  ], .45);
+  const state = { p: 0, intro: reduce ? 1 : 0, px: 0, pxT: 0, scale: 1 };
+  let lines = [], W = 0, H = 0, heroStars = null, cx = 0, cy = 0;
+
+  function fitWordmark() {
+    const h1 = hero.querySelector('.wordmark'), spans = [...h1.querySelectorAll('.w')];
+    h1.style.fontSize = '';
+    const avail = h1.clientWidth;
+    const rs = spans.map(s => s.getBoundingClientRect());
+    const oneLine = Math.abs(rs[0].top - rs[1].top) < 2;
+    const widest = oneLine ? rs[1].right - rs[0].left : Math.max(...rs.map(r => r.width));
+    h1.style.fontSize = (parseFloat(getComputedStyle(h1).fontSize) * avail / widest * .995) + 'px';
+  }
+  function layoutHero() {
+    fitWordmark();
+    W = hero.clientWidth; H = hero.clientHeight;
+    hCanvas.width = Math.round(W * DPR); hCanvas.height = Math.round(H * DPR);
+    heroStars = stars(W, H, 11);
+    const hb = hero.getBoundingClientRect();
+    const h1 = hero.querySelector('.wordmark');
+    const cs = getComputedStyle(h1);
+    const size = parseFloat(cs.fontSize), ls = parseFloat(cs.letterSpacing) || 0, lh = parseFloat(cs.lineHeight);
+    hctx.font = `800 ${size}px Archivo`;
+    hctx.fontStretch = 'expanded';
+    hctx.letterSpacing = ls + 'px';
+    const m = hctx.measureText('NORTHLIGHT');
+    const asc = m.fontBoundingBoxAscent, desc = m.fontBoundingBoxDescent;
+    let minX = 1e9, maxX = -1e9, minY = 1e9, maxY = -1e9;
+    lines = [...h1.querySelectorAll('.w')].map(sp => {
+      const r = sp.getClientRects()[0];
+      const top = r.top - hb.top, left = r.left - hb.left;
+      const baseline = top + (r.height - (asc + desc)) / 2 + asc;
+      minX = Math.min(minX, left); maxX = Math.max(maxX, left + r.width); minY = Math.min(minY, top); maxY = Math.max(maxY, top + r.height);
+      return { text: sp.textContent.toUpperCase(), x: left, y: baseline, top, h: r.height, w: r.width };
+    });
+    lines.font = { size, ls };
+    cx = (minX + maxX) / 2; cy = (minY + maxY) / 2;
+  }
+  function wordPath(fill, stroke) {
+    hctx.font = `800 ${lines.font.size}px Archivo`; hctx.fontStretch = 'expanded'; hctx.letterSpacing = lines.font.ls + 'px';
+    hctx.textBaseline = 'alphabetic';
+    lines.forEach((l, i) => {
+      const e = Math.min(1, Math.max(0, state.intro * 1.6 - i * .35));
+      const k = 1 - Math.pow(1 - e, 4);
+      hctx.save();
+      hctx.beginPath(); hctx.rect(l.x - 40, l.top - l.h * .12, l.w + 80, l.h * 1.16); hctx.clip();
+      const dy = (1 - k) * l.h * 1.05;
+      if (fill) { hctx.fillStyle = fill; hctx.fillText(l.text, l.x, l.y + dy); }
+      if (stroke) { hctx.strokeStyle = stroke; hctx.lineWidth = 1; hctx.strokeText(l.text, l.x, l.y + dy); }
+      hctx.restore();
+    });
+  }
+  function renderHero(t) {
+    if (!lines.length) return;
+    state.px += (state.pxT - state.px) * .04;
+    heroAur.draw(W, H, t, state.px);
+    const p = state.p, s = 1 + p * .5;
+    hctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    hctx.globalCompositeOperation = 'source-over'; hctx.globalAlpha = 1;
+    hctx.clearRect(0, 0, W, H);
+    // 1. Mask: the letters, plus light leaking out of them
+    hctx.save(); hctx.translate(cx, cy); hctx.scale(s, s); hctx.translate(-cx, -cy);
+    wordPath('#fff');
+    hctx.restore();
+    if (p > 0.001) {
+      const R = Math.hypot(W, H) * (.08 + p * 1.05);
+      const g = hctx.createRadialGradient(cx, cy, 0, cx, cy, R);
+      g.addColorStop(0, `rgba(255,255,255,${Math.min(1, p * 2.2)})`); g.addColorStop(.55, `rgba(255,255,255,${Math.min(1, p * 1.6)})`); g.addColorStop(1, 'rgba(255,255,255,0)');
+      hctx.fillStyle = g; hctx.fillRect(0, 0, W, H);
+    }
+    // 2. Fill the mask with aurora
+    hctx.globalCompositeOperation = 'source-in';
+    hctx.globalAlpha = Math.min(1, state.intro * 1.3);
+    hctx.drawImage(heroAur.canvas, 0, 0, W, H);
+    hctx.globalCompositeOperation = 'lighter';
+    hctx.globalAlpha = .35 * Math.min(1, state.intro * 1.3);
+    hctx.drawImage(heroAur.canvas, 0, 0, W, H);
+    // 3. Behind it: faint snow letters and stars
+    hctx.globalAlpha = 1;
+    hctx.globalCompositeOperation = 'destination-over';
+    hctx.save(); hctx.translate(cx, cy); hctx.scale(s, s); hctx.translate(-cx, -cy);
+    wordPath(`rgba(230,242,242,${.07 * (1 - p)})`);
+    hctx.restore();
+    hctx.globalAlpha = .9; hctx.drawImage(heroStars, 0, 0, W, H);
+    // 4. Hairline so dim parts of the letters still read
+    hctx.globalCompositeOperation = 'source-over';
+    hctx.globalAlpha = .22 * (1 - Math.min(1, p * 2.5));
+    if (hctx.globalAlpha > .01) { hctx.save(); hctx.translate(cx, cy); hctx.scale(s, s); hctx.translate(-cx, -cy); wordPath(null, '#e8f4f2'); hctx.restore(); }
+    hctx.globalAlpha = 1;
+  }
+
+  // ---------- Footer aurora ----------
+  const foot = document.querySelector('.sky-foot');
+  const fCanvas = foot.querySelector('canvas'), fctx = fCanvas.getContext('2d');
+  const footAur = Aurora([
+    { c: 'rose',  base: .78, height: .7, amp: .06, f1: 4, f2: 10, f3: 6,  s1: .09, s2: .06, s3: .14, p: 1, a: .6 },
+    { c: 'green', base: .95, height: .8, amp: .07, f1: 3, f2: 8,  f3: 12, s1: .12, s2: .08, s3: .2,  p: 3, a: .95 },
+    { c: 'teal',  base: 1.02, height: .5, amp: .05, f1: 5, f2: 12, f3: 9, s1: .1,  s2: .1,  s3: .17, p: 5, a: .7 }
+  ], .4);
+  let FW = 0, FH = 0, footStars = null;
+  function layoutFoot() { FW = foot.clientWidth; FH = foot.clientHeight; fCanvas.width = Math.round(FW * DPR); fCanvas.height = Math.round(FH * DPR); footStars = stars(FW, FH, 23); }
+  function renderFoot(t) {
+    footAur.draw(FW, FH, t, 0);
+    fctx.setTransform(DPR, 0, 0, DPR, 0, 0); fctx.clearRect(0, 0, FW, FH);
+    fctx.globalAlpha = .8; fctx.drawImage(footStars, 0, 0, FW, FH);
+    fctx.globalAlpha = 1; fctx.globalCompositeOperation = 'lighter'; fctx.drawImage(footAur.canvas, 0, 0, FW, FH);
+    fctx.globalCompositeOperation = 'source-over';
+  }
+
+  let heroOn = true, footOn = false;
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (e.target === hero) heroOn = e.isIntersecting; else footOn = e.isIntersecting;
+    if (reduce) { if (e.target === hero) renderHero(40); else renderFoot(40); }
+  }));
+
+  function start() {
+    layoutHero(); layoutFoot();
+    hero.classList.add('canvas-on'); foot.classList.add('canvas-on');
+    renderHero(40); renderFoot(40);
+    io.observe(hero); io.observe(foot);
+    let rT;
+    addEventListener('resize', () => { clearTimeout(rT); rT = setTimeout(() => { layoutHero(); layoutFoot(); renderHero(40 + performance.now() / 1000); renderFoot(40); }, 120); });
+    if (!reduce) {
+      const loop = () => {
+        const t = 40 + performance.now() / 1000;
+        if (heroOn) renderHero(t);
+        if (footOn) renderFoot(t);
+      };
+      if (window.gsap) gsap.ticker.add(loop); else (function f() { loop(); requestAnimationFrame(f); })();
+      addEventListener('pointermove', e => { state.pxT = (e.clientX / innerWidth) * 2 - 1; }, { passive: true });
+    }
+  }
+  (document.fonts ? document.fonts.load('800 100px Archivo').then(() => document.fonts.ready) : Promise.resolve()).then(start, start);
+
+  // ---------- Motion ----------
+  if (!window.gsap || reduce) return;
+  gsap.registerPlugin(ScrollTrigger, SplitText);
+  const mm = gsap.matchMedia();
+  const fontsReady = document.fonts ? document.fonts.ready : Promise.resolve();
+  fontsReady.then(() => {
+
+  mm.add({ desktop: '(min-width: 761px)', fine: '(hover: hover) and (pointer: fine)' }, ctx => {
+    const { desktop, fine } = ctx.conditions;
+
+    // Smooth scroll on GSAP's ticker
+    const lenis = new Lenis({ lerp: .085 });
+    lenis.on('scroll', ScrollTrigger.update);
+    const raf = t => lenis.raf(t * 1000);
+    gsap.ticker.add(raf); gsap.ticker.lagSmoothing(0);
+    document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', e => {
+      const id = a.getAttribute('href'); if (id.length > 1 && document.querySelector(id)) { e.preventDefault(); lenis.scrollTo(id, { offset: id === '#top' ? 0 : -24, duration: 1.6 }); }
+    }));
+
+    // Intro: letters rise into the light, then the chrome arrives
+    gsap.to(state, { intro: 1, duration: 2.2, ease: 'power2.out', delay: .15 });
+    gsap.from('[data-intro]', { autoAlpha: 0, y: 14, duration: 1, ease: 'power3.out', stagger: .08, delay: .9 });
+    gsap.from('.nav > *', { autoAlpha: 0, y: -10, duration: .9, ease: 'power3.out', stagger: .08, delay: 1.1 });
+
+    // Signature: pin the hero and let the light out of the letters
+    if (desktop) {
+      gsap.set('.breakout', { display: 'block' });
+      const breakLines = gsap.utils.toArray('[data-break]').map(el => SplitText.create(el, { type: 'lines', mask: 'lines' }).lines);
+      gsap.set(breakLines.flat(), { yPercent: 110 });
+      gsap.set('.breakout .label', { autoAlpha: 0 });
+      gsap.timeline({ defaults: { ease: 'none' }, scrollTrigger: { trigger: hero, start: 'top top', end: '+=170%', pin: true, scrub: .9, anticipatePin: 1 } })
+        .to('.hero-meta, .hero-foot', { autoAlpha: 0, y: -20, duration: .18 }, 0)
+        .to(state, { p: 1, duration: .72, ease: 'power1.in' }, 0)
+        .to('.breakout .label', { autoAlpha: 1, duration: .1 }, .6)
+        .to(breakLines.flat(), { yPercent: 0, duration: .22, stagger: .06, ease: 'power3.out' }, .62)
+        .to({}, { duration: .12 });
+    } else {
+      gsap.to(state, { p: .55, ease: 'none', scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true } });
+    }
+
+    // Manifesto: words light up as you read
+    const words = SplitText.create('[data-words]', { type: 'words' }).words;
+    gsap.fromTo(words, { opacity: .16 }, { opacity: 1, stagger: .05, ease: 'none',
+      scrollTrigger: { trigger: '[data-words]', start: 'top 78%', end: 'bottom 45%', scrub: true } });
+
+    // Count-up facts
+    document.querySelectorAll('[data-count]').forEach(el => {
+      const end = +el.dataset.count, o = { v: 0 };
+      gsap.to(o, { v: end, duration: 1.6, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 88%', once: true },
+        onUpdate: () => { el.textContent = Math.round(o.v); } });
+    });
+
+    // Headings: line masks
+    document.querySelectorAll('[data-lines]').forEach(h => {
+      const split = SplitText.create(h, { type: 'lines', mask: 'lines' });
+      gsap.from(split.lines, { yPercent: 105, duration: 1.3, ease: 'expo.out', stagger: .1,
+        scrollTrigger: { trigger: h, start: 'top 85%', once: true } });
+    });
+
+    // Work covers: clip open from below, art settles; captions follow
+    document.querySelectorAll('[data-cover]').forEach(cv => {
+      const art = cv.querySelector('.art');
+      gsap.timeline({ scrollTrigger: { trigger: cv, start: 'top 88%', once: true } })
+        .fromTo(cv, { clipPath: 'inset(100% 0% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.4, ease: 'expo.inOut' })
+        .from(art, { scale: 1.15, duration: 1.6, ease: 'expo.out' }, .2)
+        .from(cv.parentElement.querySelectorAll('.cap > *'), { autoAlpha: 0, y: 12, duration: .8, ease: 'power3.out', stagger: .05 }, .7);
+      gsap.fromTo(art, { yPercent: -4 }, { yPercent: 4, ease: 'none', scrollTrigger: { trigger: cv, start: 'top bottom', end: 'bottom top', scrub: true } });
+    });
+
+    // Services: hairline draws, then title, then details
+    document.querySelectorAll('.svc').forEach(row => {
+      gsap.timeline({ scrollTrigger: { trigger: row, start: 'top 85%', once: true } })
+        .fromTo(row, { '--draw': 0 }, { '--draw': 1, duration: 1 })
+        .from(row.querySelector('h3'), { autoAlpha: 0, x: -24, duration: 1, ease: 'power4.out' }, .1)
+        .from(row.querySelectorAll('.idx, .body p, .body li'), { autoAlpha: 0, y: 10, duration: .7, ease: 'power3.out', stagger: .04 }, .25);
+    });
+    gsap.from('.team li', { autoAlpha: 0, y: 16, duration: .9, ease: 'power3.out', stagger: .09, scrollTrigger: { trigger: '.team', start: 'top 85%', once: true } });
+
+    // Footer aurora rises as you arrive
+    gsap.from('.sky-foot', { yPercent: 25, autoAlpha: 0, ease: 'none', scrollTrigger: { trigger: '.sky-foot', start: 'top bottom', end: 'bottom bottom', scrub: true } });
+
+    // Pointer niceties
+    if (fine) {
+      document.querySelectorAll('[data-magnetic]').forEach(btn => {
+        const x = gsap.quickTo(btn, 'x', { duration: .5, ease: 'power3' }), y = gsap.quickTo(btn, 'y', { duration: .5, ease: 'power3' });
+        btn.addEventListener('pointermove', e => { const r = btn.getBoundingClientRect(); x((e.clientX - r.left - r.width / 2) * .22); y((e.clientY - r.top - r.height / 2) * .35); });
+        btn.addEventListener('pointerleave', () => { x(0); y(0); });
+      });
+      const cur = document.querySelector('.cursor');
+      const cx = gsap.quickTo(cur, 'x', { duration: .45, ease: 'power3' }), cy = gsap.quickTo(cur, 'y', { duration: .45, ease: 'power3' });
+      addEventListener('pointermove', e => { cx(e.clientX); cy(e.clientY); }, { passive: true });
+      document.querySelectorAll('[data-cover]').forEach(cv => {
+        cv.style.cursor = 'none';
+        cv.addEventListener('pointerenter', () => gsap.to(cur, { scale: 1, duration: .45, ease: 'expo.out' }));
+        cv.addEventListener('pointerleave', () => gsap.to(cur, { scale: 0, duration: .3, ease: 'power2.in' }));
+      });
+    }
+
+    return () => { gsap.ticker.remove(raf); lenis.destroy(); };
+  });
+  });
+})();
+</script>
+</body>
+</html>

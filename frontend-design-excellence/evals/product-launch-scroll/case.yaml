@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: product-launch-scroll
+expected_outcome: |
+  An Apple-style launch page with a scroll-driven product reveal built in code and a pinned feature sequence, with reduced-motion and mobile fallbacks.

@@ -1,0 +1,846 @@
+<!doctype html>
+<!--
+  Lintel — AI code review for engineering teams.
+  Mode: Premium product marketing. Direction: Precise Product (dark).
+  Concept: "Lintel reads the diff like your most careful senior engineer — and only speaks when it matters."
+  Signature moment: the hero PR. Lintel scans the diff, leaves one high-signal comment with a suggested
+  change, and "Apply suggestion" actually patches the diff and turns the check green.
+  Motion personality: precise, quiet, quick.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lintel — Code review that catches what matters</title>
+<meta name="description" content="Lintel reviews every pull request with the context of your whole repository, and only comments when it finds something worth fixing.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    color-scheme: dark;
+    /* Neutrals — cool, hue 260 */
+    --bg:          oklch(0.145 0.006 260);
+    --bg-raised:   oklch(0.165 0.007 260);
+    --surface:     oklch(0.185 0.008 260);
+    --surface-2:   oklch(0.215 0.009 260);
+    --surface-3:   oklch(0.25 0.01 260);
+    --border:      oklch(1 0 0 / 0.075);
+    --border-strong: oklch(1 0 0 / 0.13);
+    --text:        oklch(0.965 0.004 260);
+    --text-muted:  oklch(0.74 0.012 260);
+    --text-subtle: oklch(0.62 0.012 260);
+    /* One accent — signal amber */
+    --accent:      oklch(0.84 0.135 78);
+    --accent-hover:oklch(0.88 0.12 80);
+    --accent-fg:   oklch(0.2 0.03 70);
+    --accent-soft: oklch(0.84 0.135 78 / 0.12);
+    --accent-line: oklch(0.84 0.135 78 / 0.38);
+    /* Semantic */
+    --add:     oklch(0.76 0.14 152);
+    --add-bg:  oklch(0.76 0.14 152 / 0.09);
+    --del:     oklch(0.7 0.16 22);
+    --del-bg:  oklch(0.7 0.16 22 / 0.09);
+    --danger:  oklch(0.72 0.16 28);
+
+    --sans: "Geist", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    --mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+    /* Type scale: 12 / 13 / 15 / 18 / 28 / display */
+    --fs-xs: 12px; --fs-sm: 13px; --fs-base: 15px; --fs-md: 18px; --fs-lg: 28px;
+    --fs-display: clamp(40px, 2rem + 3.4vw, 72px);
+
+    --r-sm: 6px; --r-lg: 12px;
+    --shadow-1: 0 1px 0 oklch(1 0 0 / 0.04) inset, 0 1px 2px oklch(0 0 0 / 0.3);
+    --shadow-2: 0 1px 0 oklch(1 0 0 / 0.05) inset, 0 40px 80px -32px oklch(0 0 0 / 0.7), 0 12px 24px -12px oklch(0 0 0 / 0.5);
+
+    /* Motion tokens — precise, quiet, quick */
+    --d-fast: 120ms; --d-mid: 220ms; --d-slow: 520ms;
+    --ease-out: cubic-bezier(.22, 1, .36, 1);
+    --ease-in-out: cubic-bezier(.65, 0, .35, 1);
+
+    --max: 1200px;
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 400 var(--fs-base)/1.55 var(--sans);
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: "ss01", "cv11";
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: var(--r-sm); }
+  h1, h2, h3, p { margin: 0; }
+  h1, h2 { text-wrap: balance; }
+  p { text-wrap: pretty; }
+  .wrap { max-width: var(--max); margin: 0 auto; padding-inline: 32px; }
+  .mono { font-family: var(--mono); }
+  .num { font-variant-numeric: tabular-nums; }
+  svg.i { width: 16px; height: 16px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  [hidden] { display: none !important; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px;
+    border-radius: var(--r-sm); border: 1px solid transparent; white-space: nowrap;
+    font-weight: 500; font-size: var(--fs-base); cursor: pointer;
+    transition: background var(--d-fast) var(--ease-out), border-color var(--d-fast) var(--ease-out), color var(--d-fast), transform var(--d-fast) var(--ease-out);
+  }
+  .btn:active { transform: translateY(0.5px) scale(0.99); }
+  .btn-primary { background: var(--accent); color: var(--accent-fg); box-shadow: 0 1px 0 oklch(1 0 0 / 0.35) inset; }
+  .btn-primary:hover { background: var(--accent-hover); }
+  .btn-primary .arrow { transition: transform var(--d-mid) var(--ease-out); }
+  .btn-primary:hover .arrow { transform: translateX(3px); }
+  .btn-secondary { background: var(--surface); border-color: var(--border-strong); color: var(--text); box-shadow: var(--shadow-1); }
+  .btn-secondary:hover { background: var(--surface-2); }
+  .btn-sm { height: 32px; padding: 0 12px; font-size: var(--fs-sm); }
+  kbd {
+    font: 500 11px/1 var(--mono); min-width: 18px; height: 18px; padding: 0 4px;
+    display: inline-grid; place-items: center; border-radius: 4px;
+    background: oklch(1 0 0 / 0.06); border: 1px solid var(--border-strong); color: var(--text-muted);
+  }
+  .btn-primary kbd { background: oklch(0 0 0 / 0.1); border-color: oklch(0 0 0 / 0.15); color: var(--accent-fg); }
+
+  /* ---------- Nav ---------- */
+  .nav-wrap { position: sticky; top: 0; z-index: 20; backdrop-filter: blur(12px) saturate(140%); -webkit-backdrop-filter: blur(12px) saturate(140%); background: oklch(0.145 0.006 260 / 0.72); border-bottom: 1px solid transparent; transition: border-color var(--d-mid); }
+  .nav-wrap.scrolled { border-bottom-color: var(--border); }
+  .nav { display: flex; align-items: center; height: 60px; gap: 32px; }
+  .brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 600; font-size: var(--fs-base); letter-spacing: -0.01em; }
+  .brand svg { width: 20px; height: 20px; }
+  .nav ul { display: flex; gap: 4px; list-style: none; margin: 0; padding: 0; }
+  .nav ul a { display: block; padding: 6px 10px; border-radius: var(--r-sm); font-size: var(--fs-sm); color: var(--text-muted); transition: color var(--d-fast), background var(--d-fast); }
+  .nav ul a:hover { color: var(--text); background: oklch(1 0 0 / 0.04); }
+  .nav .right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+  .nav .right .link { font-size: var(--fs-sm); color: var(--text-muted); padding: 6px 10px; border-radius: var(--r-sm); transition: color var(--d-fast); }
+  .nav .right .link:hover { color: var(--text); }
+
+  /* ---------- Hero ---------- */
+  .hero { position: relative; padding-block: 64px 0; overflow: hidden; }
+  /* One glow, with purpose: light falling onto the product from above */
+  .hero::before {
+    content: ""; position: absolute; inset: 280px 0 auto; height: 720px; pointer-events: none;
+    background: radial-gradient(ellipse 50% 50% at 50% 30%, oklch(0.84 0.135 78 / 0.07), transparent 70%);
+  }
+  .hero-grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 48px; align-items: end; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 10px; height: 28px; padding: 0 12px 0 4px;
+    border: 1px solid var(--border-strong); border-radius: 999px; background: var(--bg-raised);
+    font-size: var(--fs-sm); color: var(--text-muted); transition: border-color var(--d-fast), color var(--d-fast);
+  }
+  .eyebrow:hover { border-color: var(--accent-line); color: var(--text); }
+  .eyebrow .tag { font: 500 11px/20px var(--mono); padding: 0 8px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); }
+  .eyebrow svg { width: 14px; height: 14px; transition: transform var(--d-mid) var(--ease-out); }
+  .eyebrow:hover svg { transform: translateX(2px); }
+  .hero h1 { font-size: var(--fs-display); font-weight: 500; line-height: 1.02; letter-spacing: -0.035em; margin: 28px 0 0; max-width: 13ch; }
+  .hero h1 .dim { color: var(--text-subtle); }
+  .hero-side { padding-bottom: 6px; }
+  .hero .lede { font-size: var(--fs-md); line-height: 1.5; color: var(--text-muted); max-width: 40ch; }
+  .hero .ctas { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
+  .hero .fine { margin-top: 16px; font-size: var(--fs-sm); color: var(--text-subtle); display: flex; gap: 16px; flex-wrap: wrap; }
+  .hero .fine span { display: inline-flex; align-items: center; gap: 6px; }
+  .hero .fine svg { width: 14px; height: 14px; color: var(--add); }
+
+  /* ---------- Product window ---------- */
+  .stage { position: relative; margin-top: 56px; perspective: 2000px; }
+  .app {
+    position: relative; border-radius: var(--r-lg); background: var(--bg-raised);
+    border: 1px solid var(--border-strong); box-shadow: var(--shadow-2);
+    overflow: hidden; font-size: var(--fs-sm); transform-origin: 50% 0;
+  }
+  /* gradient hairline highlight on top edge */
+  .app::before { content: ""; position: absolute; inset: 0 0 auto; height: 1px; background: linear-gradient(90deg, transparent, oklch(1 0 0 / 0.22) 30%, oklch(1 0 0 / 0.22) 70%, transparent); z-index: 2; }
+  .stage::after { /* fade product into page */
+    content: ""; position: absolute; left: -1px; right: -1px; bottom: -1px; height: 140px; pointer-events: none; z-index: 3;
+    background: linear-gradient(to bottom, transparent, var(--bg));
+  }
+  .titlebar { display: flex; align-items: center; gap: 12px; height: 40px; padding: 0 14px; border-bottom: 1px solid var(--border); background: var(--bg); }
+  .dots { display: flex; gap: 6px; } .dots i { width: 10px; height: 10px; border-radius: 50%; background: var(--surface-3); }
+  .crumbs { display: flex; align-items: center; gap: 6px; color: var(--text-subtle); font-size: var(--fs-xs); min-width: 0; }
+  .crumbs b { color: var(--text-muted); font-weight: 500; }
+  .crumbs svg { width: 12px; height: 12px; }
+  .titlebar .search { margin-left: auto; display: flex; align-items: center; gap: 8px; height: 24px; padding: 0 6px 0 10px; border: 1px solid var(--border); border-radius: var(--r-sm); color: var(--text-subtle); font-size: var(--fs-xs); }
+
+  .app-body { display: grid; grid-template-columns: 232px minmax(0, 1fr); min-height: 560px; }
+  .sidebar { border-right: 1px solid var(--border); padding: 14px 10px; background: var(--bg); }
+  .side-label { font-size: 11px; font-weight: 500; color: var(--text-subtle); padding: 6px 8px; letter-spacing: 0.02em; }
+  .file { display: flex; align-items: center; gap: 8px; height: 28px; padding: 0 8px; border-radius: var(--r-sm); color: var(--text-muted); font: 400 12px/1 var(--mono); white-space: nowrap; overflow: hidden; }
+  .file svg { width: 14px; height: 14px; color: var(--text-subtle); }
+  .file .name { overflow: hidden; text-overflow: ellipsis; }
+  .file .delta { margin-left: auto; font-size: 11px; display: flex; gap: 6px; }
+  .file .delta .p { color: var(--add); } .file .delta .m { color: var(--del); }
+  .file.active { background: var(--surface-2); color: var(--text); }
+  .file .badge { margin-left: auto; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .side-sep { height: 1px; background: var(--border); margin: 12px 8px; }
+  .check { display: flex; align-items: center; gap: 8px; padding: 6px 8px; font-size: var(--fs-xs); color: var(--text-muted); }
+  .check .st { width: 14px; height: 14px; border-radius: 50%; display: grid; place-items: center; flex: none; }
+  .check .st.ok { color: var(--add); }
+  .check .st.warn { color: var(--accent); }
+  .check .st svg { width: 14px; height: 14px; }
+  .check .t { margin-left: auto; color: var(--text-subtle); font-family: var(--mono); font-size: 11px; }
+  .spin { animation: spin 1s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .main { min-width: 0; display: flex; flex-direction: column; }
+  .pr-head { padding: 18px 22px 0; border-bottom: 1px solid var(--border); }
+  .pr-title { display: flex; align-items: baseline; gap: 10px; font-size: var(--fs-md); font-weight: 500; letter-spacing: -0.01em; }
+  .pr-title .id { color: var(--text-subtle); font-weight: 400; }
+  .pr-meta { display: flex; align-items: center; gap: 10px; margin-top: 8px; color: var(--text-subtle); font-size: var(--fs-xs); flex-wrap: wrap; }
+  .state { display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 8px; border-radius: 999px; background: var(--add-bg); color: var(--add); font-weight: 500; }
+  .state svg { width: 12px; height: 12px; }
+  .branch { font-family: var(--mono); font-size: 11px; color: var(--text-muted); background: var(--surface); border: 1px solid var(--border); padding: 2px 6px; border-radius: 4px; }
+  .avatar { width: 18px; height: 18px; border-radius: 50%; display: inline-grid; place-items: center; font-size: 9px; font-weight: 600; flex: none; }
+  .tabs { display: flex; gap: 20px; margin-top: 16px; }
+  .tab { position: relative; padding: 8px 0 11px; color: var(--text-subtle); font-size: var(--fs-sm); display: inline-flex; gap: 6px; align-items: center; white-space: nowrap; }
+  .tab .count { font: 500 11px/18px var(--mono); padding: 0 6px; border-radius: 999px; background: var(--surface-2); color: var(--text-muted); }
+  .tab.on { color: var(--text); }
+  .tab.on::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 1.5px; background: var(--text); border-radius: 1px; }
+
+  .diff { padding: 18px 22px 40px; }
+  .diff-file { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: var(--bg); }
+  .diff-file-head { display: flex; align-items: center; gap: 10px; height: 36px; padding: 0 12px; border-bottom: 1px solid var(--border); background: var(--bg-raised); font: 400 12px/1 var(--mono); color: var(--text-muted); }
+  .diff-file-head .delta { margin-left: auto; display: flex; gap: 8px; }
+  .diff-file-head .p { color: var(--add); } .diff-file-head .m { color: var(--del); }
+  .code { font: 400 12.5px/20px var(--mono); overflow-x: auto; }
+  .ln { position: relative; display: grid; grid-template-columns: 44px 44px 18px minmax(0, 1fr); white-space: pre; color: var(--text-muted); }
+  .ln .n { color: oklch(0.5 0.01 260); text-align: right; padding-right: 10px; user-select: none; }
+  .ln .s { color: var(--text-subtle); text-align: center; user-select: none; }
+  .ln.add { background: var(--add-bg); } .ln.add .s { color: var(--add); } .ln.add .n { color: oklch(0.6 0.08 152); }
+  .ln.del { background: var(--del-bg); } .ln.del .s { color: var(--del); } .ln.del .n { color: oklch(0.58 0.08 22); }
+  .ln.hunk { background: oklch(1 0 0 / 0.025); color: var(--text-subtle); }
+  .ln.flag { box-shadow: inset 2px 0 0 var(--accent); }
+  .ln.flag .n { color: var(--accent); }
+  /* syntax — muted, single-hue family + one warm */
+  .k { color: oklch(0.78 0.08 300); } .f { color: oklch(0.82 0.08 230); } .st-s { color: oklch(0.8 0.09 150); } .c { color: oklch(0.55 0.01 260); font-style: italic; } .x { color: oklch(0.82 0.09 60); }
+
+  /* scan line */
+  .scan { position: absolute; left: 0; right: 0; height: 20px; pointer-events: none; background: linear-gradient(90deg, oklch(0.84 0.135 78 / 0.0), oklch(0.84 0.135 78 / 0.10) 30%, oklch(0.84 0.135 78 / 0.0)); opacity: 0; }
+
+  /* Review comment */
+  .thread { white-space: normal; font-family: var(--sans); padding: 12px 14px 14px 106px; background: var(--bg-raised); border-block: 1px solid var(--border); }
+  .comment { position: relative; max-width: 680px; border: 1px solid var(--border-strong); border-radius: 10px; background: var(--surface); box-shadow: 0 16px 32px -16px oklch(0 0 0 / 0.6); overflow: hidden; }
+  .comment-head { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--border); font-size: var(--fs-sm); }
+  .bot { width: 20px; height: 20px; border-radius: 5px; background: var(--accent); color: var(--accent-fg); display: grid; place-items: center; flex: none; }
+  .bot svg { width: 12px; height: 12px; stroke-width: 2.2; }
+  .comment-head b { font-weight: 500; }
+  .comment-head .muted { color: var(--text-subtle); font-size: var(--fs-xs); }
+  .sev { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 8px; border-radius: 999px; background: oklch(0.72 0.16 28 / 0.12); color: var(--danger); font-size: 11px; font-weight: 500; white-space: nowrap; }
+  .sev i { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .comment-body { padding: 12px 14px 4px; color: var(--text-muted); font-size: var(--fs-sm); line-height: 1.6; }
+  .comment-body strong { color: var(--text); font-weight: 500; }
+  .comment-body code { font: 400 12px var(--mono); color: var(--text); background: var(--surface-3); padding: 1px 5px; border-radius: 4px; }
+  .refs { display: flex; gap: 6px; flex-wrap: wrap; padding: 8px 14px 4px; }
+  .ref { display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 8px; border: 1px solid var(--border); border-radius: var(--r-sm); font: 400 11px/1 var(--mono); color: var(--text-muted); background: var(--bg-raised); transition: border-color var(--d-fast), color var(--d-fast); cursor: default; }
+  .ref:hover { border-color: var(--border-strong); color: var(--text); }
+  .ref svg { width: 12px; height: 12px; }
+  .suggest { margin: 10px 14px 0; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .suggest-head { display: flex; align-items: center; gap: 8px; height: 30px; padding: 0 10px; font-size: var(--fs-xs); color: var(--text-subtle); background: var(--bg-raised); border-bottom: 1px solid var(--border); }
+  .suggest .ln { grid-template-columns: 18px minmax(0, 1fr); font: 400 12px/20px var(--mono); }
+  .comment-foot { display: flex; align-items: center; gap: 8px; padding: 12px 14px; }
+  .comment-foot .conf { margin-left: auto; font-size: var(--fs-xs); color: var(--text-subtle); display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+  .meter { width: 48px; height: 4px; border-radius: 2px; background: var(--surface-3); overflow: hidden; }
+  .meter i { display: block; height: 100%; width: 94%; background: var(--text-muted); border-radius: 2px; }
+  .btn-apply { position: relative; }
+  .btn-apply .ok { display: none; }
+  .applied .btn-apply { background: var(--add-bg); color: var(--add); box-shadow: none; pointer-events: none; }
+  .applied .btn-apply .lbl, .applied .btn-apply kbd { display: none; }
+  .applied .btn-apply .ok { display: inline-flex; align-items: center; gap: 6px; }
+  .applied .comment { border-color: var(--border); }
+  .applied .sev { background: var(--add-bg); color: var(--add); }
+
+  /* Inline patch line inserted after apply */
+  .ln.patched { animation: patch 900ms var(--ease-out) both; }
+  @keyframes patch { from { background: oklch(0.76 0.14 152 / 0.28); } to { background: var(--add-bg); } }
+
+  /* Intro choreography (JS adds .play; content fully visible without JS) */
+  .js .thread { display: grid; grid-template-rows: 0fr; padding-block: 0; border-block-color: transparent; transition: grid-template-rows var(--d-slow) var(--ease-out), padding var(--d-slow) var(--ease-out), border-color var(--d-slow); }
+  .js .thread > .comment { min-height: 0; opacity: 0; transform: translateY(-6px); transition: opacity 360ms var(--ease-out) 140ms, transform 520ms var(--ease-out) 140ms; }
+  .js .reviewed .thread { grid-template-rows: 1fr; padding-block: 12px 14px; border-block-color: var(--border); }
+  .js .reviewed .thread > .comment { opacity: 1; transform: none; }
+
+  /* Cursor-follow sheen on the product (pointer: fine only) */
+  .app .sheen { position: absolute; inset: 0; pointer-events: none; z-index: 1; opacity: 0; transition: opacity var(--d-slow);
+    background: radial-gradient(600px circle at var(--mx, 50%) var(--my, 0%), oklch(1 0 0 / 0.035), transparent 40%); }
+  .app:hover .sheen { opacity: 1; }
+
+  /* ---------- Logos ---------- */
+  .logos { padding-block: 40px 0; position: relative; z-index: 4; }
+  .logos p { font-size: var(--fs-sm); color: var(--text-subtle); }
+  .logo-row { display: flex; flex-wrap: wrap; gap: 16px 48px; align-items: center; margin-top: 20px; color: var(--text-subtle); }
+  .logo-row span { font-weight: 600; font-size: var(--fs-md); letter-spacing: -0.02em; opacity: 0.8; transition: opacity var(--d-fast), color var(--d-fast); }
+  .logo-row span:hover { opacity: 1; color: var(--text-muted); }
+  .logo-row .l2 { font-family: var(--mono); font-weight: 500; letter-spacing: -0.04em; }
+  .logo-row .l3 { letter-spacing: 0.12em; font-size: var(--fs-sm); text-transform: uppercase; }
+  .logo-row .l4 { font-weight: 400; font-style: italic; }
+
+  /* ---------- Features ---------- */
+  .features { padding-block: 128px 120px; }
+  .sec-head { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 48px; align-items: end; margin-bottom: 56px; }
+  .overline { font: 500 var(--fs-xs)/1 var(--mono); color: var(--accent); letter-spacing: 0.02em; display: inline-flex; gap: 8px; align-items: center; }
+  .overline::before { content: ""; width: 16px; height: 1px; background: var(--accent-line); }
+  .sec-head h2 { font-size: clamp(30px, 1.2rem + 2vw, 48px); font-weight: 500; letter-spacing: -0.03em; line-height: 1.08; margin-top: 18px; max-width: 18ch; }
+  .sec-head p { color: var(--text-muted); max-width: 44ch; }
+
+  .bento { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; }
+  .tile {
+    position: relative; border-radius: var(--r-lg); background: var(--bg-raised); border: 1px solid var(--border);
+    padding: 28px; overflow: hidden; min-height: 280px; display: flex; flex-direction: column; isolation: isolate;
+    transition: border-color var(--d-mid) var(--ease-out);
+  }
+  /* pointer-tracked hairline: border lights up only near the cursor */
+  .tile::before {
+    content: ""; position: absolute; inset: -1px; border-radius: inherit; padding: 1px; pointer-events: none; z-index: 2;
+    background: radial-gradient(260px circle at var(--mx, -999px) var(--my, -999px), oklch(0.84 0.135 78 / 0.55), transparent 70%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude;
+    opacity: 0; transition: opacity var(--d-mid);
+  }
+  .bento:hover .tile::before { opacity: 1; }
+  .tile h3 { font-size: var(--fs-md); font-weight: 500; letter-spacing: -0.015em; line-height: 1.3; }
+  .tile h3 + p { margin-top: 8px; color: var(--text-muted); font-size: var(--fs-base); max-width: 42ch; }
+  .tile .vis { margin-top: auto; padding-top: 28px; }
+  .t-a { grid-column: span 4; min-height: 360px; } .t-b { grid-column: span 2; }
+  .t-c { grid-column: span 2; } .t-d { grid-column: span 2; } .t-e { grid-column: span 2; }
+
+  /* Tile A — context graph */
+  .graph { position: relative; height: 200px; border: 1px solid var(--border); border-radius: 10px; background:
+      radial-gradient(oklch(1 0 0 / 0.05) 1px, transparent 1px) 0 0 / 16px 16px, var(--bg); overflow: hidden; }
+  .graph svg.edges { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .graph .edge { fill: none; stroke: var(--border-strong); stroke-width: 1; }
+  .graph .edge.hot { stroke: var(--accent-line); stroke-dasharray: 4 4; animation: dash 1.2s linear infinite; }
+  @keyframes dash { to { stroke-dashoffset: -16; } }
+  .node { position: absolute; transform: translate(-50%, -50%); display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 10px; border-radius: var(--r-sm); border: 1px solid var(--border-strong); background: var(--surface); font: 400 11px/1 var(--mono); color: var(--text-muted); white-space: nowrap; transition: border-color var(--d-mid), color var(--d-mid), transform var(--d-mid) var(--ease-out); }
+  .node svg { width: 12px; height: 12px; }
+  .node.src { color: var(--text); border-color: var(--text-subtle); }
+  .node.hit { color: var(--accent); border-color: var(--accent-line); background: oklch(0.84 0.135 78 / 0.06); }
+  .t-a:hover .node.hit { transform: translate(-50%, -50%) scale(1.04); }
+
+  /* Tile B — noise vs signal */
+  .counter { display: flex; align-items: baseline; gap: 12px; }
+  .counter .big { font-size: var(--fs-display); font-weight: 500; letter-spacing: -0.04em; line-height: 1; }
+  .counter .of { color: var(--text-subtle); font-size: var(--fs-sm); }
+  .bars { margin-top: 18px; display: grid; gap: 6px; }
+  .bar { display: grid; grid-template-columns: 76px minmax(0, 1fr) 28px; align-items: center; gap: 10px; font-size: var(--fs-xs); color: var(--text-subtle); }
+  .bar .track { height: 6px; background: var(--surface-2); border-radius: 3px; overflow: hidden; }
+  .bar .track i { display: block; height: 100%; border-radius: 3px; background: var(--surface-3); transform-origin: left; transition: transform 700ms var(--ease-out); }
+  .bar.on .track i { background: var(--accent); }
+  .bar .v { text-align: right; font-family: var(--mono); }
+  .bar.on { color: var(--text-muted); }
+
+  /* Tile C — conventions */
+  .rule { border: 1px solid var(--border); border-radius: 10px; background: var(--bg); overflow: hidden; font-size: var(--fs-xs); }
+  .rule-row { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text-muted); }
+  .rule-row:last-child { border-bottom: 0; }
+  .rule-row .avatar { margin-top: 1px; }
+  .rule-row code { font: 400 11px var(--mono); color: var(--text); background: var(--surface-2); padding: 1px 4px; border-radius: 4px; }
+  .rule-row.learned { background: var(--accent-soft); color: var(--text); }
+  .rule-row.learned svg { color: var(--accent); width: 14px; height: 14px; margin-top: 1px; }
+
+  /* Tile D — keyboard */
+  .keys { display: grid; gap: 4px; }
+  .key-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; height: 36px; padding: 0 10px; border-radius: var(--r-sm); color: var(--text-muted); font-size: var(--fs-sm); transition: background var(--d-fast), color var(--d-fast); }
+  .key-row:hover, .key-row.on { background: var(--surface-2); color: var(--text); }
+  .key-row span:last-child { display: flex; gap: 4px; }
+
+  /* Tile E — privacy */
+  .shield-list { display: grid; gap: 10px; font-size: var(--fs-sm); color: var(--text-muted); }
+  .shield-list div { display: flex; gap: 10px; align-items: center; }
+  .shield-list svg { color: var(--add); }
+
+  /* Stats strip */
+  .stats { margin-top: 12px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1px solid var(--border); border-radius: var(--r-lg); background: var(--bg-raised); }
+  .stat { padding: 24px 28px; border-left: 1px solid var(--border); }
+  .stat:first-child { border-left: 0; }
+  .stat b { display: block; font-size: var(--fs-lg); font-weight: 500; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+  .stat span { font-size: var(--fs-sm); color: var(--text-subtle); }
+
+  /* Final CTA line */
+  .cta-band { border-top: 1px solid var(--border); padding-block: 80px; }
+  .cta-band .wrap { display: flex; align-items: center; justify-content: space-between; gap: 32px; flex-wrap: wrap; }
+  .cta-band h2 { font-size: var(--fs-lg); font-weight: 500; letter-spacing: -0.025em; line-height: 1.2; max-width: 24ch; }
+  .cta-band h2 span { color: var(--text-subtle); }
+  .install { display: inline-flex; align-items: center; gap: 12px; height: 40px; padding: 0 6px 0 14px; border: 1px solid var(--border-strong); border-radius: var(--r-sm); background: var(--bg-raised); font: 400 var(--fs-sm) var(--mono); color: var(--text-muted); }
+  .install .pfx { color: var(--text-subtle); }
+  .copy { width: 28px; height: 28px; display: grid; place-items: center; border-radius: 4px; border: 0; background: transparent; color: var(--text-subtle); cursor: pointer; transition: background var(--d-fast), color var(--d-fast); }
+  .copy:hover { background: var(--surface-2); color: var(--text); }
+  .copy .done { display: none; color: var(--add); }
+  .copy.copied .idle { display: none; } .copy.copied .done { display: block; }
+  .cta-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+
+  /* Section reveal: the bento tiles stagger in once (JS-gated) */
+  .js .reveal { opacity: 0; transform: translateY(16px); transition: opacity 600ms var(--ease-out), transform 600ms var(--ease-out); transition-delay: calc(var(--i, 0) * 70ms); }
+  .js .reveal.in { opacity: 1; transform: none; }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 1080px) {
+    .nav ul { display: none; }
+    .hero-grid, .sec-head { grid-template-columns: minmax(0, 1fr); gap: 28px; align-items: start; }
+    .app-body { grid-template-columns: minmax(0, 1fr); }
+    .sidebar { display: none; }
+    .t-a { grid-column: span 6; } .t-b { grid-column: span 3; } .t-c { grid-column: span 3; } .t-d { grid-column: span 3; } .t-e { grid-column: span 3; }
+  }
+  @media (max-width: 720px) {
+    .wrap { padding-inline: 16px; }
+    .hero { padding-block: 48px 0; }
+    .nav .right .link { display: none; }
+    .stage { margin-top: 48px; margin-inline: -4px; }
+    .titlebar .search, .crumbs .hide-sm { display: none; }
+    .pr-head { padding: 14px 14px 0; }
+    .pr-title { font-size: var(--fs-base); }
+    .diff { padding: 12px 10px 32px; }
+    .ln { grid-template-columns: 0 30px 14px max-content; }
+    .ln .n:first-child { visibility: hidden; }
+    .ln.del .n:first-child { visibility: visible; }
+    .tabs .tab:nth-child(2), .tabs .tab:nth-child(3) { display: none; }
+    .pr-title { flex-wrap: wrap; gap: 4px 8px; }
+    .ln .n { padding-right: 6px; }
+    .thread { padding: 10px 8px 12px; }
+    .js .reviewed .thread { padding-block: 10px 12px; }
+    .comment-foot { flex-wrap: wrap; }
+    .comment-foot .conf { margin-left: 0; width: 100%; }
+    .sev { display: none; }
+    .features { padding-block: 88px 80px; }
+    .bento { grid-template-columns: minmax(0, 1fr); }
+    .t-a, .t-b, .t-c, .t-d, .t-e { grid-column: auto; }
+    .tile { padding: 22px; min-height: 0; }
+    .graph { height: 220px; }
+    .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .stat { padding: 20px; }
+    .stat:nth-child(3) { border-left: 0; }
+    .stat:nth-child(n+3) { border-top: 1px solid var(--border); }
+    .install { max-width: 100%; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition-duration: 1ms !important; transition-delay: 0ms !important; }
+    .js .reveal { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+<script>document.documentElement.classList.add('js');</script>
+
+<!-- Icon sprite (Lucide paths) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8.5 12 2.5 2.5 4.5-5"/></symbol>
+  <symbol id="i-loader" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-6.2-8.56"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></symbol>
+  <symbol id="i-pr" viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><circle cx="6" cy="18" r="2.5"/><path d="M6 8.5v7M13 6h3a2 2 0 0 1 2 2v7.5"/></symbol>
+  <symbol id="i-branch" viewBox="0 0 24 24"><circle cx="6" cy="5" r="2"/><circle cx="18" cy="7" r="2"/><circle cx="6" cy="19" r="2"/><path d="M6 7v10M18 9a6 6 0 0 1-6 6H8"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></symbol>
+  <symbol id="i-func" viewBox="0 0 24 24"><path d="M9 20c2 0 3-1.5 3.5-4l1.5-8c.5-2.5 1.5-4 3.5-4"/><path d="M8 10h8"/></symbol>
+  <symbol id="i-git" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M3 12h6M15 12h6"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M6 18l2.5-2.5M15.5 8.5 18 6"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></symbol>
+  <symbol id="i-db" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></symbol>
+</svg>
+
+<header class="nav-wrap" id="nav">
+  <nav class="wrap nav" aria-label="Main">
+    <a href="#" class="brand" aria-label="Lintel home">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><rect x="1.5" y="3" width="17" height="3.2" rx="1" fill="currentColor"/><rect x="3.5" y="8" width="2.6" height="9.5" rx="0.8" fill="currentColor" opacity=".5"/><rect x="13.9" y="8" width="2.6" height="9.5" rx="0.8" fill="currentColor" opacity=".5"/></svg>
+      Lintel
+    </a>
+    <ul>
+      <li><a href="#features">Product</a></li>
+      <li><a href="#">Docs</a></li>
+      <li><a href="#">Changelog</a></li>
+      <li><a href="#">Pricing</a></li>
+      <li><a href="#">Customers</a></li>
+    </ul>
+    <div class="right">
+      <a class="link" href="#">Sign in</a>
+      <a class="btn btn-secondary btn-sm" href="#">Book a demo</a>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero-grid">
+        <div>
+          <a class="eyebrow" href="#">
+            <span class="tag">New</span> Cross-repo context for monorepos
+            <svg class="i" aria-hidden="true"><use href="#i-chev"/></svg>
+          </a>
+          <h1>Code review that catches <span class="dim">what tests miss.</span></h1>
+        </div>
+        <div class="hero-side">
+          <p class="lede">Lintel reads every pull request with the context of your whole codebase, and only comments when it finds a real bug. No style nits, no walls of text.</p>
+          <div class="ctas">
+            <a class="btn btn-primary" href="#" data-magnetic>Install on GitHub <svg class="i arrow" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+            <a class="btn btn-secondary" href="#features">See how it works</a>
+          </div>
+          <div class="fine">
+            <span><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Free for 14 days</span>
+            <span><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Code never used for training</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Signature: live pull request -->
+      <div class="stage" aria-label="Product preview: Lintel reviewing a pull request">
+        <div class="app" id="app">
+          <div class="sheen" aria-hidden="true"></div>
+          <div class="titlebar">
+            <div class="dots" aria-hidden="true"><i></i><i></i><i></i></div>
+            <div class="crumbs">
+              <span class="hide-sm">northwind</span><svg class="i hide-sm" aria-hidden="true"><use href="#i-chev"/></svg>
+              <span>billing-service</span><svg class="i" aria-hidden="true"><use href="#i-chev"/></svg>
+              <b>#2481</b>
+            </div>
+            <div class="search"><svg class="i" style="width:12px;height:12px" aria-hidden="true"><use href="#i-search"/></svg>Jump to file <kbd>⌘</kbd><kbd>P</kbd></div>
+          </div>
+
+          <div class="app-body">
+            <aside class="sidebar" aria-label="Changed files">
+              <div class="side-label">Files changed</div>
+              <div class="file active"><svg class="i" aria-hidden="true"><use href="#i-file"/></svg><span class="name">webhooks/deliver.ts</span><span class="badge" title="1 Lintel comment"></span></div>
+              <div class="file"><svg class="i" aria-hidden="true"><use href="#i-file"/></svg><span class="name">webhooks/queue.ts</span><span class="delta num"><span class="p">+18</span><span class="m">−2</span></span></div>
+              <div class="file"><svg class="i" aria-hidden="true"><use href="#i-file"/></svg><span class="name">config/retry.ts</span><span class="delta num"><span class="p">+4</span><span class="m">−1</span></span></div>
+              <div class="file"><svg class="i" aria-hidden="true"><use href="#i-file"/></svg><span class="name">deliver.test.ts</span><span class="delta num"><span class="p">+41</span></span></div>
+              <div class="side-sep"></div>
+              <div class="side-label">Checks</div>
+              <div class="check"><span class="st ok"><svg class="i" aria-hidden="true"><use href="#i-check-circle"/></svg></span>CI / unit<span class="t num">1m 52s</span></div>
+              <div class="check"><span class="st ok"><svg class="i" aria-hidden="true"><use href="#i-check-circle"/></svg></span>CI / typecheck<span class="t num">38s</span></div>
+              <div class="check" id="lintel-check"><span class="st warn"><svg class="i spin" aria-hidden="true"><use href="#i-loader"/></svg></span><span class="lbl">Lintel review</span><span class="t num">running</span></div>
+            </aside>
+
+            <div class="main">
+              <div class="pr-head">
+                <div class="pr-title">Retry failed webhook deliveries with backoff <span class="id num">#2481</span></div>
+                <div class="pr-meta">
+                  <span class="state"><svg class="i" aria-hidden="true"><use href="#i-pr"/></svg>Open</span>
+                  <span class="avatar" style="background:oklch(0.55 0.09 200);color:oklch(0.97 0.01 200)">MK</span>
+                  <span>maya.k wants to merge 3 commits into <span class="branch">main</span> from <span class="branch">mk/webhook-retries</span></span>
+                </div>
+                <div class="tabs" role="presentation">
+                  <span class="tab">Conversation <span class="count">4</span></span>
+                  <span class="tab">Commits <span class="count" id="commit-count">3</span></span>
+                  <span class="tab">Checks <span class="count">3</span></span>
+                  <span class="tab on">Files changed <span class="count">4</span></span>
+                </div>
+              </div>
+
+              <div class="diff" id="diff">
+                <div class="diff-file">
+                  <div class="diff-file-head"><svg class="i" style="width:14px;height:14px" aria-hidden="true"><use href="#i-file"/></svg>src/webhooks/deliver.ts<span class="delta num"><span class="p" id="adds">+9</span><span class="m">−3</span></span></div>
+                  <div class="code" id="code" role="img" aria-label="Diff of deliver.ts adding retries with exponential backoff">
+                    <div class="scan" id="scan"></div>
+                    <div class="ln hunk"><span class="n"></span><span class="n"></span><span class="s"></span><span>@@ -14,11 +14,17 @@ export async function deliver(event: WebhookEvent)</span></div>
+                    <div class="ln"><span class="n">14</span><span class="n">14</span><span class="s"></span><span>  <span class="k">const</span> body = JSON.<span class="f">stringify</span>(event.payload);</span></div>
+                    <div class="ln del"><span class="n">15</span><span class="n"></span><span class="s">−</span><span>  <span class="k">const</span> res = <span class="k">await</span> <span class="f">fetch</span>(event.endpoint, { method: <span class="st-s">'POST'</span>, body });</span></div>
+                    <div class="ln del"><span class="n">16</span><span class="n"></span><span class="s">−</span><span>  <span class="k">if</span> (!res.ok) <span class="k">throw new</span> <span class="x">DeliveryError</span>(event.id);</span></div>
+                    <div class="ln add"><span class="n"></span><span class="n">15</span><span class="s">+</span><span>  <span class="k">for</span> (<span class="k">let</span> attempt = <span class="x">0</span>; attempt &lt; retry.max; attempt++) {</span></div>
+                    <div class="ln add flag" id="flag-line"><span class="n"></span><span class="n">16</span><span class="s">+</span><span>    <span class="k">const</span> res = <span class="k">await</span> <span class="f">fetch</span>(event.endpoint, { method: <span class="st-s">'POST'</span>, body });</span></div>
+                    <div class="ln add" id="anchor"><span class="n"></span><span class="n">17</span><span class="s">+</span><span>    <span class="k">if</span> (res.ok) <span class="k">return</span> <span class="f">markDelivered</span>(event.id);</span></div>
+
+                    <div class="thread" id="thread">
+                      <div class="comment" id="comment">
+                        <div class="comment-head">
+                          <span class="bot" aria-hidden="true"><svg class="i"><use href="#i-spark"/></svg></span>
+                          <b>Lintel</b><span class="muted">reviewed line 16 · just now</span>
+                          <span class="sev"><i></i><span id="sev-label">High · Correctness</span></span>
+                        </div>
+                        <div class="comment-body">
+                          <strong>Retries can double-charge customers.</strong> Each attempt re-sends the same payload with no idempotency key. If the first <code>POST</code> times out after the receiver commits, the retry runs <code>handlePaymentSucceeded</code> a second time — that handler doesn’t dedupe on <code>event.id</code>.
+                        </div>
+                        <div class="refs">
+                          <span class="ref"><svg class="i" aria-hidden="true"><use href="#i-link"/></svg>receivers/stripe.ts:88</span>
+                          <span class="ref"><svg class="i" aria-hidden="true"><use href="#i-git"/></svg>INC-312 · Mar 2024</span>
+                        </div>
+                        <div class="suggest">
+                          <div class="suggest-head"><svg class="i" style="width:12px;height:12px" aria-hidden="true"><use href="#i-spark"/></svg>Suggested change</div>
+                          <div class="ln del"><span class="s">−</span><span>    method: <span class="st-s">'POST'</span>, body });</span></div>
+                          <div class="ln add"><span class="s">+</span><span>    method: <span class="st-s">'POST'</span>, body, headers: { <span class="st-s">'Idempotency-Key'</span>: event.id } });</span></div>
+                        </div>
+                        <div class="comment-foot" id="foot">
+                          <button class="btn btn-primary btn-sm btn-apply" id="apply" type="button">
+                            <span class="lbl">Apply suggestion</span><kbd>A</kbd>
+                            <span class="ok"><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Applied in 9f3c2a1</span>
+                          </button>
+                          <button class="btn btn-secondary btn-sm" type="button" id="dismiss">Not an issue</button>
+                          <span class="conf">Confidence <span class="meter" aria-hidden="true"><i></i></span><span class="num">94%</span></span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="ln add"><span class="n"></span><span class="n">18</span><span class="s">+</span><span>    <span class="k">await</span> <span class="f">sleep</span>(retry.baseMs * <span class="x">2</span> ** attempt);</span></div>
+                    <div class="ln add"><span class="n"></span><span class="n">19</span><span class="s">+</span><span>  }</span></div>
+                    <div class="ln add"><span class="n"></span><span class="n">20</span><span class="s">+</span><span>  <span class="k">await</span> <span class="f">enqueueDeadLetter</span>(event, { reason: <span class="st-s">'max_retries'</span> });</span></div>
+                    <div class="ln"><span class="n">17</span><span class="n">21</span><span class="s"></span><span>}</span></div>
+                    <div class="ln"><span class="n">18</span><span class="n">22</span><span class="s"></span><span></span></div>
+                    <div class="ln"><span class="n">19</span><span class="n">23</span><span class="s"></span><span><span class="k">export function</span> <span class="f">markDelivered</span>(id: <span class="x">string</span>) {</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="logos" aria-label="Customers">
+    <div class="wrap">
+      <p>Reviewing 40,000 pull requests a week for teams at</p>
+      <div class="logo-row" aria-hidden="true">
+        <span>Northwind</span><span class="l2">ferrous/</span><span class="l3">Halcyon</span><span>Quanta Labs</span><span class="l4">bramble</span><span class="l2">oxide.run</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="features" id="features">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <span class="overline">How Lintel reviews</span>
+          <h2>A reviewer that has read the whole repo — and knows when to stay quiet.</h2>
+        </div>
+        <p>Most AI reviewers comment on everything. Lintel ranks every finding by impact and confidence, and posts only the ones a senior engineer would stop a merge for.</p>
+      </div>
+
+      <div class="bento" id="bento">
+        <article class="tile t-a reveal" style="--i:0">
+          <h3>Context beyond the diff</h3>
+          <p>Lintel traces every changed function through its callers, receivers and past incidents — so it can tell you what a three-line change actually breaks.</p>
+          <div class="vis">
+            <div class="graph" aria-hidden="true">
+              <svg class="edges" viewBox="0 0 700 200" preserveAspectRatio="none">
+                <path class="edge" d="M130 100 C 230 100, 250 46, 350 46"/>
+                <path class="edge hot" d="M130 100 C 230 100, 250 154, 350 154"/>
+                <path class="edge" d="M350 46 C 450 46, 470 46, 570 46"/>
+                <path class="edge hot" d="M350 154 C 450 154, 470 154, 570 154"/>
+                <path class="edge" d="M350 154 C 450 154, 470 100, 570 100"/>
+              </svg>
+              <span class="node src" style="left:18.5%;top:50%"><svg class="i" aria-hidden="true"><use href="#i-func"/></svg>deliver()</span>
+              <span class="node" style="left:50%;top:23%"><svg class="i" aria-hidden="true"><use href="#i-func"/></svg>queue.drain()</span>
+              <span class="node" style="left:50%;top:77%"><svg class="i" aria-hidden="true"><use href="#i-link"/></svg>POST /hooks/stripe</span>
+              <span class="node" style="left:81%;top:23%"><svg class="i" aria-hidden="true"><use href="#i-db"/></svg>dead_letters</span>
+              <span class="node" style="left:81%;top:50%"><svg class="i" aria-hidden="true"><use href="#i-git"/></svg>INC-312</span>
+              <span class="node hit" style="left:81%;top:77%"><svg class="i" aria-hidden="true"><use href="#i-func"/></svg>handlePaymentSucceeded</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="tile t-b reveal" style="--i:1">
+          <h3>Signal, not noise</h3>
+          <p>Findings below the bar stay in the dashboard, not your PR.</p>
+          <div class="vis">
+            <div class="counter"><span class="big num" id="posted">2</span><span class="of">posted of <span class="num">31</span> findings</span></div>
+            <div class="bars" id="bars">
+              <div class="bar on"><span>Correctness</span><span class="track"><i style="transform:scaleX(.18)"></i></span><span class="v">2</span></div>
+              <div class="bar"><span>Performance</span><span class="track"><i style="transform:scaleX(.34)"></i></span><span class="v">5</span></div>
+              <div class="bar"><span>Naming</span><span class="track"><i style="transform:scaleX(.72)"></i></span><span class="v">11</span></div>
+              <div class="bar"><span>Style</span><span class="track"><i style="transform:scaleX(.86)"></i></span><span class="v">13</span></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="tile t-c reveal" style="--i:2">
+          <h3>Learns how your team writes code</h3>
+          <p>Reply once; Lintel turns it into a rule for every repo.</p>
+          <div class="vis">
+            <div class="rule">
+              <div class="rule-row"><span class="avatar" style="background:oklch(0.5 0.08 30);color:oklch(0.97 0.01 30)">DO</span><span>We wrap money in <code>Cents</code>, never raw numbers.</span></div>
+              <div class="rule-row learned"><svg class="i" aria-hidden="true"><use href="#i-spark"/></svg><span>Rule added to <code>billing/*</code> · 14 repos</span></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="tile t-d reveal" style="--i:3">
+          <h3>Built for the keyboard</h3>
+          <p>Triage a full review without touching the mouse.</p>
+          <div class="vis">
+            <div class="keys" id="keys">
+              <div class="key-row on"><span>Next finding</span><span><kbd>J</kbd></span></div>
+              <div class="key-row"><span>Apply suggestion</span><span><kbd>A</kbd></span></div>
+              <div class="key-row"><span>Explain in depth</span><span><kbd>⇧</kbd><kbd>E</kbd></span></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="tile t-e reveal" style="--i:4">
+          <h3>Your code stays yours</h3>
+          <p>SOC 2 Type II. Self-host in your VPC on the Enterprise plan.</p>
+          <div class="vis">
+            <div class="shield-list">
+              <div><svg class="i" aria-hidden="true"><use href="#i-lock"/></svg>Zero retention after review</div>
+              <div><svg class="i" aria-hidden="true"><use href="#i-check-circle"/></svg>Never used to train models</div>
+              <div><svg class="i" aria-hidden="true"><use href="#i-check-circle"/></svg>SSO, SCIM and audit logs</div>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <div class="stats reveal" style="--i:2">
+        <div class="stat"><b>91%</b><span>of comments acted on</span></div>
+        <div class="stat"><b>2.4</b><span>comments per PR, median</span></div>
+        <div class="stat"><b>&lt; 90s</b><span>to first review</span></div>
+        <div class="stat"><b>38%</b><span>fewer post-merge incidents</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-band">
+    <div class="wrap">
+      <h2>Your next pull request, reviewed in 90 seconds. <span>No config required.</span></h2>
+      <div class="cta-actions">
+        <div class="install">
+          <span><span class="pfx">$ </span>npx lintel init</span>
+          <button class="copy" type="button" id="copy" aria-label="Copy install command">
+            <svg class="i idle" aria-hidden="true"><use href="#i-copy"/></svg>
+            <svg class="i done" aria-hidden="true"><use href="#i-check"/></svg>
+          </button>
+        </div>
+        <a class="btn btn-primary" href="#">Install on GitHub <svg class="i arrow" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const $ = s => document.querySelector(s);
+
+  /* Nav hairline on scroll */
+  const nav = $('#nav');
+  const onScroll = () => nav.classList.toggle('scrolled', scrollY > 8);
+  addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+  /* --- Signature: Lintel scans the diff, then posts its comment --- */
+  const diff = $('#diff'), scan = $('#scan'), code = $('#code'), check = $('#lintel-check');
+  const finishCheck = () => {
+    check.querySelector('.st').innerHTML = '<svg class="i" aria-hidden="true"><use href="#i-check-circle"/></svg>';
+    check.querySelector('.t').textContent = '1 finding';
+  };
+  const reveal = () => { diff.classList.add('reviewed'); finishCheck(); };
+
+  if (reduce) { reveal(); }
+  else {
+    const flag = $('#flag-line');
+    const lines = [...code.querySelectorAll(':scope > .ln')].slice(0, 7);
+    const run = () => {
+      let i = 0;
+      scan.style.opacity = 1;
+      scan.style.transition = 'transform 140ms cubic-bezier(.22,1,.36,1)';
+      const step = () => {
+        if (i >= lines.length) {
+          scan.style.transition = 'opacity 300ms';
+          scan.style.transform = `translateY(${flag.offsetTop}px)`;
+          scan.style.opacity = 0;
+          setTimeout(reveal, 120);
+          return;
+        }
+        scan.style.transform = `translateY(${lines[i].offsetTop}px)`;
+        i++; setTimeout(step, 150);
+      };
+      step();
+    };
+    // Start when the product is in view
+    const io = new IntersectionObserver(es => { if (es[0].isIntersecting) { io.disconnect(); setTimeout(run, 500); } }, { threshold: 0.35 });
+    io.observe($('#app'));
+  }
+
+  /* Apply suggestion — patches the diff, commits, and marks resolved */
+  const thread = $('#thread'), flagLine = $('#flag-line');
+  const apply = () => {
+    if (thread.classList.contains('applied') || !diff.classList.contains('reviewed')) return;
+    thread.classList.add('applied');
+    flagLine.classList.remove('flag');
+    flagLine.classList.add('patched');
+    flagLine.lastElementChild.innerHTML = '    <span class="k">const</span> res = <span class="k">await</span> <span class="f">fetch</span>(event.endpoint, { method: <span class="st-s">\'POST\'</span>, body, headers: { <span class="st-s">\'Idempotency-Key\'</span>: event.id } });';
+    $('#sev-label').textContent = 'Resolved';
+    $('#commit-count').textContent = '4';
+    check.querySelector('.t').textContent = 'passed';
+    check.querySelector('.st').className = 'st ok';
+    $('#dismiss').hidden = true;
+    $('.file .badge').style.background = 'var(--add)';
+    $('.file .badge').style.boxShadow = '0 0 0 3px var(--add-bg)';
+  };
+  $('#apply').addEventListener('click', apply);
+  addEventListener('keydown', e => {
+    if (e.key.toLowerCase() === 'a' && !e.metaKey && !e.ctrlKey && !e.altKey && diff.classList.contains('reviewed')
+        && !/input|textarea/i.test(document.activeElement.tagName)) {
+      const r = $('#app').getBoundingClientRect();
+      if (r.top < innerHeight && r.bottom > 0) apply();
+    }
+  });
+  $('#dismiss').addEventListener('click', () => {
+    $('#sev-label').textContent = 'Dismissed · Lintel will learn from this';
+    $('#dismiss').hidden = true;
+  });
+
+  /* Pointer sheen on product + tile border light */
+  if (fine && !reduce) {
+    const app = $('#app');
+    app.addEventListener('pointermove', e => {
+      const r = app.getBoundingClientRect();
+      app.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+      app.style.setProperty('--my', (e.clientY - r.top) + 'px');
+    });
+    const tiles = document.querySelectorAll('.tile');
+    $('#bento').addEventListener('pointermove', e => {
+      tiles.forEach(t => {
+        const r = t.getBoundingClientRect();
+        t.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+        t.style.setProperty('--my', (e.clientY - r.top) + 'px');
+      });
+    });
+
+    /* Subtle magnetic primary CTA */
+    document.querySelectorAll('[data-magnetic]').forEach(btn => {
+      btn.style.transition += ', translate 300ms cubic-bezier(.22,1,.36,1)';
+      btn.addEventListener('pointermove', e => {
+        const r = btn.getBoundingClientRect();
+        btn.style.translate = `${(e.clientX - r.left - r.width / 2) * 0.15}px ${(e.clientY - r.top - r.height / 2) * 0.25}px`;
+      });
+      btn.addEventListener('pointerleave', () => { btn.style.translate = '0 0'; });
+    });
+  }
+
+  /* Keyboard tile: cycle the highlighted shortcut while hovered */
+  const rows = [...document.querySelectorAll('.key-row')];
+  let k = 0, timer;
+  const tileD = $('.t-d');
+  const tick = () => { rows[k].classList.remove('on'); k = (k + 1) % rows.length; rows[k].classList.add('on'); };
+  if (!reduce) {
+    tileD.addEventListener('pointerenter', () => { timer = setInterval(tick, 900); });
+    tileD.addEventListener('pointerleave', () => clearInterval(timer));
+  }
+
+  /* Signal tile: bars fill from zero when revealed */
+  const bars = [...document.querySelectorAll('#bars .track i')];
+  const targets = bars.map(b => b.style.transform);
+  if (!reduce) bars.forEach(b => b.style.transform = 'scaleX(0)');
+
+  /* Section reveals (once) */
+  const revealIO = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return;
+    e.target.classList.add('in');
+    if (e.target.classList.contains('t-b')) setTimeout(() => bars.forEach((b, i) => b.style.transform = targets[i]), 250);
+    revealIO.unobserve(e.target);
+  }), { threshold: 0.2, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => revealIO.observe(el));
+
+  /* Copy install command */
+  const copy = $('#copy');
+  copy.addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText('npx lintel init'); } catch (_) {}
+    copy.classList.add('copied'); copy.setAttribute('aria-label', 'Copied');
+    setTimeout(() => { copy.classList.remove('copied'); copy.setAttribute('aria-label', 'Copy install command'); }, 1600);
+  });
+})();
+</script>
+</body>
+</html>

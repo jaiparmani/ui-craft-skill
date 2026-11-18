@@ -1,0 +1,16 @@
+{
+  "eval_name": "studio-portfolio-awwwards",
+  "prompt": "I run a tiny creative studio called Northlight (3 people, Oslo) \u2014 we do brand identities and motion for music festivals and outdoor brands. I want our new site to feel like an Awwwards site of the day, not a template. Home page only for now: intro, selected work (4 projects, make them up), what we do, and contact. Smooth scrolling and proper animation please. One index.html, CDN libraries are fine.",
+  "assertions": [
+    "index.html honours prefers-reduced-motion by disabling or simplifying its motion (CSS media query or JS matchMedia check)",
+    "index.html's main headline and body copy are visible with JavaScript disabled (nothing essential is left hidden by CSS waiting for a script)",
+    "index.html loads with no console errors",
+    "index.html animates only transform, opacity, clip-path or filter \u2014 no per-frame animation of top/left/width/height/margin",
+    "index.html has no horizontal page scroll at a 390px-wide viewport",
+    "index.html varies entrance motion by element role (at least two distinct reveal treatments, e.g. line/mask reveal for headlines and scale/clip for media), rather than one identical fade-up everywhere",
+    "index.html uses no emoji and no default purple/indigo-to-blue/pink gradient",
+    "index.html implements smooth scrolling (Lenis or an equivalent) that keeps native scroll and anchor links working",
+    "index.html includes intro, 4 selected projects, a what-we-do section and contact details",
+    "index.html has a clearly identifiable signature moment (one standout interaction or scroll scene) rather than evenly distributed effects"
+  ]
+}

@@ -1,0 +1,494 @@
+{
+  "metadata": {
+    "skill_name": "frontend-design-excellence",
+    "skill_path": "<path/to/skill>",
+    "executor_model": "<model-name>",
+    "analyzer_model": "<model-name>",
+    "timestamp": "2026-11-18T05:08:57Z",
+    "evals_run": [
+      "premium-saas-hero",
+      "product-launch-scroll",
+      "studio-portfolio-awwwards"
+    ],
+    "runs_per_configuration": 1
+  },
+  "runs": [
+    {
+      "eval_id": "premium-saas-hero",
+      "eval_name": "premium-saas-hero",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 10,
+        "failed": 0,
+        "total": 10,
+        "time_seconds": 107.3,
+        "tokens": 119358,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "index.html honours prefers-reduced-motion by disabling or simplifying its motion (CSS media query or JS matchMedia check)",
+          "passed": true,
+          "evidence": "Reduced motion shows the review comment immediately; page complete"
+        },
+        {
+          "text": "index.html's main headline and body copy are visible with JavaScript disabled (nothing essential is left hidden by CSS waiting for a script)",
+          "passed": true,
+          "evidence": "With scripts removed headline, subhead, CTAs and PR window all render"
+        },
+        {
+          "text": "index.html loads with no console errors",
+          "passed": true,
+          "evidence": "No console errors at 375px"
+        },
+        {
+          "text": "index.html animates only transform, opacity, clip-path or filter \u2014 no per-frame animation of top/left/width/height/margin",
+          "passed": true,
+          "evidence": "Static scan: no layout properties animated"
+        },
+        {
+          "text": "index.html has no horizontal page scroll at a 390px-wide viewport",
+          "passed": true,
+          "evidence": "scrollWidth 375 = viewport 375"
+        },
+        {
+          "text": "index.html varies entrance motion by element role (at least two distinct reveal treatments, e.g. line/mask reveal for headlines and scale/clip for media), rather than one identical fade-up everywhere",
+          "passed": true,
+          "evidence": "Scan line over diff, comment slide-open, bar fills, cycling shortcuts"
+        },
+        {
+          "text": "index.html uses no emoji and no default purple/indigo-to-blue/pink gradient",
+          "passed": true,
+          "evidence": "No emoji; amber accent, no purple gradient"
+        },
+        {
+          "text": "index.html's hero contains a convincing product UI showing a review comment on a pull request (diff lines, author, comment text)",
+          "passed": true,
+          "evidence": "PR #2481 diff with author, highlighted line and Lintel comment"
+        },
+        {
+          "text": "index.html has micro-interactions beyond basic button hover (e.g. cursor-following spotlight, magnetic button, tilt, animated icon or keyboard-shortcut feedback)",
+          "passed": true,
+          "evidence": "Cursor-following spotlight on tiles and window, magnetic primary button, 'A' key applies suggestion"
+        },
+        {
+          "text": "index.html uses a dark, restrained palette with one accent and hairline borders rather than heavy shadows or glows everywhere",
+          "passed": true,
+          "evidence": "Near-black, hairline borders, single amber accent"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": "product-launch-scroll",
+      "eval_name": "product-launch-scroll",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 11,
+        "failed": 0,
+        "total": 11,
+        "time_seconds": 639.8,
+        "tokens": 214160,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "index.html honours prefers-reduced-motion by disabling or simplifying its motion (CSS media query or JS matchMedia check)",
+          "passed": true,
+          "evidence": "Reduced motion swaps to a static two-column layout with fades"
+        },
+        {
+          "text": "index.html's main headline and body copy are visible with JavaScript disabled (nothing essential is left hidden by CSS waiting for a script)",
+          "passed": true,
+          "evidence": "With scripts removed a designed two-column hero with product, price and colours renders"
+        },
+        {
+          "text": "index.html loads with no console errors",
+          "passed": true,
+          "evidence": "No console errors at 375px"
+        },
+        {
+          "text": "index.html animates only transform, opacity, clip-path or filter \u2014 no per-frame animation of top/left/width/height/margin",
+          "passed": true,
+          "evidence": "Static scan: no layout properties animated"
+        },
+        {
+          "text": "index.html has no horizontal page scroll at a 390px-wide viewport",
+          "passed": true,
+          "evidence": "scrollWidth 375 = viewport 375"
+        },
+        {
+          "text": "index.html varies entrance motion by element role (at least two distinct reveal treatments, e.g. line/mask reveal for headlines and scale/clip for media), rather than one identical fade-up everywhere",
+          "passed": true,
+          "evidence": "Case lid lift, bud rise, wave flatten, ring fill, dimension-line draw: distinct per feature"
+        },
+        {
+          "text": "index.html uses no emoji and no default purple/indigo-to-blue/pink gradient",
+          "passed": true,
+          "evidence": "No emoji; one gradient"
+        },
+        {
+          "text": "index.html reveals a code-built earbuds visual that transforms (scale, rotate, position or reveal) tied to scroll position",
+          "passed": true,
+          "evidence": "Case opens, buds rise and separate, tied to ScrollTrigger scrub"
+        },
+        {
+          "text": "index.html has a pinned section (ScrollTrigger pin or position: sticky) in which features are explained one at a time as the user scrolls",
+          "passed": true,
+          "evidence": "One ScrollTrigger pin; Noise, Battery, Fit chapters shown one at a time"
+        },
+        {
+          "text": "index.html shows the price $179, 40h battery, adaptive noise cancelling, and the three colours chalk, graphite and moss",
+          "passed": true,
+          "evidence": "$179, 40h, adaptive noise cancelling, chalk/graphite/moss all present"
+        },
+        {
+          "text": "index.html simplifies or unpins the pinned sequence on phone widths so the content stays readable",
+          "passed": true,
+          "evidence": "On phones the pinned scene is reframed (product top, text below); no overflow"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": "studio-portfolio-awwwards",
+      "eval_name": "studio-portfolio-awwwards",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 10,
+        "failed": 0,
+        "total": 10,
+        "time_seconds": 399.7,
+        "tokens": 167385,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "index.html honours prefers-reduced-motion by disabling or simplifying its motion (CSS media query or JS matchMedia check)",
+          "passed": true,
+          "evidence": "prefers-reduced-motion handled; reduced run shows a finished still frame"
+        },
+        {
+          "text": "index.html's main headline and body copy are visible with JavaScript disabled (nothing essential is left hidden by CSS waiting for a script)",
+          "passed": true,
+          "evidence": "With scripts removed the wordmark, nav and intro copy all render (CSS gradient-text fallback)"
+        },
+        {
+          "text": "index.html loads with no console errors",
+          "passed": true,
+          "evidence": "No console errors at 375px and 1440px"
+        },
+        {
+          "text": "index.html animates only transform, opacity, clip-path or filter \u2014 no per-frame animation of top/left/width/height/margin",
+          "passed": true,
+          "evidence": "Static scan: no layout properties in @keyframes or tweens"
+        },
+        {
+          "text": "index.html has no horizontal page scroll at a 390px-wide viewport",
+          "passed": true,
+          "evidence": "scrollWidth 375 = viewport 375"
+        },
+        {
+          "text": "index.html varies entrance motion by element role (at least two distinct reveal treatments, e.g. line/mask reveal for headlines and scale/clip for media), rather than one identical fade-up everywhere",
+          "passed": true,
+          "evidence": "SplitText line masks for type, clip-path wipes for covers, scrubbed scale for the aurora, staggered count-ups"
+        },
+        {
+          "text": "index.html uses no emoji and no default purple/indigo-to-blue/pink gradient",
+          "passed": true,
+          "evidence": "No emoji; gradients are on-brand aurora greens"
+        },
+        {
+          "text": "index.html implements smooth scrolling (Lenis or an equivalent) that keeps native scroll and anchor links working",
+          "passed": true,
+          "evidence": "Lenis wired to ScrollTrigger; nav anchors scroll via lenis.scrollTo"
+        },
+        {
+          "text": "index.html includes intro, 4 selected projects, a what-we-do section and contact details",
+          "passed": true,
+          "evidence": "Hero, statement, 4 projects (Polarnatt, Fjellgang, Kystlyd, Tindra), services, contact"
+        },
+        {
+          "text": "index.html has a clearly identifiable signature moment (one standout interaction or scroll scene) rather than evenly distributed effects",
+          "passed": true,
+          "evidence": "Signature: canvas aurora inside the NORTHLIGHT wordmark that spills out to fill the screen while pinned"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": "premium-saas-hero",
+      "eval_name": "premium-saas-hero",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.8,
+        "passed": 8,
+        "failed": 2,
+        "total": 10,
+        "time_seconds": 19.0,
+        "tokens": 84022,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "index.html honours prefers-reduced-motion by disabling or simplifying its motion (CSS media query or JS matchMedia check)",
+          "passed": true,
+          "evidence": "End state shown without animation under reduced motion"
+        },
+        {
+          "text": "index.html's main headline and body copy are visible with JavaScript disabled (nothing essential is left hidden by CSS waiting for a script)",
+          "passed": false,
+          "evidence": "With scripts removed the hero headline, subhead and CTAs are invisible; only the background grid and product window show"
+        },
+        {
+          "text": "index.html loads with no console errors",
+          "passed": true,
+          "evidence": "No console errors at 375px"
+        },
+        {
+          "text": "index.html animates only transform, opacity, clip-path or filter \u2014 no per-frame animation of top/left/width/height/margin",
+          "passed": true,
+          "evidence": "Static scan: no layout properties animated"
+        },
+        {
+          "text": "index.html has no horizontal page scroll at a 390px-wide viewport",
+          "passed": true,
+          "evidence": "scrollWidth 375 = viewport 375"
+        },
+        {
+          "text": "index.html varies entrance motion by element role (at least two distinct reveal treatments, e.g. line/mask reveal for headlines and scale/clip for media), rather than one identical fade-up everywhere",
+          "passed": true,
+          "evidence": "Window tilt-in, typed comment, count-up ring, orbiting integrations"
+        },
+        {
+          "text": "index.html uses no emoji and no default purple/indigo-to-blue/pink gradient",
+          "passed": false,
+          "evidence": "Uses \ud83d\udc40 and \ud83d\udc4d emoji (as GitHub-style reaction counts; arguably content rather than icons)"
+        },
+        {
+          "text": "index.html's hero contains a convincing product UI showing a review comment on a pull request (diff lines, author, comment text)",
+          "passed": true,
+          "evidence": "PR #2184 diff with flagged line and typed Lintel comment"
+        },
+        {
+          "text": "index.html has micro-interactions beyond basic button hover (e.g. cursor-following spotlight, magnetic button, tilt, animated icon or keyboard-shortcut feedback)",
+          "passed": true,
+          "evidence": "Cursor-tracking tile glow, command palette reacting to arrow keys, edge light following the cursor"
+        },
+        {
+          "text": "index.html uses a dark, restrained palette with one accent and hairline borders rather than heavy shadows or glows everywhere",
+          "passed": true,
+          "evidence": "Near-black with hairline borders and an amber accent; one large glow and beam behind the hero"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": "product-launch-scroll",
+      "eval_name": "product-launch-scroll",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 11,
+        "failed": 0,
+        "total": 11,
+        "time_seconds": 14.1,
+        "tokens": 76839,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "index.html honours prefers-reduced-motion by disabling or simplifying its motion (CSS media query or JS matchMedia check)",
+          "passed": true,
+          "evidence": "Calmer animations under prefers-reduced-motion"
+        },
+        {
+          "text": "index.html's main headline and body copy are visible with JavaScript disabled (nothing essential is left hidden by CSS waiting for a script)",
+          "passed": true,
+          "evidence": "With scripts removed the hero ('Introducing Aero.') and case render"
+        },
+        {
+          "text": "index.html loads with no console errors",
+          "passed": true,
+          "evidence": "No console errors at 375px"
+        },
+        {
+          "text": "index.html animates only transform, opacity, clip-path or filter \u2014 no per-frame animation of top/left/width/height/margin",
+          "passed": true,
+          "evidence": "Static scan: no layout properties animated"
+        },
+        {
+          "text": "index.html has no horizontal page scroll at a 390px-wide viewport",
+          "passed": true,
+          "evidence": "scrollWidth 375 = viewport 375"
+        },
+        {
+          "text": "index.html varies entrance motion by element role (at least two distinct reveal treatments, e.g. line/mask reveal for headlines and scale/clip for media), rather than one identical fade-up everywhere",
+          "passed": true,
+          "evidence": "Lid lift, bud rise, word-by-word statement, per-feature visuals"
+        },
+        {
+          "text": "index.html uses no emoji and no default purple/indigo-to-blue/pink gradient",
+          "passed": true,
+          "evidence": "No emoji; gradients used for product shading"
+        },
+        {
+          "text": "index.html reveals a code-built earbuds visual that transforms (scale, rotate, position or reveal) tied to scroll position",
+          "passed": true,
+          "evidence": "Case and buds animate with scroll inside a sticky section"
+        },
+        {
+          "text": "index.html has a pinned section (ScrollTrigger pin or position: sticky) in which features are explained one at a time as the user scrolls",
+          "passed": true,
+          "evidence": "Sticky features section with four features in turn"
+        },
+        {
+          "text": "index.html shows the price $179, 40h battery, adaptive noise cancelling, and the three colours chalk, graphite and moss",
+          "passed": true,
+          "evidence": "$179, 40h, noise cancelling, chalk/graphite/moss present"
+        },
+        {
+          "text": "index.html simplifies or unpins the pinned sequence on phone widths so the content stays readable",
+          "passed": true,
+          "evidence": "Feature section stacks visual above text on phones; no overflow"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": "studio-portfolio-awwwards",
+      "eval_name": "studio-portfolio-awwwards",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.9,
+        "passed": 9,
+        "failed": 1,
+        "total": 10,
+        "time_seconds": 188.1,
+        "tokens": 72409,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "index.html honours prefers-reduced-motion by disabling or simplifying its motion (CSS media query or JS matchMedia check)",
+          "passed": true,
+          "evidence": "prefers-reduced-motion handled"
+        },
+        {
+          "text": "index.html's main headline and body copy are visible with JavaScript disabled (nothing essential is left hidden by CSS waiting for a script)",
+          "passed": false,
+          "evidence": "With scripts removed the page is stuck on the preloader showing '0' and 'Loading the light'; no content is visible"
+        },
+        {
+          "text": "index.html loads with no console errors",
+          "passed": true,
+          "evidence": "No console errors at 375px"
+        },
+        {
+          "text": "index.html animates only transform, opacity, clip-path or filter \u2014 no per-frame animation of top/left/width/height/margin",
+          "passed": true,
+          "evidence": "Static scan: no layout properties in @keyframes or tweens"
+        },
+        {
+          "text": "index.html has no horizontal page scroll at a 390px-wide viewport",
+          "passed": true,
+          "evidence": "scrollWidth 375 = viewport 375"
+        },
+        {
+          "text": "index.html varies entrance motion by element role (at least two distinct reveal treatments, e.g. line/mask reveal for headlines and scale/clip for media), rather than one identical fade-up everywhere",
+          "passed": true,
+          "evidence": "Letter-by-letter headline, clip reveals for project art, word-by-word scroll highlight, marquee"
+        },
+        {
+          "text": "index.html uses no emoji and no default purple/indigo-to-blue/pink gradient",
+          "passed": true,
+          "evidence": "No emoji; aurora gradients on-brand"
+        },
+        {
+          "text": "index.html implements smooth scrolling (Lenis or an equivalent) that keeps native scroll and anchor links working",
+          "passed": true,
+          "evidence": "Lenis 1.1.13 with ScrollTrigger; nav links glide to sections"
+        },
+        {
+          "text": "index.html includes intro, 4 selected projects, a what-we-do section and contact details",
+          "passed": true,
+          "evidence": "Intro, 4 projects, services, contact all present"
+        },
+        {
+          "text": "index.html has a clearly identifiable signature moment (one standout interaction or scroll scene) rather than evenly distributed effects",
+          "passed": true,
+          "evidence": "Aurora hero with mouse response is a clear standout, though effects (loader, cursor, marquee, magnetic) are spread widely"
+        }
+      ],
+      "notes": []
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 382.2667,
+        "stddev": 266.6777,
+        "min": 107.3,
+        "max": 639.8
+      },
+      "tokens": {
+        "mean": 166967.6667,
+        "stddev": 47402.3779,
+        "min": 119358,
+        "max": 214160
+      }
+    },
+    "without_skill": {
+      "pass_rate": {
+        "mean": 0.9,
+        "stddev": 0.1,
+        "min": 0.8,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 73.7333,
+        "stddev": 99.0747,
+        "min": 14.1,
+        "max": 188.1
+      },
+      "tokens": {
+        "mean": 77756.6667,
+        "stddev": 5860.6336,
+        "min": 72409,
+        "max": 84022
+      }
+    },
+    "delta": {
+      "pass_rate": "+0.10",
+      "time_seconds": "+308.5",
+      "tokens": "+89211"
+    }
+  },
+  "notes": [
+    "With skill 31/31, without 28/31. Two of plain Claude's three failures are the same bug in different pages: content hidden until JavaScript runs (studio page stuck on a '0' preloader; SaaS hero headline invisible). The skill's 'content visible without JS' rule is the clearest measurable win.",
+    "Visual quality is close: plain Claude's expressive pages are strong (the baseline studio hero is genuinely good). The skill's runs differ mainly in process: every with-skill run screenshotted at 3 widths, several scroll positions and reduced motion, and fixed 5-8 real problems each (overflowing wordmark, off-centre transforms, limbo frames, clipped labels). No baseline run rendered its page.",
+    "Timing and token figures for this iteration are unreliable: five runs were interrupted by a rate limit and only the resumed segment was reported. Use iteration-1 for cost comparisons (skill ~3.8x time, ~1.8x tokens).",
+    "Assertions that never discriminate (reduced motion, layout-property animation, overflow, varied motion) can be kept as regression guards; the emoji assertion is arguably too strict for GitHub-style reaction counts."
+  ]
+}

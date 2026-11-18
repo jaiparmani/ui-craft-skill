@@ -43,6 +43,10 @@ Then ask Claude Code for any UI. The skill triggers on its own, or type `/fronte
 
 The guidance draws on *Refactoring UI*, *Practical Typography*, Laws of UX, WCAG 2.2, Apple HIG, Material 3, Vercel Geist, Radix, shadcn/ui, and products known for design quality such as Linear and Stripe. The full annotated list is in [`frontend-design-excellence/references/sources.md`](frontend-design-excellence/references/sources.md).
 
-## Test results so far
+## Test results
 
-Three everyday prompts (a pricing page, an admin users table, restyling an ugly signup form) were run with and without the skill. Both passed all 22 objective checks: on everyday screens, Claude without the skill already avoids the obvious mistakes. The difference was in process: every run with the skill screenshotted its own page and fixed real problems it found, which took about 3.8× longer. The next round of tests targets expressive, motion-heavy pages, where the gap is expected to be larger.
+**Round 1, everyday screens** (pricing page, admin users table, signup-form restyle): with and without the skill, both versions passed all 22 objective checks. On everyday screens plain Claude already avoids the obvious mistakes. Every run with the skill screenshotted its own page and fixed real problems; this took about 3.8× longer.
+
+**Round 2, expressive pages** (Awwwards-style studio portfolio, Apple-style earbuds launch, Linear/Raycast-style SaaS hero): **with the skill 31/31, plain Claude 28/31.** Two of plain Claude's failures are the same bug: content hidden until JavaScript runs, so a slow CDN or a script error leaves a blank page (a preloader stuck at "0", an invisible hero headline). Visually both versions are strong; the skill's runs each fixed 5–8 problems they found in their own screenshots.
+
+See the side-by-side samples on the [website](https://jaiparmani.github.io/ui-craft-skill/#tested), or open `frontend-design-excellence-workspace/review-iteration-2.html` for every output and grade.

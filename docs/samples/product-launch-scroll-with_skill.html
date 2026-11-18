@@ -1,0 +1,736 @@
+<!doctype html>
+<html lang="en" data-finish="chalk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aero — Wireless earbuds</title>
+<meta name="description" content="Aero wireless earbuds. Adaptive noise cancelling, 40 hours with the case, in chalk, graphite and moss. $179.">
+<!--
+  Mode: Premium product marketing (launch). Direction: Premium Dark.
+  Concept: "Aero is about what you stop hearing" — the product emerges from a closed case,
+  then each feature is shown as something being taken away: noise flattened to a line,
+  the charger made unnecessary, the bud itself disappearing into the ear.
+  Signature moment: one continuous pinned stage — the case opens, the buds lift out,
+  one bud comes forward and the feature overlays play around it as you scroll.
+  Motion personality: precise, weighty, quiet.
+  Fallback (no JS / reduced motion): two-column layout, sticky product visual,
+  feature overlays swap state with opacity only.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+@property --b-hi  { syntax: '<color>'; inherits: true; initial-value: #f4f2ec; }
+@property --b-mid { syntax: '<color>'; inherits: true; initial-value: #dcd8cf; }
+@property --b-lo  { syntax: '<color>'; inherits: true; initial-value: #8f8a80; }
+@property --b-tip { syntax: '<color>'; inherits: true; initial-value: #c9c5bc; }
+
+:root {
+  /* Neutrals: warm near-black, hue 90 */
+  --n-0:   oklch(0.985 0.004 90);
+  --n-100: oklch(0.93 0.006 90);
+  --n-300: oklch(0.78 0.008 90);
+  --n-400: oklch(0.70 0.009 90);
+  --n-600: oklch(0.42 0.008 90);
+  --n-800: oklch(0.24 0.006 90);
+  --n-900: oklch(0.18 0.005 90);
+  --n-950: oklch(0.135 0.005 90);
+
+  --bg: var(--n-950);
+  --surface: var(--n-900);
+  --line: oklch(0.30 0.006 90);
+  --text: var(--n-0);
+  --muted: var(--n-400);
+  --accent: oklch(0.88 0.12 135);      /* pale moss-lime: interactive + "quiet" signal */
+  --accent-fg: oklch(0.2 0.03 135);
+
+  /* Finish (product) colours — default chalk */
+  --b-hi:  oklch(0.985 0.004 90);
+  --b-mid: oklch(0.90 0.008 85);
+  --b-lo:  oklch(0.62 0.012 80);
+  --b-tip: oklch(0.83 0.008 85);
+  transition: --b-hi .6s ease, --b-mid .6s ease, --b-lo .6s ease, --b-tip .6s ease;
+
+  /* Spacing (4px) */
+  --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 24px; --s-6: 32px;
+  --s-7: 48px; --s-8: 64px; --s-9: 96px; --s-10: 128px;
+
+  /* Type */
+  --f-sans: 'Inter Tight', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --f-mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --t-xs: 12px; --t-sm: 14px; --t-md: 18px; --t-lg: clamp(22px, 1.4rem + .6vw, 28px);
+  --t-xl: clamp(36px, 1.6rem + 3.2vw, 64px);
+  --t-hero: clamp(120px, 23vw, 360px);
+
+  --r-sm: 10px; --r-pill: 999px;
+  --ease-out: cubic-bezier(.22, 1, .36, 1);
+  --d-fast: 140ms; --d-med: 280ms; --d-slow: 700ms;
+  --wrap: 1440px;
+  --gutter: clamp(20px, 5vw, 64px);
+}
+:root[data-finish="graphite"] {
+  --b-hi:  oklch(0.56 0.008 260);
+  --b-mid: oklch(0.34 0.008 260);
+  --b-lo:  oklch(0.17 0.006 260);
+  --b-tip: oklch(0.27 0.006 260);
+}
+:root[data-finish="moss"] {
+  --b-hi:  oklch(0.70 0.06 135);
+  --b-mid: oklch(0.49 0.055 135);
+  --b-lo:  oklch(0.27 0.04 135);
+  --b-tip: oklch(0.40 0.04 135);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font-family: var(--f-sans); font-size: 17px; line-height: 1.55; font-weight: 400;
+  -webkit-font-smoothing: antialiased; overflow-x: clip;
+}
+h1, h2, h3, p { margin: 0; }
+h1, h2, h3 { font-weight: 600; letter-spacing: -0.03em; line-height: 1.05; text-wrap: balance; }
+p { text-wrap: pretty; }
+a { color: inherit; }
+svg { display: block; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+
+.eyebrow {
+  font-family: var(--f-mono); font-size: var(--t-xs); font-weight: 500; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--muted);
+}
+.eyebrow b { color: var(--accent); font-weight: 500; }
+.lede { font-size: var(--t-md); color: var(--muted); max-width: 44ch; }
+.lede strong { color: var(--text); font-weight: 500; }
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; gap: var(--s-2); white-space: nowrap;
+  min-height: 44px; padding: 0 var(--s-5); border-radius: var(--r-pill);
+  font: 500 15px/1 var(--f-sans); text-decoration: none; cursor: pointer; border: 0;
+  transition: background-color var(--d-fast) ease-out, transform var(--d-fast) ease-out, color var(--d-fast) ease-out;
+}
+.btn svg { width: 16px; height: 16px; }
+.btn--primary { background: var(--text); color: var(--n-950); }
+.btn--primary:hover { background: var(--accent); color: var(--accent-fg); }
+.btn--primary:active { transform: scale(.97); }
+.btn--sm { min-height: 32px; padding: 0 var(--s-4); font-size: 13px; }
+.link {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 44px; color: var(--text);
+  text-decoration: none; font-weight: 500; font-size: 15px; white-space: nowrap;
+}
+.link svg { width: 16px; height: 16px; transition: transform var(--d-med) var(--ease-out); }
+.link:hover svg { transform: translateY(2px); }
+.link:hover { color: var(--accent); }
+
+/* Nav */
+.nav {
+  position: fixed; inset: 0 0 auto; z-index: 50; height: 52px;
+  display: flex; align-items: center; gap: var(--s-6); padding: 0 var(--gutter);
+  background: color-mix(in oklch, var(--bg) 72%, transparent);
+  backdrop-filter: saturate(140%) blur(16px); -webkit-backdrop-filter: saturate(140%) blur(16px);
+  border-bottom: 1px solid color-mix(in oklch, var(--line) 60%, transparent);
+}
+.wordmark { font-weight: 600; letter-spacing: -0.02em; font-size: 18px; text-decoration: none; }
+.nav ul { display: flex; gap: var(--s-5); list-style: none; margin: 0 auto 0 0; padding: 0; }
+.nav ul a { font-size: 13px; color: var(--muted); text-decoration: none; transition: color var(--d-fast); }
+.nav ul a:hover { color: var(--text); }
+.nav .price { font-family: var(--f-mono); font-size: 13px; color: var(--muted); }
+@media (max-width: 720px) { .nav ul { display: none; } .nav .price { margin-left: auto; } .nav { gap: var(--s-4); } }
+
+/* ---------- Story (fallback layout: no JS or reduced motion) ---------- */
+.stage {
+  position: relative; max-width: 1440px; margin: 0 auto; padding-inline: var(--gutter);
+  display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); column-gap: var(--s-7);
+}
+.scene {
+  grid-column: 2; grid-row: 1; position: sticky; top: 0; height: 100svh; align-self: start;
+  display: grid; place-items: center;
+}
+.scene svg { width: 100%; height: 100%; max-height: 820px; overflow: visible; }
+.chapters { grid-column: 1; grid-row: 1; }
+.ch {
+  min-height: 86svh; display: flex; flex-direction: column; justify-content: center; gap: var(--s-5);
+  padding-block: var(--s-9);
+}
+.ch h2 { font-size: var(--t-xl); max-width: 14ch; }
+.ch--hero h1 { font-size: clamp(96px, 15vw, 210px); letter-spacing: -0.055em; line-height: .9; margin-left: -0.04em; }
+.ch--hero { min-height: 100svh; padding-top: 120px; }
+.hero-top, .hero-foot { display: flex; flex-direction: column; gap: var(--s-5); }
+.hero-foot .actions { display: flex; align-items: center; gap: var(--s-5); flex-wrap: wrap; }
+.meta { font-family: var(--f-mono); font-size: var(--t-sm); color: var(--muted); font-variant-numeric: tabular-nums; }
+.meta span + span::before { content: "·"; margin: 0 .6em; color: var(--n-600); }
+.big-num { font-size: clamp(64px, 9vw, 128px); font-weight: 600; letter-spacing: -0.05em; line-height: .9; font-variant-numeric: tabular-nums; }
+.big-num small { font-size: .4em; letter-spacing: -0.02em; color: var(--muted); margin-left: .1em; }
+.ch .actions { display: flex; align-items: center; gap: var(--s-5); flex-wrap: wrap; }
+.rail { display: none; }
+
+/* Feature overlay states (fallback) */
+#noise, #calm, #ring, #dims { opacity: 0; }
+:root:not(.motion) :is(#noise, #calm, #ring, #dims) { transition: opacity .5s ease; }
+.stage[data-state="anc"] #calm { opacity: 1; }
+.stage[data-state="anc"] #noise { opacity: .35; }
+.stage[data-state="battery"] #ring { opacity: 1; }
+.stage[data-state="fit"] #dims { opacity: 1; }
+#ringProg { stroke-dashoffset: 0; }
+
+@media (max-width: 899px) {
+  .stage { grid-template-columns: minmax(0, 1fr); }
+  .scene { grid-column: 1; grid-row: 1; height: 44svh; z-index: 2; background: var(--bg);
+           border-bottom: 1px solid var(--line); margin-inline: calc(var(--gutter) * -1); top: 52px; }
+  .chapters { grid-row: 2; }
+  .ch { min-height: 64svh; padding-block: var(--s-8); }
+  .ch--hero { min-height: auto; padding-top: var(--s-7); }
+}
+
+/* ---------- Story (motion mode: one pinned stage) ---------- */
+.motion .stage { display: block; height: 100svh; max-width: none; padding: 0; overflow: hidden; }
+.motion .scene { position: absolute; inset: 0; height: 100%; z-index: 1; display: block; }
+.motion .scene svg { max-height: none; }
+.motion .chapters { position: absolute; inset: 0; pointer-events: none; }
+.motion .ch {
+  position: absolute; min-height: 0; padding: 0; z-index: 2; pointer-events: auto;
+}
+.motion .ch--hero {
+  inset: 52px 0 0; z-index: auto; justify-content: space-between; align-items: center; text-align: center;
+  padding: var(--s-6) var(--gutter) var(--s-8); pointer-events: none;
+}
+.motion .ch--hero > * { pointer-events: auto; }
+.motion .hero-top { position: relative; z-index: 0; align-items: center; gap: 0; }
+.motion .hero-top .eyebrow { margin-bottom: var(--s-2); }
+.motion .ch--hero h1 { font-size: var(--t-hero); line-height: .82; margin: 0; letter-spacing: -0.06em; }
+.motion .hero-foot { position: relative; z-index: 2; align-items: center; gap: var(--s-4); }
+.motion .hero-foot .lede { margin-inline: auto; }
+.motion .hero-foot .actions { justify-content: center; }
+.motion .ch--intro, .motion .ch--outro {
+  left: 0; right: 0; bottom: var(--s-9); align-items: center; text-align: center; padding-inline: var(--gutter); gap: var(--s-4);
+}
+.motion .ch--intro h2, .motion .ch--outro h2 { max-width: 18ch; }
+.motion .ch--outro { bottom: var(--s-8); }
+.motion .ch--feat {
+  left: var(--gutter); top: 50%; transform: translateY(-50%); width: min(440px, 36vw); gap: var(--s-4);
+}
+.motion .rail {
+  display: flex; position: absolute; z-index: 3; right: var(--gutter); bottom: var(--s-7);
+  flex-direction: row; gap: var(--s-5); list-style: none; margin: 0; padding: 0; opacity: 0;
+}
+.rail li { display: flex; align-items: center; gap: var(--s-3); font-family: var(--f-mono); font-size: var(--t-xs);
+  color: var(--n-600); letter-spacing: .06em; text-transform: uppercase; transition: color var(--d-med); justify-content: flex-end; }
+.rail li i { width: 20px; height: 1px; background: currentColor; transition: width var(--d-med) var(--ease-out); }
+.rail li.on { color: var(--text); }
+.rail li.on i { width: 36px; background: var(--accent); }
+.scroll-cue { font-family: var(--f-mono); font-size: var(--t-xs); color: var(--muted); letter-spacing: .08em; text-transform: uppercase; display: none; }
+.motion .scroll-cue { display: block; }
+
+@media (max-width: 899px) {
+  .motion .scene { inset: 52px 0 auto; height: 60svh; border: 0; margin: 0; background: none; }
+  .motion .ch--hero { padding-bottom: var(--s-7); }
+  .motion .ch--hero h1 { font-size: clamp(96px, 30vw, 160px); }
+  .motion .ch--feat { left: var(--gutter); right: var(--gutter); top: auto; bottom: var(--s-7); transform: none; width: auto; gap: var(--s-3); }
+  .motion .ch--feat h2 { font-size: 34px; }
+  .motion .ch--feat .lede { font-size: 16px; }
+  .motion .ch--feat .big-num { font-size: 56px; }
+  .motion .ch--intro, .motion .ch--outro { bottom: var(--s-7); }
+  .motion .rail { display: none; }
+  .ring-side { display: none; }
+}
+
+/* ---------- Sections after the story ---------- */
+.section { padding-block: var(--s-10); border-top: 1px solid var(--line); }
+.wrap { max-width: var(--wrap); margin: 0 auto; padding-inline: var(--gutter); }
+.section-head { display: flex; flex-direction: column; gap: var(--s-4); margin-bottom: var(--s-8); max-width: 640px; }
+.section-head h2 { font-size: var(--t-xl); }
+
+.colours-grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: var(--s-8); align-items: center; }
+.pair { width: 100%; aspect-ratio: 4 / 3; border-radius: 20px; background:
+  radial-gradient(60% 55% at 50% 45%, color-mix(in oklch, var(--b-mid) 14%, var(--surface)) 0%, var(--surface) 70%);
+  border: 1px solid var(--line); }
+.swatches { border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.swatch {
+  display: grid; grid-template-columns: 36px 1fr; gap: var(--s-1) var(--s-4); align-items: center;
+  padding: var(--s-5) 0 var(--s-5) var(--s-2); border-top: 1px solid var(--line); cursor: pointer;
+}
+.swatch:last-of-type { border-bottom: 1px solid var(--line); }
+.swatch input { position: absolute; opacity: 0; pointer-events: none; }
+.swatch .dot { grid-row: span 2; width: 36px; height: 36px; border-radius: 50%; box-shadow: inset 0 -6px 10px rgba(0,0,0,.25), inset 0 2px 3px rgba(255,255,255,.35);
+  outline: 1px solid var(--line); outline-offset: 4px; transition: outline-color var(--d-med); }
+.swatch .name { font-size: var(--t-lg); font-weight: 500; letter-spacing: -0.02em; line-height: 1.2; color: var(--muted); transition: color var(--d-med); }
+.swatch .note { font-size: var(--t-sm); color: var(--muted); grid-column: 2; }
+.swatch:hover .name { color: var(--text); }
+.swatch input:checked ~ .name { color: var(--text); }
+.swatch input:checked ~ .dot { outline: 2px solid var(--accent); }
+.swatch input:focus-visible ~ .dot { outline: 2px solid var(--accent); outline-offset: 6px; }
+.dot--chalk { background: oklch(0.93 0.007 88); }
+.dot--graphite { background: oklch(0.32 0.008 260); }
+.dot--moss { background: oklch(0.49 0.055 135); }
+
+.specs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 0; border-top: 1px solid var(--line); }
+.spec { padding: var(--s-6) var(--s-6) var(--s-6) 0; border-bottom: 1px solid var(--line); }
+.spec dt { font-family: var(--f-mono); font-size: var(--t-xs); text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: var(--s-2); }
+.spec dd { margin: 0; font-size: var(--t-md); }
+.spec dd span { display: block; color: var(--muted); font-size: var(--t-sm); margin-top: var(--s-1); }
+
+.buy { padding-block: var(--s-10); border-top: 1px solid var(--line); }
+.buy-inner { display: flex; justify-content: space-between; align-items: end; gap: var(--s-7); flex-wrap: wrap; }
+.buy h2 { font-size: clamp(56px, 9vw, 140px); letter-spacing: -0.05em; line-height: .9; }
+.buy h2 span { color: var(--muted); }
+.buy-side { display: flex; flex-direction: column; gap: var(--s-4); align-items: flex-start; max-width: 360px; }
+.buy-side p { color: var(--muted); font-size: var(--t-sm); }
+.footer { padding: var(--s-7) var(--gutter); border-top: 1px solid var(--line); color: var(--muted); font-size: 13px;
+  display: flex; justify-content: space-between; gap: var(--s-4); flex-wrap: wrap; max-width: 1440px; margin: 0 auto; }
+
+@media (max-width: 899px) {
+  .section, .buy { padding-block: var(--s-9); }
+  .colours-grid { grid-template-columns: minmax(0, 1fr); gap: var(--s-6); }
+  .specs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 520px) { .specs { grid-template-columns: minmax(0, 1fr); } }
+@media (prefers-reduced-motion: reduce) {
+  :root { transition: none; }
+  .btn, .link svg, .rail li i { transition: none; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav" aria-label="Primary">
+  <a class="wordmark" href="#top">Aero</a>
+  <ul>
+    <li><a href="#top">Overview</a></li>
+    <li><a href="#noise-cancelling" data-t="4.4">Features</a></li>
+    <li><a href="#colours">Colours</a></li>
+    <li><a href="#specs">Specs</a></li>
+  </ul>
+  <span class="price">$179</span>
+  <a class="btn btn--primary btn--sm" href="#buy">Pre-order</a>
+</nav>
+
+<main id="top">
+  <section class="stage" aria-label="Aero overview">
+    <div class="scene" aria-hidden="true">
+      <svg id="sceneSvg" viewBox="290 40 1020 800" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <radialGradient id="gBody" cx="34%" cy="26%" r="82%">
+            <stop offset="0" style="stop-color: var(--b-hi)"/>
+            <stop offset=".5" style="stop-color: var(--b-mid)"/>
+            <stop offset="1" style="stop-color: var(--b-lo)"/>
+          </radialGradient>
+          <radialGradient id="gFace" cx="38%" cy="30%" r="80%">
+            <stop offset="0" style="stop-color: var(--b-hi)"/>
+            <stop offset=".75" style="stop-color: var(--b-mid)"/>
+            <stop offset="1" style="stop-color: var(--b-lo)"/>
+          </radialGradient>
+          <radialGradient id="gTip" cx="40%" cy="30%" r="80%">
+            <stop offset="0" style="stop-color: var(--b-tip)"/>
+            <stop offset="1" style="stop-color: var(--b-lo)"/>
+          </radialGradient>
+          <radialGradient id="gCase" cx="42%" cy="8%" r="110%">
+            <stop offset="0" style="stop-color: var(--b-hi)"/>
+            <stop offset=".45" style="stop-color: var(--b-mid)"/>
+            <stop offset="1" style="stop-color: var(--b-lo)"/>
+          </radialGradient>
+          <linearGradient id="gRim" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#fff" stop-opacity=".55"/>
+            <stop offset=".45" stop-color="#fff" stop-opacity="0"/>
+          </linearGradient>
+          <linearGradient id="gTray" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#050505"/>
+            <stop offset="1" stop-color="#1c1b19"/>
+          </linearGradient>
+          <radialGradient id="gGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0" style="stop-color: var(--b-mid)" stop-opacity=".16"/>
+            <stop offset="1" style="stop-color: var(--b-mid)" stop-opacity="0"/>
+          </radialGradient>
+          <linearGradient id="gWave" gradientUnits="userSpaceOnUse" x1="-900" y1="0" x2="900" y2="0">
+            <stop offset="0" stop-color="#fff" stop-opacity="0"/>
+            <stop offset=".38" stop-color="#fff" stop-opacity=".7"/>
+            <stop offset=".55" stop-color="#fff" stop-opacity=".6"/>
+            <stop offset=".72" stop-color="#fff" stop-opacity="0"/>
+          </linearGradient>
+          <linearGradient id="gCalm" gradientUnits="userSpaceOnUse" x1="-900" y1="0" x2="900" y2="0">
+            <stop offset=".3" style="stop-color: var(--accent)" stop-opacity="0"/>
+            <stop offset=".44" style="stop-color: var(--accent)" stop-opacity="1"/>
+            <stop offset=".6" style="stop-color: var(--accent)" stop-opacity="1"/>
+            <stop offset=".72" style="stop-color: var(--accent)" stop-opacity="0"/>
+          </linearGradient>
+          <filter id="fBlur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="7"/></filter>
+          <filter id="fShadow" x="-50%" y="-200%" width="200%" height="500%"><feGaussianBlur stdDeviation="14"/></filter>
+
+          <g id="budShape">
+            <ellipse cx="-60" cy="64" rx="44" ry="36" transform="rotate(-38 -60 64)" fill="url(#gTip)"/>
+            <ellipse cx="-58" cy="62" rx="22" ry="16" transform="rotate(-38 -58 62)" fill="#000" opacity=".28"/>
+            <ellipse cx="0" cy="0" rx="100" ry="94" fill="url(#gBody)"/>
+            <ellipse cx="0" cy="0" rx="99" ry="93" fill="none" stroke="url(#gRim)" stroke-width="2"/>
+            <circle cx="10" cy="-6" r="60" fill="url(#gFace)"/>
+            <circle cx="10" cy="-6" r="60" fill="none" stroke="#000" stroke-opacity=".14" stroke-width="2"/>
+            <circle cx="10" cy="-6" r="58" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="1.2"/>
+            <rect x="54" y="-74" width="16" height="5" rx="2.5" transform="rotate(38 62 -71)" fill="#000" opacity=".45"/>
+            <ellipse cx="-34" cy="-46" rx="36" ry="17" transform="rotate(-32 -34 -46)" fill="#fff" opacity=".38" filter="url(#fBlur)"/>
+          </g>
+        </defs>
+
+        <ellipse cx="800" cy="460" rx="620" ry="420" fill="url(#gGlow)"/>
+
+        <!-- Feature overlays -->
+        <g id="fx" transform="translate(800 420) scale(.9)">
+          <g id="noise" fill="none" stroke="url(#gWave)" stroke-linecap="round"></g>
+          <path id="calm" d="M-900 0 H900" stroke="url(#gCalm)" stroke-width="2.5" fill="none"/>
+          <g id="ring">
+            <circle r="300" fill="none" stroke="var(--line)" stroke-width="2"/>
+            <circle id="ringProg" r="300" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round"
+                    pathLength="100" stroke-dasharray="100" transform="rotate(-90)"/>
+            <g font-family="Geist Mono, monospace" font-size="20" fill="var(--muted)" letter-spacing="1">
+              <line x1="0" y1="-312" x2="0" y2="-288" stroke="var(--muted)" stroke-width="2"/>
+              <text x="0" y="-326" text-anchor="middle">0 H</text>
+              <line x1="285.3" y1="-92.7" x2="308.1" y2="-100.1" stroke="var(--muted)" stroke-width="2"/>
+              <text class="ring-side" x="326" y="-98">8 H · BUDS</text>
+              <text class="ring-side" x="-326" y="-98" text-anchor="end">+32 H · CASE</text>
+            </g>
+          </g>
+          <g id="dims" stroke="var(--muted)" stroke-width="1.5" fill="none" font-family="Geist Mono, monospace" font-size="20" letter-spacing="1">
+            <g id="dimH">
+              <path d="M-175 -230 H175 M-175 -242 V-218 M175 -242 V-218"/>
+              <text x="0" y="-250" text-anchor="middle" fill="var(--muted)" stroke="none">21.4 MM</text>
+            </g>
+            <g id="dimV">
+              <path d="M240 -165 V165 M228 -165 H252 M228 165 H252"/>
+              <text transform="translate(258 0) rotate(90)" text-anchor="middle" fill="var(--muted)" stroke="none">19.6 MM</text>
+            </g>
+          </g>
+        </g>
+
+        <!-- Case + buds -->
+        <ellipse id="shadow" cx="800" cy="724" rx="250" ry="16" fill="#000" opacity=".7" filter="url(#fShadow)"/>
+        <g id="case">
+          <rect x="598" y="514" width="404" height="92" rx="46" fill="url(#gTray)"/>
+          <rect x="598" y="514" width="404" height="92" rx="46" fill="none" style="stroke: var(--b-hi)" stroke-opacity=".35" stroke-width="2"/>
+          <ellipse cx="705" cy="552" rx="58" ry="14" fill="#000" opacity=".8"/>
+          <ellipse cx="895" cy="552" rx="58" ry="14" fill="#000" opacity=".8"/>
+        </g>
+        <g id="budL" transform="translate(640 330) rotate(-10) scale(.9)"><g transform="scale(-1 1)"><use href="#budShape"/></g></g>
+        <g id="budR" transform="translate(960 330) rotate(10) scale(.9)"><use href="#budShape"/></g>
+        <g id="caseFront">
+          <path d="M580 560 H1020 V612 A88 88 0 0 1 932 700 H668 A88 88 0 0 1 580 612 Z" fill="url(#gCase)"/>
+          <path d="M582 561 H1018" stroke="#fff" stroke-opacity=".35" stroke-width="1.5"/>
+          <circle id="led" cx="800" cy="606" r="3.5" fill="var(--accent)"/>
+        </g>
+        <g id="lid" opacity="0">
+          <path d="M580 560 V512 A82 82 0 0 1 662 430 H938 A82 82 0 0 1 1020 512 V560 Z" fill="url(#gCase)"/>
+          <path d="M580 560 V512 A82 82 0 0 1 662 430 H938 A82 82 0 0 1 1020 512 V560" fill="none" stroke="url(#gRim)" stroke-width="2"/>
+          <rect x="580" y="557" width="440" height="3" fill="#000" opacity=".35"/>
+        </g>
+      </svg>
+    </div>
+
+    <div class="chapters">
+      <header class="ch ch--hero" data-state="hero">
+        <div class="hero-top">
+          <p class="eyebrow">New · Wireless earbuds</p>
+          <h1>Aero</h1>
+        </div>
+        <div class="hero-foot">
+          <p class="lede">Adaptive noise cancelling, <strong>40 hours</strong> with the case, and a shape that disappears in the ear.</p>
+          <p class="meta"><span>$179</span><span>Chalk, graphite, moss</span></p>
+          <div class="actions">
+            <a class="btn btn--primary" href="#buy">Pre-order</a>
+            <a class="link" href="#noise-cancelling" data-t="4.4">See how it works
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg></a>
+          </div>
+        </div>
+      </header>
+
+      <article class="ch ch--intro" data-state="intro">
+        <p class="eyebrow">Introducing Aero</p>
+        <h2>Lift the lid. Leave the noise.</h2>
+      </article>
+
+      <article class="ch ch--feat" id="noise-cancelling" data-state="anc" data-t="4.4">
+        <p class="eyebrow"><b>01</b> &nbsp;Adaptive noise cancelling</p>
+        <h2>The world, turned down to a line.</h2>
+        <p class="lede">Microphones on each bud read the room continuously and cancel what doesn’t belong — the train, the fan, the open-plan office — while your music stays exactly as it was mixed.</p>
+      </article>
+
+      <article class="ch ch--feat" id="battery" data-state="battery" data-t="7.2">
+        <p class="eyebrow"><b>02</b> &nbsp;Battery</p>
+        <p class="big-num"><span id="count">40</span><small>h</small></p>
+        <h2>Bring the case. Forget the charger.</h2>
+        <p class="lede">Up to 8 hours in the buds and four more full charges in the case — <strong>40 hours in total</strong>. Ten minutes on USB‑C adds two more.</p>
+      </article>
+
+      <article class="ch ch--feat" id="fit" data-state="fit" data-t="9.4">
+        <p class="eyebrow"><b>03</b> &nbsp;Fit</p>
+        <h2>4.6 grams. Gone the moment they’re in.</h2>
+        <p class="lede">A low, rounded shell that sits flush in the ear instead of out of it, with three silicone tip sizes in the box. Tap the face to play, pause or switch modes.</p>
+      </article>
+
+      <article class="ch ch--outro" data-state="outro">
+        <h2>Aero. $179.</h2>
+        <p class="meta"><span>Chalk</span><span>Graphite</span><span>Moss</span></p>
+        <div class="actions">
+          <a class="btn btn--primary" href="#buy">Pre-order</a>
+          <a class="link" href="#colours">Choose a colour
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg></a>
+        </div>
+      </article>
+    </div>
+
+    <ol class="rail" aria-hidden="true">
+      <li data-k="anc">Noise <i></i></li>
+      <li data-k="battery">Battery <i></i></li>
+      <li data-k="fit">Fit <i></i></li>
+    </ol>
+  </section>
+
+  <section class="section" id="colours" aria-labelledby="colours-title">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Finishes</p>
+        <h2 id="colours-title">Three colours. All matte, none of them loud.</h2>
+      </div>
+      <div class="colours-grid">
+        <svg class="pair" viewBox="0 0 800 600" role="img" aria-label="A pair of Aero earbuds in the selected finish">
+          <ellipse cx="400" cy="470" rx="230" ry="14" fill="#000" opacity=".6" filter="url(#fShadow)"/>
+          <g transform="translate(315 300) rotate(-12) scale(1.25)"><g transform="scale(-1 1)"><use href="#budShape"/></g></g>
+          <g transform="translate(490 290) rotate(14) scale(1.25)"><use href="#budShape"/></g>
+        </svg>
+        <fieldset class="swatches">
+          <legend class="sr">Choose a finish</legend>
+          <label class="swatch">
+            <input type="radio" name="finish" value="chalk" checked>
+            <span class="dot dot--chalk"></span>
+            <span class="name">Chalk</span>
+            <span class="note">A soft, warm white with a stone-like finish.</span>
+          </label>
+          <label class="swatch">
+            <input type="radio" name="finish" value="graphite">
+            <span class="dot dot--graphite"></span>
+            <span class="name">Graphite</span>
+            <span class="note">Near-black with a faint satin sheen.</span>
+          </label>
+          <label class="swatch">
+            <input type="radio" name="finish" value="moss">
+            <span class="dot dot--moss"></span>
+            <span class="name">Moss</span>
+            <span class="note">A muted green that reads grey indoors.</span>
+          </label>
+        </fieldset>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="specs" aria-labelledby="specs-title">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Specifications</p>
+        <h2 id="specs-title">The details.</h2>
+      </div>
+      <dl class="specs">
+        <div class="spec"><dt>Battery</dt><dd>40 hours with case<span>Up to 8 hours per charge in the buds</span></dd></div>
+        <div class="spec"><dt>Noise control</dt><dd>Adaptive noise cancelling<span>Plus transparency mode</span></dd></div>
+        <div class="spec"><dt>Charging</dt><dd>USB‑C and Qi wireless<span>10 minutes for 2 hours of playback</span></dd></div>
+        <div class="spec"><dt>Weight</dt><dd>4.6 g per bud<span>Case 42 g</span></dd></div>
+        <div class="spec"><dt>Connectivity</dt><dd>Bluetooth 5.4<span>Multipoint with two devices</span></dd></div>
+        <div class="spec"><dt>Water resistance</dt><dd>IPX4<span>Sweat and rain resistant</span></dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="buy" id="buy" aria-labelledby="buy-title">
+    <div class="wrap buy-inner">
+      <h2 id="buy-title">Aero.<br><span>$179.</span></h2>
+      <div class="buy-side">
+        <p class="eyebrow">Selected · <b id="finishName">Chalk</b></p>
+        <a class="btn btn--primary" href="#buy" id="buyBtn">Pre-order in Chalk</a>
+        <p>Free delivery and 30‑day returns. Pre-orders ship in December.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <span>Aero wireless earbuds</span>
+  <span>Battery life varies with use and settings.</span>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+<script>
+(() => {
+  const root = document.documentElement;
+  const stage = document.querySelector('.stage');
+  const svg = document.getElementById('sceneSvg');
+
+  // ---------- Finish picker (works without GSAP) ----------
+  const names = { chalk: 'Chalk', graphite: 'Graphite', moss: 'Moss' };
+  document.querySelectorAll('input[name="finish"]').forEach(r => r.addEventListener('change', () => {
+    root.dataset.finish = r.value;
+    document.getElementById('finishName').textContent = names[r.value];
+    document.getElementById('buyBtn').textContent = 'Pre-order in ' + names[r.value];
+  }));
+
+  // ---------- Noise waves (generated once) ----------
+  const noise = document.getElementById('noise');
+  let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  for (let i = 0; i < 6; i++) {
+    const a = 40 + rnd() * 90, f1 = .008 + rnd() * .02, f2 = .03 + rnd() * .04, ph = rnd() * 6.28;
+    let d = '';
+    for (let x = -900; x <= 900; x += 10) {
+      const y = a * (Math.sin(x * f1 + ph) * .7 + Math.sin(x * f2 + ph * 2) * .3) * (.55 + .45 * Math.abs(Math.sin(x * .004 + i)));
+      d += (x === -900 ? 'M' : 'L') + x + ' ' + y.toFixed(1);
+    }
+    const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    p.setAttribute('d', d); p.setAttribute('stroke-width', (1 + rnd() * 1.2).toFixed(2));
+    p.setAttribute('opacity', (.25 + rnd() * .45).toFixed(2));
+    noise.appendChild(p);
+  }
+
+  // ---------- Fallback: state swaps by chapter (no movement) ----------
+  let io;
+  function stateFallback() {
+    io = new IntersectionObserver(es => es.forEach(e => {
+      if (e.isIntersecting) stage.dataset.state = e.target.dataset.state;
+    }), { rootMargin: '-45% 0px -45% 0px' });
+    document.querySelectorAll('.ch').forEach(c => io.observe(c));
+  }
+
+  if (!window.gsap || !window.ScrollTrigger) { stateFallback(); return; }
+  gsap.registerPlugin(ScrollTrigger);
+
+  const mm = gsap.matchMedia();
+  mm.add({ motion: '(prefers-reduced-motion: no-preference)', desktop: '(min-width: 900px)' }, ctx => {
+    const { motion, desktop } = ctx.conditions;
+    if (!motion) { stateFallback(); return () => { io && io.disconnect(); delete stage.dataset.state; }; }
+
+    root.classList.add('motion');
+    const oldVB = svg.getAttribute('viewBox'), oldPAR = svg.getAttribute('preserveAspectRatio');
+    svg.setAttribute('viewBox', desktop ? '0 0 1600 1000' : '530 140 540 760');
+    svg.setAttribute('preserveAspectRatio', desktop ? 'xMidYMid meet' : 'xMidYMin meet');
+
+    // Poses per layout
+    const P = desktop ? {
+      tray: { L: [705, 552, .52], R: [895, 552, .52] },
+      rise: { L: [640, 330, .9], R: [960, 330, .9] },
+      focus: [1020, 500, 1.9], batt: [1020, 500, 1.45], fit: [1020, 510, 1.75],
+      fx: [1020, 500, 1], out: { L: [680, 450, 1.15], R: [920, 440, 1.15] }
+    } : {
+      tray: { L: [705, 552, .52], R: [895, 552, .52] },
+      rise: { L: [690, 330, .75], R: [910, 330, .75] },
+      focus: [800, 500, 1.6], batt: [800, 500, 1.15], fit: [800, 510, 1.45],
+      fx: [800, 500, .8], out: { L: [705, 500, .95], R: [895, 490, .95] }
+    };
+    // Bud transforms are driven from plain objects so rotation/scale happen around each bud's own centre
+    const budL = document.getElementById('budL'), budR = document.getElementById('budR'), fxEl = document.getElementById('fx');
+    const orig = [budL, budR, fxEl].map(el => el.getAttribute('transform'));
+    const B = { L: {}, R: {} };
+    const bp = ([x, y, s], r, extra = {}) => ({ x, y, s, r, ...extra });
+    const tf = o => `translate(${o.x} ${o.y}) rotate(${o.r}) scale(${o.s})`;
+    const draw = () => { budL.setAttribute('transform', tf(B.L)); budR.setAttribute('transform', tf(B.R)); };
+
+    const chs = gsap.utils.toArray('.ch');
+    const [hero, intro, anc, batt, fit, outro] = chs;
+    const heroTop = hero.querySelector('.hero-top'), heroFoot = hero.querySelector('.hero-foot');
+    const rail = document.querySelector('.rail'), railItems = rail.querySelectorAll('li');
+
+    Object.assign(B.L, bp(P.tray.L, 0)); Object.assign(B.R, bp(P.tray.R, 0)); draw();
+    gsap.set('#budL', { autoAlpha: 1 });
+    gsap.set('#lid', { autoAlpha: 1, x: 0, y: 0, rotation: 0 });
+    fxEl.setAttribute('transform', `translate(${P.fx[0]} ${P.fx[1]}) scale(${P.fx[2]})`);
+    gsap.set(['#noise', '#calm', '#ring', '#dims'], { autoAlpha: 0 });
+    gsap.set('#noise', { scaleY: 1, transformOrigin: '50% 50%' });
+    gsap.set('#calm', { scaleX: .2, transformOrigin: '50% 50%' });
+    gsap.set('#ringProg', { strokeDashoffset: 100 });
+    gsap.set('#dimH', { scaleX: 0, transformOrigin: '50% 50%' });
+    gsap.set('#dimV', { scaleY: 0, transformOrigin: '50% 50%' });
+    gsap.set('#led', { autoAlpha: .15 });
+    gsap.set([intro, anc, batt, fit, outro], { autoAlpha: 0, y: 32 });
+    if (desktop) gsap.set([anc, batt, fit], { yPercent: -50 });
+
+    const count = document.getElementById('count');
+    count.textContent = '0';
+
+    const tl = gsap.timeline({ defaults: { ease: 'power2.inOut', duration: 1 } });
+    const inC = (el, t) => tl.to(el, { autoAlpha: 1, y: 0, duration: .45, ease: 'power3.out' }, t);
+    const outC = (el, t) => tl.to(el, { autoAlpha: 0, y: -32, duration: .35, ease: 'power2.in' }, t);
+
+    // 0 — hero: the word sits behind the closed case
+    tl.to(heroFoot, { autoAlpha: 0, y: 40, duration: .6, ease: 'power2.in' }, .2)
+      .to(heroTop, { autoAlpha: 0, scale: .86, duration: 1.2, ease: 'power2.in' }, .3)
+    // 1 — lid lifts, light comes on
+      .to('#lid', { y: -320, rotation: -6, svgOrigin: '1020 560', duration: 1.3, ease: 'power2.in' }, .6)
+      .to('#lid', { autoAlpha: 0, duration: .5 }, 1.4)
+      .to('#led', { autoAlpha: 1, duration: .3 }, 1.0)
+    // 2 — buds rise out
+      .to(B.L, bp(P.rise.L, -10, { duration: 1.1 }), 1.6)
+      .to(B.R, bp(P.rise.R, 10, { duration: 1.1 }), 1.7);
+    inC(intro, 2.1); outC(intro, 3.0);
+    // 3 — case falls away, one bud comes forward
+    tl.to(['#case', '#caseFront'], { y: 380, autoAlpha: 0, duration: .9, ease: 'power2.in' }, 3.0)
+      .to('#shadow', { autoAlpha: 0, duration: .6 }, 3.0)
+      .to(B.L, { x: desktop ? 360 : 560, y: 520, s: .6, r: -30, duration: 1 }, 3.2)
+      .to('#budL', { autoAlpha: 0, duration: .8 }, 3.2)
+      .to(B.R, bp(P.focus, 0, { duration: 1.1 }), 3.2)
+      .to(rail, { autoAlpha: 1, duration: .4 }, 3.6);
+    // 4 — ANC: noise flattened to a line
+    inC(anc, 3.7);
+    tl.to('#noise', { autoAlpha: 1, duration: .4 }, 3.8)
+      .to('#noise', { scaleY: .02, duration: 1.1, ease: 'power3.inOut' }, 4.5)
+      .to('#calm', { autoAlpha: 1, scaleX: 1, duration: .8, ease: 'power2.out' }, 5.1)
+      .to('#noise', { autoAlpha: 0, duration: .4 }, 5.4);
+    outC(anc, 6.0);
+    tl.to('#calm', { autoAlpha: 0, duration: .4 }, 6.0)
+    // 5 — Battery: ring fills, hours count
+      .to(B.R, bp(P.batt, 0, { duration: .8 }), 6.1)
+      .to('#ring', { autoAlpha: 1, duration: .4 }, 6.4)
+      .to('#ringProg', { strokeDashoffset: 0, duration: 1.3, ease: 'none' }, 6.6);
+    inC(batt, 6.3); outC(batt, 8.3);
+    tl.to('#ring', { autoAlpha: 0, duration: .4 }, 8.3)
+    // 6 — Fit: bud turns, measured like a drawing
+      .to(B.R, bp(P.fit, -24, { duration: 1 }), 8.4)
+      .to('#dims', { autoAlpha: 1, duration: .2 }, 8.9)
+      .to('#dimH', { scaleX: 1, duration: .6, ease: 'power3.out' }, 8.9)
+      .to('#dimV', { scaleY: 1, duration: .6, ease: 'power3.out' }, 9.1);
+    inC(fit, 8.8); outC(fit, 10.4);
+    tl.to('#dims', { autoAlpha: 0, duration: .4 }, 10.4)
+      .to(rail, { autoAlpha: 0, duration: .3 }, 10.4)
+    // 7 — Outro: the pair, together again
+      .to(B.R, bp(P.out.R, 12, { duration: 1.1 }), 10.5)
+      .to(B.L, bp(P.out.L, -12, { duration: 1.1 }), 10.6)
+      .to('#budL', { autoAlpha: 1, duration: .8 }, 10.6);
+    inC(outro, 11.3);
+    tl.to({}, { duration: .6 }, 11.8);
+
+    const TOTAL = tl.duration();
+    const st = ScrollTrigger.create({
+      trigger: stage, start: 'top top', end: () => '+=' + innerHeight * 9, pin: true, scrub: .9,
+      animation: tl, invalidateOnRefresh: false
+    });
+    tl.eventCallback('onUpdate', () => {
+        draw();
+        const t = tl.time();
+        const k = t > 3.6 && t < 6.2 ? 'anc' : t >= 6.2 && t < 8.5 ? 'battery' : t >= 8.5 && t < 10.6 ? 'fit' : '';
+        railItems.forEach(li => li.classList.toggle('on', li.dataset.k === k));
+        count.textContent = Math.round(gsap.utils.clamp(0, 1, (t - 6.6) / 1.3) * 40);
+    });
+
+    // In-page links into the pinned story jump to that moment of the timeline
+    const onLink = e => {
+      const t = parseFloat(e.currentTarget.dataset.t);
+      e.preventDefault();
+      scrollTo({ top: st.start + (st.end - st.start) * (t / TOTAL), behavior: 'smooth' });
+    };
+    const links = document.querySelectorAll('a[data-t]');
+    links.forEach(a => a.addEventListener('click', onLink));
+
+    return () => {
+      links.forEach(a => a.removeEventListener('click', onLink));
+      root.classList.remove('motion');
+      [budL, budR, fxEl].forEach((el, i) => el.setAttribute('transform', orig[i]));
+      svg.setAttribute('viewBox', oldVB); svg.setAttribute('preserveAspectRatio', oldPAR);
+      count.textContent = '40';
+    };
+  });
+})();
+</script>
+</body>
+</html>

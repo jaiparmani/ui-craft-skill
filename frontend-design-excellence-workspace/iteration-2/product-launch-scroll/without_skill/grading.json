@@ -1,0 +1,69 @@
+{
+  "expectations": [
+    {
+      "text": "index.html honours prefers-reduced-motion by disabling or simplifying its motion (CSS media query or JS matchMedia check)",
+      "passed": true,
+      "evidence": "Calmer animations under prefers-reduced-motion"
+    },
+    {
+      "text": "index.html's main headline and body copy are visible with JavaScript disabled (nothing essential is left hidden by CSS waiting for a script)",
+      "passed": true,
+      "evidence": "With scripts removed the hero ('Introducing Aero.') and case render"
+    },
+    {
+      "text": "index.html loads with no console errors",
+      "passed": true,
+      "evidence": "No console errors at 375px"
+    },
+    {
+      "text": "index.html animates only transform, opacity, clip-path or filter \u2014 no per-frame animation of top/left/width/height/margin",
+      "passed": true,
+      "evidence": "Static scan: no layout properties animated"
+    },
+    {
+      "text": "index.html has no horizontal page scroll at a 390px-wide viewport",
+      "passed": true,
+      "evidence": "scrollWidth 375 = viewport 375"
+    },
+    {
+      "text": "index.html varies entrance motion by element role (at least two distinct reveal treatments, e.g. line/mask reveal for headlines and scale/clip for media), rather than one identical fade-up everywhere",
+      "passed": true,
+      "evidence": "Lid lift, bud rise, word-by-word statement, per-feature visuals"
+    },
+    {
+      "text": "index.html uses no emoji and no default purple/indigo-to-blue/pink gradient",
+      "passed": true,
+      "evidence": "No emoji; gradients used for product shading"
+    },
+    {
+      "text": "index.html reveals a code-built earbuds visual that transforms (scale, rotate, position or reveal) tied to scroll position",
+      "passed": true,
+      "evidence": "Case and buds animate with scroll inside a sticky section"
+    },
+    {
+      "text": "index.html has a pinned section (ScrollTrigger pin or position: sticky) in which features are explained one at a time as the user scrolls",
+      "passed": true,
+      "evidence": "Sticky features section with four features in turn"
+    },
+    {
+      "text": "index.html shows the price $179, 40h battery, adaptive noise cancelling, and the three colours chalk, graphite and moss",
+      "passed": true,
+      "evidence": "$179, 40h, noise cancelling, chalk/graphite/moss present"
+    },
+    {
+      "text": "index.html simplifies or unpins the pinned sequence on phone widths so the content stays readable",
+      "passed": true,
+      "evidence": "Feature section stacks visual above text on phones; no overflow"
+    }
+  ],
+  "summary": {
+    "passed": 11,
+    "failed": 0,
+    "total": 11,
+    "pass_rate": 1.0
+  },
+  "timing": {
+    "executor_duration_seconds": 14.1,
+    "total_duration_seconds": 14.1
+  }
+}

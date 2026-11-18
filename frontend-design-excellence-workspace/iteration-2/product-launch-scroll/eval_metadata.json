@@ -1,0 +1,17 @@
+{
+  "eval_name": "product-launch-scroll",
+  "prompt": "build a launch page for Aero, our new wireless earbuds ($179, 40h battery with case, adaptive noise cancelling, ships in 3 colours: chalk, graphite, moss). i want it to feel like an apple product page - the earbuds should reveal as you scroll, features explained one by one while the section stays pinned, that kind of thing. no product photos yet so you'll have to build the visuals in code. single html file",
+  "assertions": [
+    "index.html honours prefers-reduced-motion by disabling or simplifying its motion (CSS media query or JS matchMedia check)",
+    "index.html's main headline and body copy are visible with JavaScript disabled (nothing essential is left hidden by CSS waiting for a script)",
+    "index.html loads with no console errors",
+    "index.html animates only transform, opacity, clip-path or filter \u2014 no per-frame animation of top/left/width/height/margin",
+    "index.html has no horizontal page scroll at a 390px-wide viewport",
+    "index.html varies entrance motion by element role (at least two distinct reveal treatments, e.g. line/mask reveal for headlines and scale/clip for media), rather than one identical fade-up everywhere",
+    "index.html uses no emoji and no default purple/indigo-to-blue/pink gradient",
+    "index.html reveals a code-built earbuds visual that transforms (scale, rotate, position or reveal) tied to scroll position",
+    "index.html has a pinned section (ScrollTrigger pin or position: sticky) in which features are explained one at a time as the user scrolls",
+    "index.html shows the price $179, 40h battery, adaptive noise cancelling, and the three colours chalk, graphite and moss",
+    "index.html simplifies or unpins the pinned sequence on phone widths so the content stays readable"
+  ]
+}
